@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>2</version>
+  <attributes/>
+  <visualElements>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>S</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="200"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>R</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>S</string>
+        </entry>
+      </elementAttributes>
+      <pos x="120" y="200"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>R</string>
+        </entry>
+      </elementAttributes>
+      <pos x="120" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NAnd</elementName>
+      <elementAttributes>
+        <entry>
+          <string>wideShape</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NAnd</elementName>
+      <elementAttributes>
+        <entry>
+          <string>wideShape</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>S</string>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>R</string>
+        </entry>
+      </elementAttributes>
+      <pos x="340" y="340"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NAnd</elementName>
+      <elementAttributes>
+        <entry>
+          <string>wideShape</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="540" y="160"/>
+    </visualElement>
+    <visualElement>
+      <elementName>NAnd</elementName>
+      <elementAttributes>
+        <entry>
+          <string>wideShape</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="540" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Q</string>
+        </entry>
+      </elementAttributes>
+      <pos x="700" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Q&apos;</string>
+        </entry>
+      </elementAttributes>
+      <pos x="700" y="300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>Clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>Clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="280" y="240"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Text</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>El funcionamiento viene dado cuando el clock esta activo permite
+cambiar los valores con S(1) y R(0), el problema se da cuando ambos 
+se activan S y R a la vez y el clock esta activo, por lo que nos quedan
+Q y Q&apos; como 1, lo que genera que al quitar el Clock el circuito de una
+respuesta incierta, ya que empezara a oscilar dependiendo de cuál de 
+los dos NAND del final de 0 primero</string>
+        </entry>
+      </elementAttributes>
+      <pos x="20" y="420"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Clock</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="120"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="440" y="320"/>
+      <p2 x="540" y="320"/>
+    </wire>
+    <wire>
+      <p1 x="440" y="160"/>
+      <p2 x="540" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="280" y="240"/>
+      <p2 x="320" y="240"/>
+    </wire>
+    <wire>
+      <p1 x="320" y="180"/>
+      <p2 x="340" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="640" y="180"/>
+      <p2 x="660" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="660" y="180"/>
+      <p2 x="700" y="180"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="260"/>
+      <p2 x="660" y="260"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="280"/>
+      <p2 x="540" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="280"/>
+      <p2 x="120" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="200"/>
+      <p2 x="540" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="200"/>
+      <p2 x="120" y="200"/>
+    </wire>
+    <wire>
+      <p1 x="320" y="300"/>
+      <p2 x="340" y="300"/>
+    </wire>
+    <wire>
+      <p1 x="640" y="300"/>
+      <p2 x="680" y="300"/>
+    </wire>
+    <wire>
+      <p1 x="680" y="300"/>
+      <p2 x="700" y="300"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="220"/>
+      <p2 x="680" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="320" y="180"/>
+      <p2 x="320" y="240"/>
+    </wire>
+    <wire>
+      <p1 x="320" y="240"/>
+      <p2 x="320" y="300"/>
+    </wire>
+    <wire>
+      <p1 x="660" y="180"/>
+      <p2 x="660" y="260"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="260"/>
+      <p2 x="520" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="520" y="200"/>
+      <p2 x="520" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="680" y="220"/>
+      <p2 x="680" y="300"/>
+    </wire>
+  </wires>
+  <measurementOrdering/>
+</circuit>
