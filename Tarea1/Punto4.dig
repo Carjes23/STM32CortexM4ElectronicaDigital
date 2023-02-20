@@ -6,7 +6,7 @@
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="780" y="100"/>
+      <pos x="720" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -16,7 +16,7 @@
           <string>SConfig</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="20"/>
+      <pos x="540" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -26,7 +26,7 @@
           <string>SC</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="20"/>
+      <pos x="540" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -36,7 +36,7 @@
           <string>EnConfig</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="140"/>
+      <pos x="540" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -46,7 +46,7 @@
           <string>EnC</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="140"/>
+      <pos x="540" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -56,7 +56,7 @@
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="140" y="880"/>
+      <pos x="300" y="640"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -66,7 +66,7 @@
           <string>CConfig</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="80"/>
+      <pos x="540" y="-60"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -76,7 +76,7 @@
           <string>CC</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="80"/>
+      <pos x="540" y="-60"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -90,7 +90,7 @@
           <string>CC</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="160"/>
+      <pos x="720" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -104,7 +104,7 @@
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="140"/>
+      <pos x="720" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -118,12 +118,12 @@
           <string>SC</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="100"/>
+      <pos x="720" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="800" y="-20"/>
+      <pos x="740" y="-160"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -133,7 +133,7 @@
           <string>EnConfigIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="740" y="-100"/>
+      <pos x="680" y="-240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -147,7 +147,7 @@
           <string>EnC</string>
         </entry>
       </elementAttributes>
-      <pos x="820" y="20"/>
+      <pos x="760" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -161,7 +161,7 @@
           <string>SaConfigIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="880" y="260"/>
+      <pos x="820" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
@@ -169,8 +169,7 @@
         <entry>
           <string>Description</string>
           <string>Registro de Configuración
-DIOX: Configuración I/O numero X.
-Entrada 1, Salida 0</string>
+Entrada 0, Salida 1</string>
         </entry>
       </elementAttributes>
       <pos x="580" y="-360"/>
@@ -178,7 +177,7 @@ Entrada 1, Salida 0</string>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="780" y="820"/>
+      <pos x="920" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -188,7 +187,7 @@ Entrada 1, Salida 0</string>
           <string>SEntrada</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="840"/>
+      <pos x="700" y="320"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -198,7 +197,7 @@ Entrada 1, Salida 0</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="840"/>
+      <pos x="700" y="320"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -208,7 +207,7 @@ Entrada 1, Salida 0</string>
           <string>CEntrada</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="900"/>
+      <pos x="700" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -218,7 +217,7 @@ Entrada 1, Salida 0</string>
           <string>CE</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="900"/>
+      <pos x="700" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -232,7 +231,7 @@ Entrada 1, Salida 0</string>
           <string>CE</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="880"/>
+      <pos x="920" y="360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -246,7 +245,7 @@ Entrada 1, Salida 0</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="860"/>
+      <pos x="920" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -260,12 +259,12 @@ Entrada 1, Salida 0</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="820"/>
+      <pos x="920" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="700" y="740"/>
+      <pos x="840" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -279,7 +278,7 @@ Entrada 1, Salida 0</string>
           <string>InputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="700" y="780"/>
+      <pos x="840" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -290,10 +289,10 @@ Entrada 1, Salida 0</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnE</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="720" y="780"/>
+      <pos x="860" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -307,23 +306,22 @@ Entrada 1, Salida 0</string>
           <string>RegistroEntrada1</string>
         </entry>
       </elementAttributes>
-      <pos x="860" y="1040"/>
+      <pos x="1000" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>Registro de Entradas
-EIOX : Entrada I/O numero X</string>
+          <string>Registro de Entradas</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="380"/>
+      <pos x="500" y="160"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="780" y="1640"/>
+      <pos x="880" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -333,7 +331,7 @@ EIOX : Entrada I/O numero X</string>
           <string>SSalida</string>
         </entry>
       </elementAttributes>
-      <pos x="620" y="1520"/>
+      <pos x="720" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -343,7 +341,7 @@ EIOX : Entrada I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="620" y="1520"/>
+      <pos x="720" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -353,7 +351,7 @@ EIOX : Entrada I/O numero X</string>
           <string>CSalida</string>
         </entry>
       </elementAttributes>
-      <pos x="620" y="1580"/>
+      <pos x="720" y="800"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -363,7 +361,7 @@ EIOX : Entrada I/O numero X</string>
           <string>CS</string>
         </entry>
       </elementAttributes>
-      <pos x="620" y="1580"/>
+      <pos x="720" y="800"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -377,7 +375,7 @@ EIOX : Entrada I/O numero X</string>
           <string>CS</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="1700"/>
+      <pos x="880" y="920"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -391,7 +389,7 @@ EIOX : Entrada I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="1680"/>
+      <pos x="880" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -405,7 +403,7 @@ EIOX : Entrada I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="1640"/>
+      <pos x="880" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -415,7 +413,7 @@ EIOX : Entrada I/O numero X</string>
           <string>OutputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="860" y="1640"/>
+      <pos x="960" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -425,7 +423,7 @@ EIOX : Entrada I/O numero X</string>
           <string>DatoSalida1</string>
         </entry>
       </elementAttributes>
-      <pos x="700" y="1380"/>
+      <pos x="800" y="600"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -435,7 +433,7 @@ EIOX : Entrada I/O numero X</string>
           <string>DatoSalida2</string>
         </entry>
       </elementAttributes>
-      <pos x="940" y="1380"/>
+      <pos x="1040" y="600"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -445,7 +443,7 @@ EIOX : Entrada I/O numero X</string>
           <string>DatoSalida2</string>
         </entry>
       </elementAttributes>
-      <pos x="1180" y="1380"/>
+      <pos x="1280" y="600"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -455,48 +453,37 @@ EIOX : Entrada I/O numero X</string>
           <string>DatoSalida14</string>
         </entry>
       </elementAttributes>
-      <pos x="1420" y="1380"/>
+      <pos x="1520" y="600"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>Registro de Salidas
-SOX : Salida I/O numero X</string>
+          <string>Registro de Salidas</string>
         </entry>
       </elementAttributes>
-      <pos x="600" y="1160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Clock</elementName>
-      <elementAttributes>
-        <entry>
-          <string>runRealTime</string>
-          <boolean>true</boolean>
-        </entry>
-      </elementAttributes>
-      <pos x="140" y="880"/>
+      <pos x="520" y="540"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>EnEntrada</string>
+          <string>EnableEntradaSalida</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="960"/>
+      <pos x="300" y="700"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
       <elementAttributes>
         <entry>
           <string>NetName</string>
-          <string>EnE</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="560" y="960"/>
+      <pos x="300" y="700"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
@@ -509,27 +496,12 @@ SOX : Salida I/O numero X</string>
       <pos x="20" y="-300"/>
     </visualElement>
     <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>EnSalida</string>
-        </entry>
-      </elementAttributes>
-      <pos x="620" y="1640"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>EnS</string>
-        </entry>
-      </elementAttributes>
-      <pos x="620" y="1640"/>
-    </visualElement>
-    <visualElement>
       <elementName>Driver</elementName>
+      <elementAttributes/>
+      <pos x="60" y="-60"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DriverInvSel</elementName>
       <elementAttributes>
         <entry>
           <string>rotation</string>
@@ -537,11 +509,6 @@ SOX : Salida I/O numero X</string>
         </entry>
       </elementAttributes>
       <pos x="60" y="-160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes/>
-      <pos x="60" y="-60"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -617,12 +584,12 @@ SOX : Salida I/O numero X</string>
           <string>SalConf1</string>
         </entry>
       </elementAttributes>
-      <pos x="900" y="260"/>
+      <pos x="840" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1120" y="100"/>
+      <pos x="1060" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -636,7 +603,7 @@ SOX : Salida I/O numero X</string>
           <string>CC</string>
         </entry>
       </elementAttributes>
-      <pos x="1120" y="160"/>
+      <pos x="1060" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -650,7 +617,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1120" y="140"/>
+      <pos x="1060" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -664,12 +631,12 @@ SOX : Salida I/O numero X</string>
           <string>SC</string>
         </entry>
       </elementAttributes>
-      <pos x="1120" y="100"/>
+      <pos x="1060" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1140" y="-20"/>
+      <pos x="1080" y="-160"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -679,7 +646,7 @@ SOX : Salida I/O numero X</string>
           <string>EnConfigIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="1080" y="-100"/>
+      <pos x="1020" y="-240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -693,7 +660,7 @@ SOX : Salida I/O numero X</string>
           <string>EnC</string>
         </entry>
       </elementAttributes>
-      <pos x="1160" y="20"/>
+      <pos x="1100" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -707,7 +674,7 @@ SOX : Salida I/O numero X</string>
           <string>SaConfigIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="1220" y="260"/>
+      <pos x="1160" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -717,12 +684,12 @@ SOX : Salida I/O numero X</string>
           <string>SalConf2</string>
         </entry>
       </elementAttributes>
-      <pos x="1240" y="260"/>
+      <pos x="1180" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1440" y="100"/>
+      <pos x="1380" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -736,7 +703,7 @@ SOX : Salida I/O numero X</string>
           <string>CC</string>
         </entry>
       </elementAttributes>
-      <pos x="1440" y="160"/>
+      <pos x="1380" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -750,7 +717,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1440" y="140"/>
+      <pos x="1380" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -764,12 +731,12 @@ SOX : Salida I/O numero X</string>
           <string>SC</string>
         </entry>
       </elementAttributes>
-      <pos x="1440" y="100"/>
+      <pos x="1380" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1460" y="-20"/>
+      <pos x="1400" y="-160"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -779,7 +746,7 @@ SOX : Salida I/O numero X</string>
           <string>EnConfigIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="1400" y="-100"/>
+      <pos x="1340" y="-240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -793,7 +760,7 @@ SOX : Salida I/O numero X</string>
           <string>EnC</string>
         </entry>
       </elementAttributes>
-      <pos x="1480" y="20"/>
+      <pos x="1420" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -807,7 +774,7 @@ SOX : Salida I/O numero X</string>
           <string>SaConfigIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="1540" y="260"/>
+      <pos x="1480" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -817,12 +784,12 @@ SOX : Salida I/O numero X</string>
           <string>SalConf3</string>
         </entry>
       </elementAttributes>
-      <pos x="1560" y="260"/>
+      <pos x="1500" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1740" y="100"/>
+      <pos x="1680" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -836,7 +803,7 @@ SOX : Salida I/O numero X</string>
           <string>CC</string>
         </entry>
       </elementAttributes>
-      <pos x="1740" y="160"/>
+      <pos x="1680" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -850,7 +817,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1740" y="140"/>
+      <pos x="1680" y="0"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -864,12 +831,12 @@ SOX : Salida I/O numero X</string>
           <string>SC</string>
         </entry>
       </elementAttributes>
-      <pos x="1740" y="100"/>
+      <pos x="1680" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1760" y="-20"/>
+      <pos x="1700" y="-160"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -879,7 +846,7 @@ SOX : Salida I/O numero X</string>
           <string>EnConfigIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="1700" y="-100"/>
+      <pos x="1640" y="-240"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -893,7 +860,7 @@ SOX : Salida I/O numero X</string>
           <string>EnC</string>
         </entry>
       </elementAttributes>
-      <pos x="1780" y="20"/>
+      <pos x="1720" y="-120"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -907,7 +874,7 @@ SOX : Salida I/O numero X</string>
           <string>SaConfigIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="1840" y="260"/>
+      <pos x="1780" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -917,12 +884,12 @@ SOX : Salida I/O numero X</string>
           <string>SalConf4</string>
         </entry>
       </elementAttributes>
-      <pos x="1860" y="260"/>
+      <pos x="1800" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1040" y="820"/>
+      <pos x="1180" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -936,7 +903,7 @@ SOX : Salida I/O numero X</string>
           <string>CE</string>
         </entry>
       </elementAttributes>
-      <pos x="1040" y="880"/>
+      <pos x="1180" y="360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -950,7 +917,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1040" y="860"/>
+      <pos x="1180" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -964,12 +931,12 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1040" y="820"/>
+      <pos x="1180" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="960" y="740"/>
+      <pos x="1100" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -980,10 +947,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>InputIO1</string>
+          <string>InputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="960" y="780"/>
+      <pos x="1100" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -994,10 +961,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnE</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="980" y="780"/>
+      <pos x="1120" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1011,12 +978,12 @@ SOX : Salida I/O numero X</string>
           <string>RegistroEntrada2</string>
         </entry>
       </elementAttributes>
-      <pos x="1120" y="1040"/>
+      <pos x="1260" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1280" y="820"/>
+      <pos x="1420" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1030,7 +997,7 @@ SOX : Salida I/O numero X</string>
           <string>CE</string>
         </entry>
       </elementAttributes>
-      <pos x="1280" y="880"/>
+      <pos x="1420" y="360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1044,7 +1011,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1280" y="860"/>
+      <pos x="1420" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1058,12 +1025,12 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1280" y="820"/>
+      <pos x="1420" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1200" y="740"/>
+      <pos x="1340" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1074,10 +1041,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>InputIO1</string>
+          <string>InputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="1200" y="780"/>
+      <pos x="1340" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1088,10 +1055,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnE</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="1220" y="780"/>
+      <pos x="1360" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1105,12 +1072,12 @@ SOX : Salida I/O numero X</string>
           <string>RegistroEntrada3</string>
         </entry>
       </elementAttributes>
-      <pos x="1360" y="1040"/>
+      <pos x="1500" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1520" y="820"/>
+      <pos x="1660" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1124,7 +1091,7 @@ SOX : Salida I/O numero X</string>
           <string>CE</string>
         </entry>
       </elementAttributes>
-      <pos x="1520" y="880"/>
+      <pos x="1660" y="360"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1138,7 +1105,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1520" y="860"/>
+      <pos x="1660" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1152,12 +1119,12 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1520" y="820"/>
+      <pos x="1660" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1440" y="740"/>
+      <pos x="1580" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1168,10 +1135,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>InputIO1</string>
+          <string>InputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="1440" y="780"/>
+      <pos x="1580" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1182,10 +1149,10 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnE</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="1460" y="780"/>
+      <pos x="1600" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1199,12 +1166,12 @@ SOX : Salida I/O numero X</string>
           <string>RegistroEntrada4</string>
         </entry>
       </elementAttributes>
-      <pos x="1600" y="1040"/>
+      <pos x="1740" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="760" y="1520"/>
+      <pos x="860" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1215,15 +1182,15 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnS</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="780" y="1560"/>
+      <pos x="880" y="780"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1020" y="1640"/>
+      <pos x="1120" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1237,7 +1204,7 @@ SOX : Salida I/O numero X</string>
           <string>CS</string>
         </entry>
       </elementAttributes>
-      <pos x="1020" y="1700"/>
+      <pos x="1120" y="920"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1251,7 +1218,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1020" y="1680"/>
+      <pos x="1120" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1265,7 +1232,7 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1020" y="1640"/>
+      <pos x="1120" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1275,12 +1242,12 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="1100" y="1640"/>
+      <pos x="1200" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1000" y="1520"/>
+      <pos x="1100" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1291,15 +1258,15 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnS</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="1020" y="1560"/>
+      <pos x="1120" y="780"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1260" y="1640"/>
+      <pos x="1360" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1313,7 +1280,7 @@ SOX : Salida I/O numero X</string>
           <string>CS</string>
         </entry>
       </elementAttributes>
-      <pos x="1260" y="1700"/>
+      <pos x="1360" y="920"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1327,7 +1294,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1260" y="1680"/>
+      <pos x="1360" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1341,7 +1308,7 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1260" y="1640"/>
+      <pos x="1360" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1351,12 +1318,12 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="1340" y="1640"/>
+      <pos x="1440" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1240" y="1520"/>
+      <pos x="1340" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1367,15 +1334,15 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnS</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="1260" y="1560"/>
+      <pos x="1360" y="780"/>
     </visualElement>
     <visualElement>
       <elementName>D_FF_AS</elementName>
       <elementAttributes/>
-      <pos x="1500" y="1640"/>
+      <pos x="1600" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1389,7 +1356,7 @@ SOX : Salida I/O numero X</string>
           <string>CS</string>
         </entry>
       </elementAttributes>
-      <pos x="1500" y="1700"/>
+      <pos x="1600" y="920"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1403,7 +1370,7 @@ SOX : Salida I/O numero X</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="1500" y="1680"/>
+      <pos x="1600" y="900"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1417,7 +1384,7 @@ SOX : Salida I/O numero X</string>
           <string>SE</string>
         </entry>
       </elementAttributes>
-      <pos x="1500" y="1640"/>
+      <pos x="1600" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1427,12 +1394,12 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="1580" y="1640"/>
+      <pos x="1680" y="860"/>
     </visualElement>
     <visualElement>
       <elementName>Multiplexer</elementName>
       <elementAttributes/>
-      <pos x="1480" y="1520"/>
+      <pos x="1580" y="740"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1443,25 +1410,25 @@ SOX : Salida I/O numero X</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>EnS</string>
+          <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="1500" y="1560"/>
+      <pos x="1600" y="780"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
+      <elementAttributes/>
+      <pos x="60" y="120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DriverInvSel</elementName>
       <elementAttributes>
         <entry>
           <string>rotation</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="0"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes/>
-      <pos x="60" y="100"/>
+      <pos x="60" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1475,7 +1442,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="0"/>
+      <pos x="-60" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1489,7 +1456,7 @@ SOX : Salida I/O numero X</string>
           <string>SalConf2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="60"/>
+      <pos x="-60" y="80"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1503,7 +1470,7 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="100"/>
+      <pos x="-60" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1517,7 +1484,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="0"/>
+      <pos x="180" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1527,22 +1494,22 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="100"/>
+      <pos x="180" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
+      <elementAttributes/>
+      <pos x="60" y="300"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DriverInvSel</elementName>
       <elementAttributes>
         <entry>
           <string>rotation</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes/>
-      <pos x="60" y="260"/>
+      <pos x="60" y="200"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1556,7 +1523,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="160"/>
+      <pos x="-60" y="200"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1570,7 +1537,7 @@ SOX : Salida I/O numero X</string>
           <string>SalConf3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="220"/>
+      <pos x="-60" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1584,7 +1551,7 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="260"/>
+      <pos x="-60" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1598,7 +1565,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="160"/>
+      <pos x="180" y="200"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1608,22 +1575,22 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="260"/>
+      <pos x="180" y="300"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
+      <elementAttributes/>
+      <pos x="60" y="480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DriverInvSel</elementName>
       <elementAttributes>
         <entry>
           <string>rotation</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="340"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes/>
-      <pos x="60" y="440"/>
+      <pos x="60" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1637,7 +1604,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="340"/>
+      <pos x="-60" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1651,7 +1618,7 @@ SOX : Salida I/O numero X</string>
           <string>SalConf4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="400"/>
+      <pos x="-60" y="440"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1665,7 +1632,7 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="440"/>
+      <pos x="-60" y="480"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1679,7 +1646,7 @@ SOX : Salida I/O numero X</string>
           <string>InputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="340"/>
+      <pos x="180" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1689,201 +1656,207 @@ SOX : Salida I/O numero X</string>
           <string>OutputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="440"/>
+      <pos x="180" y="480"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Clock</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Clock</string>
+        </entry>
+        <entry>
+          <string>runRealTime</string>
+          <boolean>true</boolean>
+        </entry>
+      </elementAttributes>
+      <pos x="300" y="640"/>
     </visualElement>
   </visualElements>
   <wires>
     <wire>
-      <p1 x="840" y="0"/>
-      <p2 x="860" y="0"/>
+      <p1 x="880" y="320"/>
+      <p2 x="920" y="320"/>
     </wire>
     <wire>
-      <p1 x="1180" y="0"/>
-      <p2 x="1200" y="0"/>
+      <p1 x="1140" y="320"/>
+      <p2 x="1180" y="320"/>
     </wire>
     <wire>
-      <p1 x="1500" y="0"/>
-      <p2 x="1520" y="0"/>
+      <p1 x="1380" y="320"/>
+      <p2 x="1420" y="320"/>
     </wire>
     <wire>
-      <p1 x="1800" y="0"/>
-      <p2 x="1820" y="0"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="0"/>
-      <p2 x="40" y="0"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="0"/>
-      <p2 x="180" y="0"/>
-    </wire>
-    <wire>
-      <p1 x="880" y="260"/>
-      <p2 x="900" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="1220" y="260"/>
-      <p2 x="1240" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="1540" y="260"/>
-      <p2 x="1560" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="1840" y="260"/>
-      <p2 x="1860" y="260"/>
+      <p1 x="1620" y="320"/>
+      <p2 x="1660" y="320"/>
     </wire>
     <wire>
       <p1 x="-60" y="260"/>
-      <p2 x="40" y="260"/>
+      <p2 x="60" y="260"/>
     </wire>
     <wire>
-      <p1 x="80" y="260"/>
-      <p2 x="180" y="260"/>
+      <p1 x="720" y="-200"/>
+      <p2 x="820" y="-200"/>
     </wire>
     <wire>
-      <p1 x="800" y="1540"/>
-      <p2 x="820" y="1540"/>
+      <p1 x="1060" y="-200"/>
+      <p2 x="1160" y="-200"/>
     </wire>
     <wire>
-      <p1 x="1040" y="1540"/>
-      <p2 x="1060" y="1540"/>
+      <p1 x="1380" y="-200"/>
+      <p2 x="1480" y="-200"/>
     </wire>
     <wire>
-      <p1 x="1280" y="1540"/>
-      <p2 x="1300" y="1540"/>
+      <p1 x="1680" y="-200"/>
+      <p2 x="1780" y="-200"/>
     </wire>
     <wire>
-      <p1 x="1520" y="1540"/>
-      <p2 x="1540" y="1540"/>
+      <p1 x="-60" y="200"/>
+      <p2 x="40" y="200"/>
     </wire>
     <wire>
-      <p1 x="740" y="840"/>
-      <p2 x="780" y="840"/>
+      <p1 x="80" y="200"/>
+      <p2 x="180" y="200"/>
     </wire>
     <wire>
-      <p1 x="1000" y="840"/>
-      <p2 x="1040" y="840"/>
+      <p1 x="840" y="840"/>
+      <p2 x="920" y="840"/>
     </wire>
     <wire>
-      <p1 x="1240" y="840"/>
-      <p2 x="1280" y="840"/>
+      <p1 x="1080" y="840"/>
+      <p2 x="1160" y="840"/>
     </wire>
     <wire>
-      <p1 x="1480" y="840"/>
-      <p2 x="1520" y="840"/>
+      <p1 x="1320" y="840"/>
+      <p2 x="1400" y="840"/>
     </wire>
     <wire>
-      <p1 x="720" y="80"/>
-      <p2 x="860" y="80"/>
+      <p1 x="1560" y="840"/>
+      <p2 x="1640" y="840"/>
     </wire>
     <wire>
-      <p1 x="1060" y="80"/>
-      <p2 x="1200" y="80"/>
+      <p1 x="780" y="-140"/>
+      <p2 x="800" y="-140"/>
     </wire>
     <wire>
-      <p1 x="1380" y="80"/>
-      <p2 x="1520" y="80"/>
+      <p1 x="1120" y="-140"/>
+      <p2 x="1140" y="-140"/>
     </wire>
     <wire>
-      <p1 x="1680" y="80"/>
-      <p2 x="1820" y="80"/>
+      <p1 x="1440" y="-140"/>
+      <p2 x="1460" y="-140"/>
     </wire>
     <wire>
-      <p1 x="-60" y="400"/>
-      <p2 x="60" y="400"/>
+      <p1 x="1740" y="-140"/>
+      <p2 x="1760" y="-140"/>
     </wire>
     <wire>
-      <p1 x="780" y="-20"/>
-      <p2 x="800" y="-20"/>
+      <p1 x="800" y="780"/>
+      <p2 x="860" y="780"/>
     </wire>
     <wire>
-      <p1 x="1120" y="-20"/>
-      <p2 x="1140" y="-20"/>
+      <p1 x="1040" y="780"/>
+      <p2 x="1100" y="780"/>
     </wire>
     <wire>
-      <p1 x="1440" y="-20"/>
-      <p2 x="1460" y="-20"/>
+      <p1 x="1280" y="780"/>
+      <p2 x="1340" y="780"/>
     </wire>
     <wire>
-      <p1 x="1740" y="-20"/>
-      <p2 x="1760" y="-20"/>
+      <p1 x="1520" y="780"/>
+      <p2 x="1580" y="780"/>
     </wire>
     <wire>
-      <p1 x="740" y="20"/>
-      <p2 x="800" y="20"/>
+      <p1 x="-60" y="80"/>
+      <p2 x="60" y="80"/>
     </wire>
     <wire>
-      <p1 x="1080" y="20"/>
-      <p2 x="1140" y="20"/>
+      <p1 x="840" y="720"/>
+      <p2 x="960" y="720"/>
     </wire>
     <wire>
-      <p1 x="1400" y="20"/>
-      <p2 x="1460" y="20"/>
+      <p1 x="1080" y="720"/>
+      <p2 x="1200" y="720"/>
     </wire>
     <wire>
-      <p1 x="1700" y="20"/>
-      <p2 x="1760" y="20"/>
+      <p1 x="1320" y="720"/>
+      <p2 x="1440" y="720"/>
     </wire>
     <wire>
-      <p1 x="740" y="1620"/>
-      <p2 x="820" y="1620"/>
+      <p1 x="1560" y="720"/>
+      <p2 x="1680" y="720"/>
     </wire>
     <wire>
-      <p1 x="980" y="1620"/>
-      <p2 x="1060" y="1620"/>
+      <p1 x="660" y="-20"/>
+      <p2 x="720" y="-20"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1620"/>
-      <p2 x="1300" y="1620"/>
+      <p1 x="1000" y="-20"/>
+      <p2 x="1060" y="-20"/>
     </wire>
     <wire>
-      <p1 x="1460" y="1620"/>
-      <p2 x="1540" y="1620"/>
+      <p1 x="1320" y="-20"/>
+      <p2 x="1380" y="-20"/>
     </wire>
     <wire>
-      <p1 x="-60" y="340"/>
-      <p2 x="40" y="340"/>
+      <p1 x="1620" y="-20"/>
+      <p2 x="1680" y="-20"/>
     </wire>
     <wire>
-      <p1 x="80" y="340"/>
-      <p2 x="180" y="340"/>
+      <p1 x="-60" y="20"/>
+      <p2 x="40" y="20"/>
     </wire>
     <wire>
-      <p1 x="700" y="1560"/>
-      <p2 x="760" y="1560"/>
+      <p1 x="80" y="20"/>
+      <p2 x="180" y="20"/>
     </wire>
     <wire>
-      <p1 x="940" y="1560"/>
-      <p2 x="1000" y="1560"/>
+      <p1 x="800" y="220"/>
+      <p2 x="840" y="220"/>
     </wire>
     <wire>
-      <p1 x="1180" y="1560"/>
-      <p2 x="1240" y="1560"/>
+      <p1 x="1060" y="220"/>
+      <p2 x="1100" y="220"/>
     </wire>
     <wire>
-      <p1 x="1420" y="1560"/>
-      <p2 x="1480" y="1560"/>
+      <p1 x="1300" y="220"/>
+      <p2 x="1340" y="220"/>
     </wire>
     <wire>
-      <p1 x="740" y="1500"/>
-      <p2 x="860" y="1500"/>
+      <p1 x="1540" y="220"/>
+      <p2 x="1580" y="220"/>
     </wire>
     <wire>
-      <p1 x="980" y="1500"/>
-      <p2 x="1100" y="1500"/>
+      <p1 x="940" y="860"/>
+      <p2 x="960" y="860"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1500"/>
-      <p2 x="1340" y="1500"/>
+      <p1 x="1180" y="860"/>
+      <p2 x="1200" y="860"/>
     </wire>
     <wire>
-      <p1 x="1460" y="1500"/>
-      <p2 x="1580" y="1500"/>
+      <p1 x="1420" y="860"/>
+      <p2 x="1440" y="860"/>
     </wire>
     <wire>
-      <p1 x="-60" y="220"/>
-      <p2 x="60" y="220"/>
+      <p1 x="1660" y="860"/>
+      <p2 x="1680" y="860"/>
+    </wire>
+    <wire>
+      <p1 x="720" y="-160"/>
+      <p2 x="740" y="-160"/>
+    </wire>
+    <wire>
+      <p1 x="1060" y="-160"/>
+      <p2 x="1080" y="-160"/>
+    </wire>
+    <wire>
+      <p1 x="1380" y="-160"/>
+      <p2 x="1400" y="-160"/>
+    </wire>
+    <wire>
+      <p1 x="1680" y="-160"/>
+      <p2 x="1700" y="-160"/>
     </wire>
     <wire>
       <p1 x="-60" y="-160"/>
@@ -1894,128 +1867,180 @@ SOX : Salida I/O numero X</string>
       <p2 x="180" y="-160"/>
     </wire>
     <wire>
-      <p1 x="-60" y="160"/>
-      <p2 x="40" y="160"/>
+      <p1 x="-60" y="480"/>
+      <p2 x="40" y="480"/>
     </wire>
     <wire>
-      <p1 x="80" y="160"/>
-      <p2 x="180" y="160"/>
+      <p1 x="80" y="480"/>
+      <p2 x="180" y="480"/>
     </wire>
     <wire>
       <p1 x="-60" y="-100"/>
       <p2 x="60" y="-100"/>
     </wire>
     <wire>
-      <p1 x="840" y="100"/>
-      <p2 x="880" y="100"/>
+      <p1 x="840" y="740"/>
+      <p2 x="860" y="740"/>
     </wire>
     <wire>
-      <p1 x="1180" y="100"/>
-      <p2 x="1220" y="100"/>
+      <p1 x="1080" y="740"/>
+      <p2 x="1100" y="740"/>
     </wire>
     <wire>
-      <p1 x="1500" y="100"/>
-      <p2 x="1540" y="100"/>
+      <p1 x="1320" y="740"/>
+      <p2 x="1340" y="740"/>
     </wire>
     <wire>
-      <p1 x="1800" y="100"/>
-      <p2 x="1840" y="100"/>
+      <p1 x="1560" y="740"/>
+      <p2 x="1580" y="740"/>
     </wire>
     <wire>
-      <p1 x="-60" y="100"/>
-      <p2 x="40" y="100"/>
+      <p1 x="780" y="-40"/>
+      <p2 x="820" y="-40"/>
     </wire>
     <wire>
-      <p1 x="80" y="100"/>
-      <p2 x="180" y="100"/>
+      <p1 x="1120" y="-40"/>
+      <p2 x="1160" y="-40"/>
     </wire>
     <wire>
-      <p1 x="660" y="740"/>
-      <p2 x="700" y="740"/>
+      <p1 x="1440" y="-40"/>
+      <p2 x="1480" y="-40"/>
     </wire>
     <wire>
-      <p1 x="920" y="740"/>
-      <p2 x="960" y="740"/>
+      <p1 x="1740" y="-40"/>
+      <p2 x="1780" y="-40"/>
     </wire>
     <wire>
-      <p1 x="1160" y="740"/>
-      <p2 x="1200" y="740"/>
+      <p1 x="1240" y="300"/>
+      <p2 x="1260" y="300"/>
     </wire>
     <wire>
-      <p1 x="1400" y="740"/>
-      <p2 x="1440" y="740"/>
+      <p1 x="1480" y="300"/>
+      <p2 x="1500" y="300"/>
     </wire>
     <wire>
-      <p1 x="840" y="1640"/>
-      <p2 x="860" y="1640"/>
+      <p1 x="1720" y="300"/>
+      <p2 x="1740" y="300"/>
     </wire>
     <wire>
-      <p1 x="1080" y="1640"/>
-      <p2 x="1100" y="1640"/>
+      <p1 x="980" y="300"/>
+      <p2 x="1000" y="300"/>
     </wire>
     <wire>
-      <p1 x="1320" y="1640"/>
-      <p2 x="1340" y="1640"/>
+      <p1 x="-60" y="300"/>
+      <p2 x="40" y="300"/>
     </wire>
     <wire>
-      <p1 x="1560" y="1640"/>
-      <p2 x="1580" y="1640"/>
+      <p1 x="80" y="300"/>
+      <p2 x="180" y="300"/>
     </wire>
     <wire>
-      <p1 x="740" y="1520"/>
-      <p2 x="760" y="1520"/>
+      <p1 x="840" y="880"/>
+      <p2 x="880" y="880"/>
     </wire>
     <wire>
-      <p1 x="980" y="1520"/>
-      <p2 x="1000" y="1520"/>
+      <p1 x="1080" y="880"/>
+      <p2 x="1120" y="880"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1520"/>
-      <p2 x="1240" y="1520"/>
+      <p1 x="1320" y="880"/>
+      <p2 x="1360" y="880"/>
     </wire>
     <wire>
-      <p1 x="1460" y="1520"/>
-      <p2 x="1480" y="1520"/>
+      <p1 x="1560" y="880"/>
+      <p2 x="1600" y="880"/>
     </wire>
     <wire>
-      <p1 x="1100" y="820"/>
-      <p2 x="1120" y="820"/>
+      <p1 x="800" y="180"/>
+      <p2 x="980" y="180"/>
     </wire>
     <wire>
-      <p1 x="1340" y="820"/>
-      <p2 x="1360" y="820"/>
+      <p1 x="1060" y="180"/>
+      <p2 x="1240" y="180"/>
     </wire>
     <wire>
-      <p1 x="1580" y="820"/>
-      <p2 x="1600" y="820"/>
+      <p1 x="1300" y="180"/>
+      <p2 x="1480" y="180"/>
     </wire>
     <wire>
-      <p1 x="840" y="820"/>
-      <p2 x="860" y="820"/>
+      <p1 x="1540" y="180"/>
+      <p2 x="1720" y="180"/>
     </wire>
     <wire>
-      <p1 x="720" y="120"/>
-      <p2 x="780" y="120"/>
+      <p1 x="680" y="-120"/>
+      <p2 x="740" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1060" y="120"/>
-      <p2 x="1120" y="120"/>
+      <p1 x="1020" y="-120"/>
+      <p2 x="1080" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1380" y="120"/>
-      <p2 x="1440" y="120"/>
+      <p1 x="1340" y="-120"/>
+      <p2 x="1400" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1680" y="120"/>
-      <p2 x="1740" y="120"/>
+      <p1 x="1640" y="-120"/>
+      <p2 x="1700" y="-120"/>
+    </wire>
+    <wire>
+      <p1 x="900" y="760"/>
+      <p2 x="920" y="760"/>
+    </wire>
+    <wire>
+      <p1 x="1140" y="760"/>
+      <p2 x="1160" y="760"/>
+    </wire>
+    <wire>
+      <p1 x="1380" y="760"/>
+      <p2 x="1400" y="760"/>
+    </wire>
+    <wire>
+      <p1 x="1620" y="760"/>
+      <p2 x="1640" y="760"/>
     </wire>
     <wire>
       <p1 x="-60" y="440"/>
-      <p2 x="40" y="440"/>
+      <p2 x="60" y="440"/>
     </wire>
     <wire>
-      <p1 x="80" y="440"/>
-      <p2 x="180" y="440"/>
+      <p1 x="820" y="120"/>
+      <p2 x="840" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="1160" y="120"/>
+      <p2 x="1180" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="1480" y="120"/>
+      <p2 x="1500" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="1780" y="120"/>
+      <p2 x="1800" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="120"/>
+      <p2 x="40" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="120"/>
+      <p2 x="180" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="660" y="-60"/>
+      <p2 x="800" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="1000" y="-60"/>
+      <p2 x="1140" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="1320" y="-60"/>
+      <p2 x="1460" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="1620" y="-60"/>
+      <p2 x="1760" y="-60"/>
     </wire>
     <wire>
       <p1 x="-60" y="-60"/>
@@ -2026,328 +2051,284 @@ SOX : Salida I/O numero X</string>
       <p2 x="180" y="-60"/>
     </wire>
     <wire>
-      <p1 x="780" y="-60"/>
-      <p2 x="880" y="-60"/>
+      <p1 x="-60" y="380"/>
+      <p2 x="40" y="380"/>
     </wire>
     <wire>
-      <p1 x="1120" y="-60"/>
-      <p2 x="1220" y="-60"/>
+      <p1 x="80" y="380"/>
+      <p2 x="180" y="380"/>
     </wire>
     <wire>
-      <p1 x="1440" y="-60"/>
-      <p2 x="1540" y="-60"/>
+      <p1 x="960" y="720"/>
+      <p2 x="960" y="860"/>
     </wire>
     <wire>
-      <p1 x="1740" y="-60"/>
-      <p2 x="1840" y="-60"/>
+      <p1 x="1280" y="600"/>
+      <p2 x="1280" y="780"/>
     </wire>
     <wire>
-      <p1 x="660" y="700"/>
-      <p2 x="840" y="700"/>
+      <p1 x="1540" y="180"/>
+      <p2 x="1540" y="220"/>
     </wire>
     <wire>
-      <p1 x="920" y="700"/>
-      <p2 x="1100" y="700"/>
+      <p1 x="840" y="720"/>
+      <p2 x="840" y="740"/>
     </wire>
     <wire>
-      <p1 x="1160" y="700"/>
-      <p2 x="1340" y="700"/>
+      <p1 x="840" y="840"/>
+      <p2 x="840" y="880"/>
     </wire>
     <wire>
-      <p1 x="1400" y="700"/>
-      <p2 x="1580" y="700"/>
+      <p1 x="1160" y="760"/>
+      <p2 x="1160" y="840"/>
     </wire>
     <wire>
-      <p1 x="740" y="1660"/>
-      <p2 x="780" y="1660"/>
+      <p1 x="1160" y="-200"/>
+      <p2 x="1160" y="-40"/>
     </wire>
     <wire>
-      <p1 x="980" y="1660"/>
-      <p2 x="1020" y="1660"/>
+      <p1 x="1160" y="-40"/>
+      <p2 x="1160" y="120"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1660"/>
-      <p2 x="1260" y="1660"/>
+      <p1 x="1480" y="-200"/>
+      <p2 x="1480" y="-40"/>
     </wire>
     <wire>
-      <p1 x="1460" y="1660"/>
-      <p2 x="1500" y="1660"/>
+      <p1 x="1480" y="180"/>
+      <p2 x="1480" y="300"/>
     </wire>
     <wire>
-      <p1 x="-60" y="60"/>
-      <p2 x="60" y="60"/>
+      <p1 x="1480" y="-40"/>
+      <p2 x="1480" y="120"/>
     </wire>
     <wire>
-      <p1 x="1600" y="820"/>
-      <p2 x="1600" y="1040"/>
+      <p1 x="1740" y="300"/>
+      <p2 x="1740" y="520"/>
     </wire>
     <wire>
-      <p1 x="1220" y="-60"/>
-      <p2 x="1220" y="100"/>
+      <p1 x="1680" y="720"/>
+      <p2 x="1680" y="860"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1500"/>
-      <p2 x="1220" y="1520"/>
+      <p1 x="1680" y="-200"/>
+      <p2 x="1680" y="-160"/>
     </wire>
     <wire>
-      <p1 x="1220" y="1620"/>
-      <p2 x="1220" y="1660"/>
+      <p1 x="1040" y="600"/>
+      <p2 x="1040" y="780"/>
     </wire>
     <wire>
-      <p1 x="1220" y="100"/>
-      <p2 x="1220" y="260"/>
+      <p1 x="720" y="-200"/>
+      <p2 x="720" y="-160"/>
     </wire>
     <wire>
-      <p1 x="1540" y="-60"/>
-      <p2 x="1540" y="100"/>
+      <p1 x="660" y="-60"/>
+      <p2 x="660" y="-20"/>
     </wire>
     <wire>
-      <p1 x="1540" y="1540"/>
-      <p2 x="1540" y="1620"/>
+      <p1 x="1620" y="-60"/>
+      <p2 x="1620" y="-20"/>
     </wire>
     <wire>
-      <p1 x="1540" y="100"/>
-      <p2 x="1540" y="260"/>
+      <p1 x="1620" y="240"/>
+      <p2 x="1620" y="320"/>
     </wire>
     <wire>
-      <p1 x="840" y="700"/>
-      <p2 x="840" y="820"/>
+      <p1 x="1300" y="180"/>
+      <p2 x="1300" y="220"/>
     </wire>
     <wire>
-      <p1 x="1160" y="700"/>
-      <p2 x="1160" y="740"/>
+      <p1 x="980" y="180"/>
+      <p2 x="980" y="300"/>
     </wire>
     <wire>
-      <p1 x="1480" y="760"/>
-      <p2 x="1480" y="840"/>
+      <p1 x="1560" y="720"/>
+      <p2 x="1560" y="740"/>
     </wire>
     <wire>
-      <p1 x="780" y="-60"/>
-      <p2 x="780" y="-20"/>
+      <p1 x="1560" y="840"/>
+      <p2 x="1560" y="880"/>
     </wire>
     <wire>
-      <p1 x="1740" y="-60"/>
-      <p2 x="1740" y="-20"/>
+      <p1 x="920" y="760"/>
+      <p2 x="920" y="840"/>
     </wire>
     <wire>
-      <p1 x="1100" y="700"/>
-      <p2 x="1100" y="820"/>
+      <p1 x="1240" y="180"/>
+      <p2 x="1240" y="300"/>
     </wire>
     <wire>
-      <p1 x="1100" y="1500"/>
-      <p2 x="1100" y="1640"/>
+      <p1 x="1500" y="300"/>
+      <p2 x="1500" y="520"/>
     </wire>
     <wire>
-      <p1 x="1420" y="1380"/>
-      <p2 x="1420" y="1560"/>
+      <p1 x="800" y="600"/>
+      <p2 x="800" y="780"/>
     </wire>
     <wire>
-      <p1 x="720" y="80"/>
-      <p2 x="720" y="120"/>
+      <p1 x="800" y="-140"/>
+      <p2 x="800" y="-60"/>
     </wire>
     <wire>
-      <p1 x="1680" y="80"/>
-      <p2 x="1680" y="120"/>
+      <p1 x="800" y="180"/>
+      <p2 x="800" y="220"/>
     </wire>
     <wire>
-      <p1 x="1360" y="820"/>
-      <p2 x="1360" y="1040"/>
+      <p1 x="1440" y="720"/>
+      <p2 x="1440" y="860"/>
     </wire>
     <wire>
-      <p1 x="660" y="700"/>
-      <p2 x="660" y="740"/>
+      <p1 x="1760" y="-140"/>
+      <p2 x="1760" y="-60"/>
     </wire>
     <wire>
-      <p1 x="980" y="1500"/>
-      <p2 x="980" y="1520"/>
+      <p1 x="1060" y="-200"/>
+      <p2 x="1060" y="-160"/>
     </wire>
     <wire>
-      <p1 x="980" y="1620"/>
-      <p2 x="980" y="1660"/>
+      <p1 x="1060" y="180"/>
+      <p2 x="1060" y="220"/>
     </wire>
     <wire>
-      <p1 x="1300" y="1540"/>
-      <p2 x="1300" y="1620"/>
+      <p1 x="1380" y="-200"/>
+      <p2 x="1380" y="-160"/>
     </wire>
     <wire>
-      <p1 x="920" y="700"/>
-      <p2 x="920" y="740"/>
+      <p1 x="1380" y="240"/>
+      <p2 x="1380" y="320"/>
     </wire>
     <wire>
-      <p1 x="1240" y="760"/>
-      <p2 x="1240" y="840"/>
+      <p1 x="1320" y="720"/>
+      <p2 x="1320" y="740"/>
     </wire>
     <wire>
-      <p1 x="860" y="0"/>
-      <p2 x="860" y="80"/>
+      <p1 x="1320" y="840"/>
+      <p2 x="1320" y="880"/>
     </wire>
     <wire>
-      <p1 x="860" y="1500"/>
-      <p2 x="860" y="1640"/>
+      <p1 x="1320" y="-60"/>
+      <p2 x="1320" y="-20"/>
     </wire>
     <wire>
-      <p1 x="860" y="820"/>
-      <p2 x="860" y="1040"/>
+      <p1 x="1640" y="760"/>
+      <p2 x="1640" y="840"/>
     </wire>
     <wire>
-      <p1 x="1820" y="0"/>
-      <p2 x="1820" y="80"/>
+      <p1 x="1640" y="-240"/>
+      <p2 x="1640" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1180" y="1380"/>
-      <p2 x="1180" y="1560"/>
+      <p1 x="1000" y="300"/>
+      <p2 x="1000" y="520"/>
     </wire>
     <wire>
-      <p1 x="1120" y="-60"/>
-      <p2 x="1120" y="-20"/>
+      <p1 x="1000" y="-60"/>
+      <p2 x="1000" y="-20"/>
     </wire>
     <wire>
-      <p1 x="1120" y="820"/>
-      <p2 x="1120" y="1040"/>
+      <p1 x="680" y="-240"/>
+      <p2 x="680" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1440" y="-60"/>
-      <p2 x="1440" y="-20"/>
+      <p1 x="1260" y="300"/>
+      <p2 x="1260" y="520"/>
     </wire>
     <wire>
-      <p1 x="740" y="-100"/>
-      <p2 x="740" y="20"/>
+      <p1 x="1200" y="720"/>
+      <p2 x="1200" y="860"/>
     </wire>
     <wire>
-      <p1 x="740" y="760"/>
-      <p2 x="740" y="840"/>
+      <p1 x="1520" y="600"/>
+      <p2 x="1520" y="780"/>
     </wire>
     <wire>
-      <p1 x="740" y="1500"/>
-      <p2 x="740" y="1520"/>
+      <p1 x="880" y="240"/>
+      <p2 x="880" y="320"/>
     </wire>
     <wire>
-      <p1 x="740" y="1620"/>
-      <p2 x="740" y="1660"/>
+      <p1 x="1140" y="240"/>
+      <p2 x="1140" y="320"/>
     </wire>
     <wire>
-      <p1 x="1060" y="80"/>
-      <p2 x="1060" y="120"/>
+      <p1 x="1140" y="-140"/>
+      <p2 x="1140" y="-60"/>
     </wire>
     <wire>
-      <p1 x="1060" y="1540"/>
-      <p2 x="1060" y="1620"/>
+      <p1 x="1460" y="-140"/>
+      <p2 x="1460" y="-60"/>
     </wire>
     <wire>
-      <p1 x="1380" y="80"/>
-      <p2 x="1380" y="120"/>
+      <p1 x="820" y="-200"/>
+      <p2 x="820" y="-40"/>
     </wire>
     <wire>
-      <p1 x="1700" y="-100"/>
-      <p2 x="1700" y="20"/>
+      <p1 x="820" y="-40"/>
+      <p2 x="820" y="120"/>
     </wire>
     <wire>
-      <p1 x="1000" y="760"/>
-      <p2 x="1000" y="840"/>
+      <p1 x="1780" y="-200"/>
+      <p2 x="1780" y="-40"/>
     </wire>
     <wire>
-      <p1 x="1580" y="700"/>
-      <p2 x="1580" y="820"/>
+      <p1 x="1780" y="-40"/>
+      <p2 x="1780" y="120"/>
     </wire>
     <wire>
-      <p1 x="1580" y="1500"/>
-      <p2 x="1580" y="1640"/>
+      <p1 x="1080" y="720"/>
+      <p2 x="1080" y="740"/>
     </wire>
     <wire>
-      <p1 x="940" y="1380"/>
-      <p2 x="940" y="1560"/>
+      <p1 x="1080" y="840"/>
+      <p2 x="1080" y="880"/>
     </wire>
     <wire>
-      <p1 x="880" y="-60"/>
-      <p2 x="880" y="100"/>
+      <p1 x="1400" y="760"/>
+      <p2 x="1400" y="840"/>
     </wire>
     <wire>
-      <p1 x="880" y="100"/>
-      <p2 x="880" y="260"/>
+      <p1 x="1720" y="180"/>
+      <p2 x="1720" y="300"/>
     </wire>
     <wire>
-      <p1 x="1200" y="0"/>
-      <p2 x="1200" y="80"/>
+      <p1 x="1020" y="-240"/>
+      <p2 x="1020" y="-120"/>
     </wire>
     <wire>
-      <p1 x="1520" y="0"/>
-      <p2 x="1520" y="80"/>
-    </wire>
-    <wire>
-      <p1 x="1840" y="-60"/>
-      <p2 x="1840" y="100"/>
-    </wire>
-    <wire>
-      <p1 x="1840" y="100"/>
-      <p2 x="1840" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="820" y="1540"/>
-      <p2 x="820" y="1620"/>
-    </wire>
-    <wire>
-      <p1 x="1460" y="1500"/>
-      <p2 x="1460" y="1520"/>
-    </wire>
-    <wire>
-      <p1 x="1460" y="1620"/>
-      <p2 x="1460" y="1660"/>
-    </wire>
-    <wire>
-      <p1 x="1080" y="-100"/>
-      <p2 x="1080" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="1400" y="-100"/>
-      <p2 x="1400" y="20"/>
-    </wire>
-    <wire>
-      <p1 x="1400" y="700"/>
-      <p2 x="1400" y="740"/>
+      <p1 x="1340" y="-240"/>
+      <p2 x="1340" y="-120"/>
     </wire>
     <wire>
       <p1 x="60" y="-140"/>
       <p2 x="60" y="-100"/>
     </wire>
     <wire>
-      <p1 x="60" y="20"/>
-      <p2 x="60" y="60"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="180"/>
-      <p2 x="60" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="360"/>
-      <p2 x="60" y="400"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="220"/>
-      <p2 x="60" y="240"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="60"/>
+      <p1 x="60" y="40"/>
       <p2 x="60" y="80"/>
     </wire>
     <wire>
+      <p1 x="60" y="220"/>
+      <p2 x="60" y="260"/>
+    </wire>
+    <wire>
       <p1 x="60" y="400"/>
-      <p2 x="60" y="420"/>
+      <p2 x="60" y="440"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="260"/>
+      <p2 x="60" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="80"/>
+      <p2 x="60" y="100"/>
     </wire>
     <wire>
       <p1 x="60" y="-100"/>
       <p2 x="60" y="-80"/>
     </wire>
     <wire>
-      <p1 x="1340" y="700"/>
-      <p2 x="1340" y="820"/>
-    </wire>
-    <wire>
-      <p1 x="1340" y="1500"/>
-      <p2 x="1340" y="1640"/>
-    </wire>
-    <wire>
-      <p1 x="700" y="1380"/>
-      <p2 x="700" y="1560"/>
+      <p1 x="60" y="440"/>
+      <p2 x="60" y="460"/>
     </wire>
   </wires>
   <measurementOrdering/>
