@@ -490,10 +490,11 @@ Entrada 0, Salida 1</string>
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>Tri-State Buffer</string>
+          <string>Tri-State Buffer
+Entradas y Salidas del I/O</string>
         </entry>
       </elementAttributes>
-      <pos x="20" y="-300"/>
+      <pos x="-80" y="-260"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
@@ -1662,12 +1663,12 @@ Entrada 0, Salida 1</string>
       <elementName>Clock</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>Clock</string>
-        </entry>
-        <entry>
           <string>runRealTime</string>
           <boolean>true</boolean>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Clock</string>
         </entry>
       </elementAttributes>
       <pos x="300" y="640"/>
