@@ -56,7 +56,7 @@
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="300" y="640"/>
+      <pos x="380" y="640"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -473,7 +473,7 @@ Entrada 0, Salida 1</string>
           <string>EnableEntradaSalida</string>
         </entry>
       </elementAttributes>
-      <pos x="300" y="700"/>
+      <pos x="380" y="700"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -483,7 +483,7 @@ Entrada 0, Salida 1</string>
           <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="300" y="700"/>
+      <pos x="380" y="700"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
@@ -491,15 +491,17 @@ Entrada 0, Salida 1</string>
         <entry>
           <string>Description</string>
           <string>Tri-State Buffer
-Entradas y Salidas del I/O</string>
+Entradas y Salidas del I/O
+Parte que se &quot;comunica&quot; con el exterior
+recibiendo o entregando datos.</string>
         </entry>
       </elementAttributes>
-      <pos x="-80" y="-260"/>
+      <pos x="-80" y="-340"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="-60"/>
+      <pos x="60" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>DriverInvSel</elementName>
@@ -551,7 +553,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="-60"/>
+      <pos x="-60" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -575,7 +577,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="-60"/>
+      <pos x="180" y="-40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1419,7 +1421,7 @@ Entradas y Salidas del I/O</string>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="120"/>
+      <pos x="60" y="160"/>
     </visualElement>
     <visualElement>
       <elementName>DriverInvSel</elementName>
@@ -1429,7 +1431,7 @@ Entradas y Salidas del I/O</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="20"/>
+      <pos x="60" y="40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1443,7 +1445,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="20"/>
+      <pos x="-60" y="40"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1457,7 +1459,7 @@ Entradas y Salidas del I/O</string>
           <string>SalConf2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="80"/>
+      <pos x="-60" y="100"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1471,7 +1473,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="120"/>
+      <pos x="-60" y="160"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1485,7 +1487,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="20"/>
+      <pos x="180" y="40"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1495,12 +1497,12 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO2</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="120"/>
+      <pos x="180" y="160"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="300"/>
+      <pos x="60" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>DriverInvSel</elementName>
@@ -1510,7 +1512,7 @@ Entradas y Salidas del I/O</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="200"/>
+      <pos x="60" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1524,7 +1526,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="200"/>
+      <pos x="-60" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1538,7 +1540,7 @@ Entradas y Salidas del I/O</string>
           <string>SalConf3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="260"/>
+      <pos x="-60" y="280"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1552,7 +1554,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="300"/>
+      <pos x="-60" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1566,7 +1568,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="200"/>
+      <pos x="180" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1576,12 +1578,12 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO3</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="300"/>
+      <pos x="180" y="340"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="480"/>
+      <pos x="60" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>DriverInvSel</elementName>
@@ -1591,7 +1593,7 @@ Entradas y Salidas del I/O</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="380"/>
+      <pos x="60" y="400"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1605,7 +1607,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="380"/>
+      <pos x="-60" y="400"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1619,7 +1621,7 @@ Entradas y Salidas del I/O</string>
           <string>SalConf4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="440"/>
+      <pos x="-60" y="460"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1633,7 +1635,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="480"/>
+      <pos x="-60" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -1647,7 +1649,7 @@ Entradas y Salidas del I/O</string>
           <string>InputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="380"/>
+      <pos x="180" y="400"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -1657,7 +1659,7 @@ Entradas y Salidas del I/O</string>
           <string>OutputIO4</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="480"/>
+      <pos x="180" y="520"/>
     </visualElement>
     <visualElement>
       <elementName>Clock</elementName>
@@ -1670,8 +1672,12 @@ Entradas y Salidas del I/O</string>
           <string>Label</string>
           <string>Clock</string>
         </entry>
+        <entry>
+          <string>Frequency</string>
+          <int>10</int>
+        </entry>
       </elementAttributes>
-      <pos x="300" y="640"/>
+      <pos x="380" y="640"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -1692,10 +1698,6 @@ Entradas y Salidas del I/O</string>
       <p2 x="1660" y="320"/>
     </wire>
     <wire>
-      <p1 x="-60" y="260"/>
-      <p2 x="60" y="260"/>
-    </wire>
-    <wire>
       <p1 x="720" y="-200"/>
       <p2 x="820" y="-200"/>
     </wire>
@@ -1712,14 +1714,6 @@ Entradas y Salidas del I/O</string>
       <p2 x="1780" y="-200"/>
     </wire>
     <wire>
-      <p1 x="-60" y="200"/>
-      <p2 x="40" y="200"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="200"/>
-      <p2 x="180" y="200"/>
-    </wire>
-    <wire>
       <p1 x="840" y="840"/>
       <p2 x="920" y="840"/>
     </wire>
@@ -1734,6 +1728,14 @@ Entradas y Salidas del I/O</string>
     <wire>
       <p1 x="1560" y="840"/>
       <p2 x="1640" y="840"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="520"/>
+      <p2 x="40" y="520"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="520"/>
+      <p2 x="180" y="520"/>
     </wire>
     <wire>
       <p1 x="780" y="-140"/>
@@ -1768,8 +1770,8 @@ Entradas y Salidas del I/O</string>
       <p2 x="1580" y="780"/>
     </wire>
     <wire>
-      <p1 x="-60" y="80"/>
-      <p2 x="60" y="80"/>
+      <p1 x="-60" y="460"/>
+      <p2 x="60" y="460"/>
     </wire>
     <wire>
       <p1 x="840" y="720"/>
@@ -1788,6 +1790,14 @@ Entradas y Salidas del I/O</string>
       <p2 x="1680" y="720"/>
     </wire>
     <wire>
+      <p1 x="-60" y="400"/>
+      <p2 x="40" y="400"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="400"/>
+      <p2 x="180" y="400"/>
+    </wire>
+    <wire>
       <p1 x="660" y="-20"/>
       <p2 x="720" y="-20"/>
     </wire>
@@ -1804,12 +1814,24 @@ Entradas y Salidas del I/O</string>
       <p2 x="1680" y="-20"/>
     </wire>
     <wire>
-      <p1 x="-60" y="20"/>
-      <p2 x="40" y="20"/>
+      <p1 x="-60" y="340"/>
+      <p2 x="40" y="340"/>
     </wire>
     <wire>
-      <p1 x="80" y="20"/>
-      <p2 x="180" y="20"/>
+      <p1 x="80" y="340"/>
+      <p2 x="180" y="340"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="280"/>
+      <p2 x="60" y="280"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="220"/>
+      <p2 x="40" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="220"/>
+      <p2 x="180" y="220"/>
     </wire>
     <wire>
       <p1 x="800" y="220"/>
@@ -1868,16 +1890,20 @@ Entradas y Salidas del I/O</string>
       <p2 x="180" y="-160"/>
     </wire>
     <wire>
-      <p1 x="-60" y="480"/>
-      <p2 x="40" y="480"/>
+      <p1 x="-60" y="160"/>
+      <p2 x="40" y="160"/>
     </wire>
     <wire>
-      <p1 x="80" y="480"/>
-      <p2 x="180" y="480"/>
+      <p1 x="80" y="160"/>
+      <p2 x="180" y="160"/>
     </wire>
     <wire>
       <p1 x="-60" y="-100"/>
       <p2 x="60" y="-100"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="100"/>
+      <p2 x="60" y="100"/>
     </wire>
     <wire>
       <p1 x="840" y="740"/>
@@ -1912,6 +1938,22 @@ Entradas y Salidas del I/O</string>
       <p2 x="1780" y="-40"/>
     </wire>
     <wire>
+      <p1 x="-60" y="-40"/>
+      <p2 x="40" y="-40"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="-40"/>
+      <p2 x="180" y="-40"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="40"/>
+      <p2 x="40" y="40"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="40"/>
+      <p2 x="180" y="40"/>
+    </wire>
+    <wire>
       <p1 x="1240" y="300"/>
       <p2 x="1260" y="300"/>
     </wire>
@@ -1926,14 +1968,6 @@ Entradas y Salidas del I/O</string>
     <wire>
       <p1 x="980" y="300"/>
       <p2 x="1000" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="300"/>
-      <p2 x="40" y="300"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="300"/>
-      <p2 x="180" y="300"/>
     </wire>
     <wire>
       <p1 x="840" y="880"/>
@@ -2000,10 +2034,6 @@ Entradas y Salidas del I/O</string>
       <p2 x="1640" y="760"/>
     </wire>
     <wire>
-      <p1 x="-60" y="440"/>
-      <p2 x="60" y="440"/>
-    </wire>
-    <wire>
       <p1 x="820" y="120"/>
       <p2 x="840" y="120"/>
     </wire>
@@ -2020,14 +2050,6 @@ Entradas y Salidas del I/O</string>
       <p2 x="1800" y="120"/>
     </wire>
     <wire>
-      <p1 x="-60" y="120"/>
-      <p2 x="40" y="120"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="120"/>
-      <p2 x="180" y="120"/>
-    </wire>
-    <wire>
       <p1 x="660" y="-60"/>
       <p2 x="800" y="-60"/>
     </wire>
@@ -2042,22 +2064,6 @@ Entradas y Salidas del I/O</string>
     <wire>
       <p1 x="1620" y="-60"/>
       <p2 x="1760" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="-60"/>
-      <p2 x="40" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="-60"/>
-      <p2 x="180" y="-60"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="380"/>
-      <p2 x="40" y="380"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="380"/>
-      <p2 x="180" y="380"/>
     </wire>
     <wire>
       <p1 x="960" y="720"/>
@@ -2304,32 +2310,32 @@ Entradas y Salidas del I/O</string>
       <p2 x="60" y="-100"/>
     </wire>
     <wire>
-      <p1 x="60" y="40"/>
-      <p2 x="60" y="80"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="220"/>
-      <p2 x="60" y="260"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="400"/>
-      <p2 x="60" y="440"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="260"/>
-      <p2 x="60" y="280"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="80"/>
+      <p1 x="60" y="60"/>
       <p2 x="60" y="100"/>
     </wire>
     <wire>
-      <p1 x="60" y="-100"/>
-      <p2 x="60" y="-80"/>
+      <p1 x="60" y="240"/>
+      <p2 x="60" y="280"/>
     </wire>
     <wire>
-      <p1 x="60" y="440"/>
+      <p1 x="60" y="420"/>
       <p2 x="60" y="460"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="460"/>
+      <p2 x="60" y="500"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="280"/>
+      <p2 x="60" y="320"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="100"/>
+      <p2 x="60" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="60" y="-100"/>
+      <p2 x="60" y="-60"/>
     </wire>
   </wires>
   <measurementOrdering/>

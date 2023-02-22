@@ -11,13 +11,33 @@
           <string>S</string>
         </entry>
       </elementAttributes>
-      <pos x="80" y="200"/>
+      <pos x="40" y="200"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
       <elementAttributes>
         <entry>
           <string>Label</string>
+          <string>R</string>
+        </entry>
+      </elementAttributes>
+      <pos x="40" y="280"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
+          <string>S</string>
+        </entry>
+      </elementAttributes>
+      <pos x="80" y="200"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>NetName</string>
           <string>R</string>
         </entry>
       </elementAttributes>
@@ -28,30 +48,10 @@
       <elementAttributes>
         <entry>
           <string>NetName</string>
-          <string>S</string>
-        </entry>
-      </elementAttributes>
-      <pos x="120" y="200"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
-          <string>R</string>
-        </entry>
-      </elementAttributes>
-      <pos x="120" y="280"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>NetName</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="80" y="120"/>
+      <pos x="40" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
@@ -60,13 +60,18 @@
           <string>Description</string>
           <string>El funcionamiento viene dado cuando el clock esta activo permite
 cambiar los valores con S(1) y R(0), el problema se da cuando ambos 
-se activan S y R a la vez y el clock esta activo, por lo que nos quedan
+se activan (S y R) a la vez y el clock esta activo, por lo que nos quedan
 Q y Q&apos; como 1, lo que genera que al quitar el Clock el circuito de una
 respuesta incierta, ya que empezara a oscilar dependiendo de cuál de 
-los dos NAND del final de 0 primero</string>
+los dos NAND de la parte final cambie a 0 primero.
+El funcionamiento de una forma más detallada se puede obserrvar
+al analizar la retroalimentación que se da en las salidas Q y Q&apos; en los NANDs finales
+que mantieneel valor constante a menos que los NANDs del comienzo digan lo contrario.
+Ya que una de las entradas de esos NANDs es el clock sin que este este activo es
+imposible cambiar el valor de Q y Q&apos;.</string>
         </entry>
       </elementAttributes>
-      <pos x="20" y="420"/>
+      <pos x="40" y="420"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -76,12 +81,12 @@ los dos NAND del final de 0 primero</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="80" y="120"/>
+      <pos x="40" y="120"/>
     </visualElement>
     <visualElement>
       <elementName>RS_FF</elementName>
       <elementAttributes/>
-      <pos x="920" y="220"/>
+      <pos x="840" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -95,7 +100,7 @@ los dos NAND del final de 0 primero</string>
           <string>S</string>
         </entry>
       </elementAttributes>
-      <pos x="920" y="220"/>
+      <pos x="840" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -109,7 +114,7 @@ los dos NAND del final de 0 primero</string>
           <string>R</string>
         </entry>
       </elementAttributes>
-      <pos x="920" y="260"/>
+      <pos x="840" y="260"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -123,7 +128,7 @@ los dos NAND del final de 0 primero</string>
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="920" y="240"/>
+      <pos x="840" y="240"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -133,7 +138,7 @@ los dos NAND del final de 0 primero</string>
           <string>Q</string>
         </entry>
       </elementAttributes>
-      <pos x="980" y="220"/>
+      <pos x="920" y="220"/>
     </visualElement>
     <visualElement>
       <elementName>NAnd</elementName>
@@ -237,6 +242,60 @@ los dos NAND del final de 0 primero</string>
       </elementAttributes>
       <pos x="240" y="220"/>
     </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>RectHeight</string>
+          <int>6</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Circuito de referencia</string>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>6</int>
+        </entry>
+      </elementAttributes>
+      <pos x="800" y="180"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>RectHeight</string>
+          <int>16</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>FlipFlopRS</string>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>16</int>
+        </entry>
+      </elementAttributes>
+      <pos x="200" y="60"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>RectHeight</string>
+          <int>13</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Condiciones</string>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>10</int>
+        </entry>
+      </elementAttributes>
+      <pos x="-80" y="80"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>
@@ -264,8 +323,8 @@ los dos NAND del final de 0 primero</string>
       <p2 x="500" y="180"/>
     </wire>
     <wire>
-      <p1 x="80" y="280"/>
-      <p2 x="120" y="280"/>
+      <p1 x="40" y="280"/>
+      <p2 x="80" y="280"/>
     </wire>
     <wire>
       <p1 x="280" y="280"/>
@@ -280,8 +339,8 @@ los dos NAND del final de 0 primero</string>
       <p2 x="660" y="280"/>
     </wire>
     <wire>
-      <p1 x="80" y="200"/>
-      <p2 x="120" y="200"/>
+      <p1 x="40" y="200"/>
+      <p2 x="80" y="200"/>
     </wire>
     <wire>
       <p1 x="480" y="200"/>
@@ -298,6 +357,10 @@ los dos NAND del final de 0 primero</string>
     <wire>
       <p1 x="240" y="220"/>
       <p2 x="280" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="900" y="220"/>
+      <p2 x="920" y="220"/>
     </wire>
     <wire>
       <p1 x="480" y="240"/>
