@@ -58,20 +58,17 @@
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>El funcionamiento viene dado cuando el clock esta activo permite
-cambiar los valores con S(1) y R(0), el problema se da cuando ambos 
-se activan (S y R) a la vez y el clock esta activo, por lo que nos quedan
-Q y Q&apos; como 1, lo que genera que al quitar el Clock el circuito de una
-respuesta incierta, ya que empezara a oscilar dependiendo de cuál de 
-los dos NAND de la parte final cambie a 0 primero.
-El funcionamiento de una forma más detallada se puede obserrvar
-al analizar la retroalimentación que se da en las salidas Q y Q&apos; en los NANDs finales
-que mantieneel valor constante a menos que los NANDs del comienzo digan lo contrario.
-Ya que una de las entradas de esos NANDs es el clock sin que este este activo es
-imposible cambiar el valor de Q y Q&apos;.</string>
+          <string>El funcionamiento viene dado cuando el clock se activa ya que permite cambiar los valoresde Q con S(1) y R(0), 
+el problema se da cuando ambos se activan (S y R) a la vez y el clock está activo, 
+por lo que nos quedan Q y ~Q como 1, lo que genera que al quitar el Clock el circuito 
+de una respuesta incierta, ya que empezara a oscilar dependiendo de cuál de  los dos NAND de la 
+parte final cambie a 0 primero. El funcionamiento de una forma más detallada se puede 
+observar al analizar la retroalimentación que se da en las salidas Q y ~Q en los NANDs finales que 
+mantiene el valor constante a menos que los NANDs del comienzo digan lo contrario. Ya que una
+de las entradas de esos NANDs es el clock sin que este esté activo es imposible cambiar el valor de Q y ~Q.</string>
         </entry>
       </elementAttributes>
-      <pos x="40" y="420"/>
+      <pos x="-160" y="380"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -247,7 +244,7 @@ imposible cambiar el valor de Q y Q&apos;.</string>
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>6</int>
+          <int>8</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -255,17 +252,17 @@ imposible cambiar el valor de Q y Q&apos;.</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>6</int>
+          <int>14</int>
         </entry>
       </elementAttributes>
-      <pos x="800" y="180"/>
+      <pos x="760" y="160"/>
     </visualElement>
     <visualElement>
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>16</int>
+          <int>14</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -273,10 +270,10 @@ imposible cambiar el valor de Q y Q&apos;.</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>16</int>
+          <int>29</int>
         </entry>
       </elementAttributes>
-      <pos x="200" y="60"/>
+      <pos x="160" y="60"/>
     </visualElement>
     <visualElement>
       <elementName>Rectangle</elementName>
@@ -291,7 +288,7 @@ imposible cambiar el valor de Q y Q&apos;.</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>10</int>
+          <int>11</int>
         </entry>
       </elementAttributes>
       <pos x="-80" y="80"/>

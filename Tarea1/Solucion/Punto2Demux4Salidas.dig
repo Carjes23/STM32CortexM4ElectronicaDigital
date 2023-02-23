@@ -223,6 +223,22 @@
       </elementAttributes>
       <pos x="860" y="720"/>
     </visualElement>
+    <visualElement>
+      <elementName>Text</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>Tabla
+
+S1 | S2 | Out |
+ 0 | 0 | Out1 |
+ 1 | 0 | Out2 |
+ 0 | 1 | Out3 |
+ 1 | 1 | Out4 |</string>
+        </entry>
+      </elementAttributes>
+      <pos x="280" y="660"/>
+    </visualElement>
   </visualElements>
   <wires>
     <wire>

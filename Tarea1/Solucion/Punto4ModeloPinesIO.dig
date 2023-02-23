@@ -496,7 +496,7 @@ Parte que se &quot;comunica&quot; con el exterior
 recibiendo o entregando datos.</string>
         </entry>
       </elementAttributes>
-      <pos x="-80" y="-340"/>
+      <pos x="-100" y="-380"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
@@ -1678,6 +1678,24 @@ recibiendo o entregando datos.</string>
         </entry>
       </elementAttributes>
       <pos x="380" y="640"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Rectangle</elementName>
+      <elementAttributes>
+        <entry>
+          <string>RectHeight</string>
+          <int>39</int>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Entrada - Salida Pin</string>
+        </entry>
+        <entry>
+          <string>RectWidth</string>
+          <int>12</int>
+        </entry>
+      </elementAttributes>
+      <pos x="100" y="-200"/>
     </visualElement>
   </visualElements>
   <wires>

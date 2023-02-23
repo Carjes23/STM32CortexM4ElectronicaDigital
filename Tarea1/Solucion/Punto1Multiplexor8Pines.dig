@@ -303,7 +303,7 @@
           <string>D8</string>
         </entry>
       </elementAttributes>
-      <pos x="280" y="920"/>
+      <pos x="280" y="1020"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -313,7 +313,26 @@
           <string>D7</string>
         </entry>
       </elementAttributes>
-      <pos x="280" y="1020"/>
+      <pos x="280" y="920"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Text</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>Tabla
+S1|S2|S3|Input|
+ 0 | 0 | 0 | D1 |
+ 1 | 0 | 0 | D2 |
+ 0 | 1 | 0 | D3 |
+ 0 | 0 | 1 | D4 |
+ 1 | 1 | 0 | D5 |
+ 1 | 0 | 1 | D6 |
+ 1 | 1 | 1 | D7 |
+ 0 | 1 | 1 | D8 |</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-120" y="560"/>
     </visualElement>
   </visualElements>
   <wires>

@@ -71,7 +71,7 @@ de Q&apos; y Q en los primeros NAND los hace totalmente
 escluyenes, de resto funciona de una forma similar al RS</string>
         </entry>
       </elementAttributes>
-      <pos x="140" y="580"/>
+      <pos x="260" y="560"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -144,19 +144,19 @@ escluyenes, de resto funciona de una forma similar al RS</string>
       <elementName>Rectangle</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>Circuito de referencia</string>
-        </entry>
-        <entry>
           <string>RectHeight</string>
           <int>6</int>
         </entry>
         <entry>
+          <string>Label</string>
+          <string>Circuito de referencia</string>
+        </entry>
+        <entry>
           <string>RectWidth</string>
-          <int>6</int>
+          <int>15</int>
         </entry>
       </elementAttributes>
-      <pos x="480" y="40"/>
+      <pos x="440" y="40"/>
     </visualElement>
     <visualElement>
       <elementName>NAnd</elementName>
@@ -318,7 +318,7 @@ escluyenes, de resto funciona de una forma similar al RS</string>
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>16</int>
+          <int>22</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -326,7 +326,7 @@ escluyenes, de resto funciona de una forma similar al RS</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>16</int>
+          <int>56</int>
         </entry>
       </elementAttributes>
       <pos x="860" y="200"/>
@@ -352,7 +352,7 @@ el problema de las oscilaciones que se presentan en la variante normal</string>
       <elementAttributes>
         <entry>
           <string>RectHeight</string>
-          <int>16</int>
+          <int>18</int>
         </entry>
         <entry>
           <string>Label</string>
@@ -360,7 +360,7 @@ el problema de las oscilaciones que se presentan en la variante normal</string>
         </entry>
         <entry>
           <string>RectWidth</string>
-          <int>16</int>
+          <int>30</int>
         </entry>
       </elementAttributes>
       <pos x="240" y="200"/>
