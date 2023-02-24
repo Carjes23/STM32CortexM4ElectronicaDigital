@@ -61,17 +61,17 @@
           <string>El cambio en Q viene dado cuando Clock
 se encuentra activo y alguna de las opciones
 J(1) y K(0) también, a diferencia del RS no permite
-tener en true  a la vez a Q y Q&apos;, pero al tener ambas
-opcines encendidas a la vez el circuito tiende a 
+tener 1 a la vez en Q y ~Q, pero al tener ambas
+opciones encendidas (J y K) a la vez, el circuito tiende a 
 oscilar de un valor al otro, por lo que la simulación 
 falla.
-A diferencia del RS, no me permite tener Q y Q&apos; en 1
-simultaneamente ya que la retroalimentación que se hace
-de Q&apos; y Q en los primeros NAND los hace totalmente 
-escluyenes, de resto funciona de una forma similar al RS</string>
+A diferencia del RS, no me permite tener Q y ~Q en 1
+simultáneamente ya que la retroalimentación que se hace
+de ~Q y Q en los primeros NAND los hace totalmente 
+excluyentes, de resto funciona de una forma similar al RS</string>
         </entry>
       </elementAttributes>
-      <pos x="260" y="560"/>
+      <pos x="240" y="560"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -336,16 +336,16 @@ escluyenes, de resto funciona de una forma similar al RS</string>
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>Esta variante nos permite con el mismo Flip Flop JK evitar
-los problemas de oscilaciones al tener un circuito maestro
-que es en el cuál se ponen las condiciones a &quot;guardar&quot; y otro
-esclavo que recibe las ordenes de su maestro despues de que el clock se apaga, 
-este retraso que se da ya que el master se actualiza
-cuando el clock esta encendido y el slave cuando esta apagado, nos quita
-el problema de las oscilaciones que se presentan en la variante normal</string>
+          <string>Esta variante del Flip Flop JK nos permite evitar
+los problemas de oscilaciones al tener un circuito master,
+en este se ponen las condiciones a &quot;guardar&quot;, y en otro circuito conocido
+como slave, recibe las órdenes del master después de que el clock se apaga,
+generando un retraso, ya que el master se actualiza cuando el clock está
+encendido y el slave cuando está apagado, esto nos quita el problema
+de las oscilaciones que se presentan en la variante normal</string>
         </entry>
       </elementAttributes>
-      <pos x="1040" y="640"/>
+      <pos x="1020" y="660"/>
     </visualElement>
     <visualElement>
       <elementName>Rectangle</elementName>

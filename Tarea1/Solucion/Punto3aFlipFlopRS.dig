@@ -58,17 +58,21 @@
       <elementAttributes>
         <entry>
           <string>Description</string>
-          <string>El funcionamiento viene dado cuando el clock se activa ya que permite cambiar los valoresde Q con S(1) y R(0), 
-el problema se da cuando ambos se activan (S y R) a la vez y el clock está activo, 
-por lo que nos quedan Q y ~Q como 1, lo que genera que al quitar el Clock el circuito 
-de una respuesta incierta, ya que empezara a oscilar dependiendo de cuál de  los dos NAND de la 
-parte final cambie a 0 primero. El funcionamiento de una forma más detallada se puede 
-observar al analizar la retroalimentación que se da en las salidas Q y ~Q en los NANDs finales que 
-mantiene el valor constante a menos que los NANDs del comienzo digan lo contrario. Ya que una
-de las entradas de esos NANDs es el clock sin que este esté activo es imposible cambiar el valor de Q y ~Q.</string>
+          <string>El funcionamiento consiste primeramente en la situación donde las salidas
+Q y ~Q se retroalimentan logrando un valor constante, ya que siempre que
+el clock esté desactivado, una de las entradas de los NANDs finales siempre
+será positiva, logrando mantener esos valores con la retroalimentación
+antes mencionada. Por otra parte cuando se da la activación del clock permite
+que los parámetros S y R tengan un efecto en el circuito, con S se conseguirá 
+Q = 1 y ~Q = 0, con R se obtendrá el comportamiento espejo.
+
+El problema de este flip flop se da cuando primero se activan todos los parámetros 
+haciendo que Q y ~Q tengan el valor 1, luego al desactivar el clock se genera
+una “carrera” entre Q y ~Q para ver cuál cambia primero su valor a 0, 
+lo cual genera que el circuito empiece a oscilar.</string>
         </entry>
       </elementAttributes>
-      <pos x="-160" y="380"/>
+      <pos x="-20" y="360"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -220,7 +224,7 @@ de las entradas de esos NANDs es el clock sin que este esté activo es imposible
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>Q&apos;</string>
+          <string>~Q</string>
         </entry>
       </elementAttributes>
       <pos x="660" y="280"/>

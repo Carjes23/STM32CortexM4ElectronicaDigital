@@ -50,3 +50,13 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# folders
+.metadata/
+Debug/
+Release/
+
+# others
+.directory
+*.zip
+*.png

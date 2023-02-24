@@ -1674,7 +1674,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>Frequency</string>
-          <int>10</int>
+          <int>5</int>
         </entry>
       </elementAttributes>
       <pos x="380" y="640"/>
