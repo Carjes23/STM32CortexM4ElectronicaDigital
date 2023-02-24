@@ -56,7 +56,7 @@
           <string>Clock</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="640"/>
+      <pos x="540" y="60"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -473,7 +473,7 @@ Entrada 0, Salida 1</string>
           <string>EnableEntradaSalida</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="700"/>
+      <pos x="200" y="-140"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -483,7 +483,7 @@ Entrada 0, Salida 1</string>
           <string>EnES</string>
         </entry>
       </elementAttributes>
-      <pos x="380" y="700"/>
+      <pos x="200" y="-140"/>
     </visualElement>
     <visualElement>
       <elementName>Text</elementName>
@@ -496,12 +496,12 @@ Parte que se &quot;comunica&quot; con el exterior
 recibiendo o entregando datos.</string>
         </entry>
       </elementAttributes>
-      <pos x="-100" y="-380"/>
+      <pos x="-60" y="-320"/>
     </visualElement>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="-40"/>
+      <pos x="60" y="140"/>
     </visualElement>
     <visualElement>
       <elementName>DriverInvSel</elementName>
@@ -511,7 +511,7 @@ recibiendo o entregando datos.</string>
           <rotation rotation="2"/>
         </entry>
       </elementAttributes>
-      <pos x="60" y="-160"/>
+      <pos x="60" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -525,7 +525,7 @@ recibiendo o entregando datos.</string>
           <string>InputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="-160"/>
+      <pos x="-60" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -539,7 +539,7 @@ recibiendo o entregando datos.</string>
           <string>SalConf1</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="-100"/>
+      <pos x="-60" y="80"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -553,7 +553,7 @@ recibiendo o entregando datos.</string>
           <string>OutputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="-60" y="-40"/>
+      <pos x="-60" y="140"/>
     </visualElement>
     <visualElement>
       <elementName>In</elementName>
@@ -567,7 +567,7 @@ recibiendo o entregando datos.</string>
           <string>InputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="-160"/>
+      <pos x="180" y="20"/>
     </visualElement>
     <visualElement>
       <elementName>Out</elementName>
@@ -577,7 +577,7 @@ recibiendo o entregando datos.</string>
           <string>OutputIO1</string>
         </entry>
       </elementAttributes>
-      <pos x="180" y="-40"/>
+      <pos x="180" y="140"/>
     </visualElement>
     <visualElement>
       <elementName>Tunnel</elementName>
@@ -1421,87 +1421,6 @@ recibiendo o entregando datos.</string>
     <visualElement>
       <elementName>Driver</elementName>
       <elementAttributes/>
-      <pos x="60" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>DriverInvSel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-      </elementAttributes>
-      <pos x="60" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>InputIO2</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-60" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>SalConf2</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-60" y="100"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Tunnel</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>NetName</string>
-          <string>OutputIO2</string>
-        </entry>
-      </elementAttributes>
-      <pos x="-60" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>In</elementName>
-      <elementAttributes>
-        <entry>
-          <string>rotation</string>
-          <rotation rotation="2"/>
-        </entry>
-        <entry>
-          <string>Label</string>
-          <string>InputIO2</string>
-        </entry>
-      </elementAttributes>
-      <pos x="180" y="40"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Out</elementName>
-      <elementAttributes>
-        <entry>
-          <string>Label</string>
-          <string>OutputIO2</string>
-        </entry>
-      </elementAttributes>
-      <pos x="180" y="160"/>
-    </visualElement>
-    <visualElement>
-      <elementName>Driver</elementName>
-      <elementAttributes/>
       <pos x="60" y="340"/>
     </visualElement>
     <visualElement>
@@ -1523,7 +1442,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>InputIO3</string>
+          <string>InputIO2</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="220"/>
@@ -1537,7 +1456,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>SalConf3</string>
+          <string>SalConf2</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="280"/>
@@ -1551,7 +1470,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>OutputIO3</string>
+          <string>OutputIO2</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="340"/>
@@ -1565,7 +1484,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>InputIO3</string>
+          <string>InputIO2</string>
         </entry>
       </elementAttributes>
       <pos x="180" y="220"/>
@@ -1575,7 +1494,7 @@ recibiendo o entregando datos.</string>
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>OutputIO3</string>
+          <string>OutputIO2</string>
         </entry>
       </elementAttributes>
       <pos x="180" y="340"/>
@@ -1604,7 +1523,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>InputIO4</string>
+          <string>InputIO3</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="400"/>
@@ -1618,7 +1537,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>SalConf4</string>
+          <string>SalConf3</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="460"/>
@@ -1632,7 +1551,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>NetName</string>
-          <string>OutputIO4</string>
+          <string>OutputIO3</string>
         </entry>
       </elementAttributes>
       <pos x="-60" y="520"/>
@@ -1646,7 +1565,7 @@ recibiendo o entregando datos.</string>
         </entry>
         <entry>
           <string>Label</string>
-          <string>InputIO4</string>
+          <string>InputIO3</string>
         </entry>
       </elementAttributes>
       <pos x="180" y="400"/>
@@ -1656,10 +1575,91 @@ recibiendo o entregando datos.</string>
       <elementAttributes>
         <entry>
           <string>Label</string>
-          <string>OutputIO4</string>
+          <string>OutputIO3</string>
         </entry>
       </elementAttributes>
       <pos x="180" y="520"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Driver</elementName>
+      <elementAttributes/>
+      <pos x="60" y="700"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DriverInvSel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+      </elementAttributes>
+      <pos x="60" y="580"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>InputIO4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-60" y="580"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>SalConf4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-60" y="640"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Tunnel</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>NetName</string>
+          <string>OutputIO4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-60" y="700"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="2"/>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>InputIO4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="580"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Out</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>OutputIO4</string>
+        </entry>
+      </elementAttributes>
+      <pos x="180" y="700"/>
     </visualElement>
     <visualElement>
       <elementName>Clock</elementName>
@@ -1677,7 +1677,7 @@ recibiendo o entregando datos.</string>
           <int>5</int>
         </entry>
       </elementAttributes>
-      <pos x="380" y="640"/>
+      <pos x="540" y="60"/>
     </visualElement>
     <visualElement>
       <elementName>Rectangle</elementName>
@@ -1695,7 +1695,46 @@ recibiendo o entregando datos.</string>
           <int>12</int>
         </entry>
       </elementAttributes>
-      <pos x="100" y="-200"/>
+      <pos x="100" y="-20"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Text</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Description</string>
+          <string>Pequeña descripción de uso.
+
+Se puede ver que se tiene un 
+registro de configuración en el 
+cuál se maneja si el I/O se utiliza 
+como entrada o salida.
+
+Las entradas se dan en la parte 
+de Entrada - Salida Pin en los 
+InputIOX siendo X el número del IO
+y se guardaran &quot;dentro&quot; en la parte 
+de Registro EntradaX.
+
+Para las salidas los datos vendrán
+desde &quot;dentro&quot; por lo que se asignan
+desde dentro del registro en
+DatoSalidaX siendo X el numero del
+pin y su resultado se muestra en 
+Entrada -Salida Pin en los outputs.
+
+Cabe aclarar que para las entradas
+que por problema de tierra flotante
+cuando el multiplexor le requiere el
+dato al estado de alta impedancia,
+este le da un valor aleatorio entre 0
+y 1, logrando con esto que los valores
+en RegistroEntradaX cambien sin que
+se esté utilizando el pin como entrada.
+Esto solo sucede al utilizar el pin como
+salida.</string>
+        </entry>
+      </elementAttributes>
+      <pos x="1920" y="-160"/>
     </visualElement>
   </visualElements>
   <wires>
@@ -1714,6 +1753,18 @@ recibiendo o entregando datos.</string>
     <wire>
       <p1 x="1620" y="320"/>
       <p2 x="1660" y="320"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="640"/>
+      <p2 x="60" y="640"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="580"/>
+      <p2 x="40" y="580"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="580"/>
+      <p2 x="180" y="580"/>
     </wire>
     <wire>
       <p1 x="720" y="-200"/>
@@ -1792,6 +1843,14 @@ recibiendo o entregando datos.</string>
       <p2 x="60" y="460"/>
     </wire>
     <wire>
+      <p1 x="-60" y="140"/>
+      <p2 x="40" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="140"/>
+      <p2 x="180" y="140"/>
+    </wire>
+    <wire>
       <p1 x="840" y="720"/>
       <p2 x="960" y="720"/>
     </wire>
@@ -1816,6 +1875,10 @@ recibiendo o entregando datos.</string>
       <p2 x="180" y="400"/>
     </wire>
     <wire>
+      <p1 x="-60" y="80"/>
+      <p2 x="60" y="80"/>
+    </wire>
+    <wire>
       <p1 x="660" y="-20"/>
       <p2 x="720" y="-20"/>
     </wire>
@@ -1832,6 +1895,14 @@ recibiendo o entregando datos.</string>
       <p2 x="1680" y="-20"/>
     </wire>
     <wire>
+      <p1 x="-60" y="20"/>
+      <p2 x="40" y="20"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="20"/>
+      <p2 x="180" y="20"/>
+    </wire>
+    <wire>
       <p1 x="-60" y="340"/>
       <p2 x="40" y="340"/>
     </wire>
@@ -1842,14 +1913,6 @@ recibiendo o entregando datos.</string>
     <wire>
       <p1 x="-60" y="280"/>
       <p2 x="60" y="280"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="220"/>
-      <p2 x="40" y="220"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="220"/>
-      <p2 x="180" y="220"/>
     </wire>
     <wire>
       <p1 x="800" y="220"/>
@@ -1866,6 +1929,14 @@ recibiendo o entregando datos.</string>
     <wire>
       <p1 x="1540" y="220"/>
       <p2 x="1580" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="220"/>
+      <p2 x="40" y="220"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="220"/>
+      <p2 x="180" y="220"/>
     </wire>
     <wire>
       <p1 x="940" y="860"/>
@@ -1900,30 +1971,6 @@ recibiendo o entregando datos.</string>
       <p2 x="1700" y="-160"/>
     </wire>
     <wire>
-      <p1 x="-60" y="-160"/>
-      <p2 x="40" y="-160"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="-160"/>
-      <p2 x="180" y="-160"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="160"/>
-      <p2 x="40" y="160"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="160"/>
-      <p2 x="180" y="160"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="-100"/>
-      <p2 x="60" y="-100"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="100"/>
-      <p2 x="60" y="100"/>
-    </wire>
-    <wire>
       <p1 x="840" y="740"/>
       <p2 x="860" y="740"/>
     </wire>
@@ -1954,22 +2001,6 @@ recibiendo o entregando datos.</string>
     <wire>
       <p1 x="1740" y="-40"/>
       <p2 x="1780" y="-40"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="-40"/>
-      <p2 x="40" y="-40"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="-40"/>
-      <p2 x="180" y="-40"/>
-    </wire>
-    <wire>
-      <p1 x="-60" y="40"/>
-      <p2 x="40" y="40"/>
-    </wire>
-    <wire>
-      <p1 x="80" y="40"/>
-      <p2 x="180" y="40"/>
     </wire>
     <wire>
       <p1 x="1240" y="300"/>
@@ -2082,6 +2113,14 @@ recibiendo o entregando datos.</string>
     <wire>
       <p1 x="1620" y="-60"/>
       <p2 x="1760" y="-60"/>
+    </wire>
+    <wire>
+      <p1 x="-60" y="700"/>
+      <p2 x="40" y="700"/>
+    </wire>
+    <wire>
+      <p1 x="80" y="700"/>
+      <p2 x="180" y="700"/>
     </wire>
     <wire>
       <p1 x="960" y="720"/>
@@ -2324,12 +2363,8 @@ recibiendo o entregando datos.</string>
       <p2 x="1340" y="-120"/>
     </wire>
     <wire>
-      <p1 x="60" y="-140"/>
-      <p2 x="60" y="-100"/>
-    </wire>
-    <wire>
-      <p1 x="60" y="60"/>
-      <p2 x="60" y="100"/>
+      <p1 x="60" y="40"/>
+      <p2 x="60" y="80"/>
     </wire>
     <wire>
       <p1 x="60" y="240"/>
@@ -2340,6 +2375,10 @@ recibiendo o entregando datos.</string>
       <p2 x="60" y="460"/>
     </wire>
     <wire>
+      <p1 x="60" y="600"/>
+      <p2 x="60" y="640"/>
+    </wire>
+    <wire>
       <p1 x="60" y="460"/>
       <p2 x="60" y="500"/>
     </wire>
@@ -2348,12 +2387,12 @@ recibiendo o entregando datos.</string>
       <p2 x="60" y="320"/>
     </wire>
     <wire>
-      <p1 x="60" y="100"/>
-      <p2 x="60" y="140"/>
+      <p1 x="60" y="80"/>
+      <p2 x="60" y="120"/>
     </wire>
     <wire>
-      <p1 x="60" y="-100"/>
-      <p2 x="60" y="-60"/>
+      <p1 x="60" y="640"/>
+      <p2 x="60" y="680"/>
     </wire>
   </wires>
   <measurementOrdering/>
