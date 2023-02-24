@@ -55,6 +55,7 @@ dkms.conf
 .metadata/
 Debug/
 Release/
+.directory
 
 # others
 .directory
