@@ -9,6 +9,8 @@
 
 // Inclución de librerias
 #include <stdint.h>
+#include "MucHAL.h"
+
 
 // Definición de variables
 // · Variables de 8bits
@@ -38,6 +40,8 @@ uint32_t segundoArreglo[3] = {1, 2, 3};
 
 // Inicialización de funciones
 int main(void){
+	ejemplo = RCC_AHB1ENR;
+
 	uint8_t segundaVariable = 2;
 
 	// Otros tipos de variables
