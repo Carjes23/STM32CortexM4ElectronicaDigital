@@ -81,8 +81,8 @@
 #define	I2C_WRITE		0
 #define I2C_READ		1
 
-/*
- * Definicion de la estructura de datos que representa
+/**
+ * @param
  * a cada una de los registros que componen el
  * periferico RCC.
  */
@@ -101,7 +101,7 @@ typedef struct
 	volatile uint32_t APB2RSTR; //ADDR_OFSET: anterior +4
 	volatile uint32_t reserved2; //ADDR_OFSET: anterior +4
 	volatile uint32_t reserved3; //ADDR_OFSET: anterior +4
-	volatile uint32_t AHB1ENR; //ADDR_OFSET: anterior +4
+	volatile uint32_t AHB1ENR; /** ADDR_OFSET: anterior +4 */
 	volatile uint32_t AHB2ENR; //ADDR_OFSET: anterior +4
 	volatile uint32_t reserved4; //ADDR_OFSET: anterior +4
 	volatile uint32_t reserved5; //ADDR_OFSET: anterior +4
