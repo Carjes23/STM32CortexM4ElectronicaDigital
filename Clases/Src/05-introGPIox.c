@@ -30,7 +30,6 @@ int main(void){
 	GPIOA -> ODR &= ~(0b1<<5);
 
 
-
 	/*Loop forever */
 	while(1){
 		//cambiar valores

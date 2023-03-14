@@ -63,6 +63,16 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler);
 void GPIO_WritePin(GPIO_Handler_t *pPinHander, uint8_t newState);
 uint32_t GPIO_ReadPin (GPIO_Handler_t *pPinHander);
 
+//Funciones adicionales, para el funcionamiento de la tarea 2
+
+// La funcion delay es una función que "pausa" o "duerme"
+//el codigo aproximadamente a los segundos que se le coloque
+void delay(int secs);
+
+//La función GPIOxTooglePin nos cambia de estada un pin, lo que quiere decir
+//que si este se encuentra apagado se prende y viceversa.
+void GPIOxTooglePin(GPIO_Handler_t *pPinHandler);
+
 
 
 

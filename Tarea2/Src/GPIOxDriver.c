@@ -147,3 +147,27 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 	return pinValue;
 }
 
+//Funciones adicionales, para el funcionamiento de la tarea 2
+
+// La funcion delay es una función que "pausa" o "duerme"
+//el codigo aproximadamente a los segundos que se le coloque
+
+void delay(int secs) {
+  #define STEPS_PER_SEC 800000
+  unsigned int i,s;
+  for (s=0; s < secs; s++) {
+    for (i=0; i < STEPS_PER_SEC; i++) {
+       // skip CPU cycle or any other statement(s) for making loop
+       // untouched by C compiler code optimizations
+       NOP();
+    }
+  }
+}
+
+//La función GPIOxTooglePin nos cambia de estada un pin, lo que quiere decir
+//que si este se encuentra apagado se prende y viceversa.
+
+void GPIOxTooglePin(GPIO_Handler_t *pPinHandler){
+	GPIO_WritePin(pPinHandler,SET^GPIO_ReadPin(pPinHandler));
+}
+
