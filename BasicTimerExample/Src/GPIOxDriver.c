@@ -44,23 +44,23 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 	// 1) activar el periferico.
 	//Verificar que pin.
 	if(pGPIOHandler -> pGPIOx == GPIOA){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOA_EN);
+		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOAEN);
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOB){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOB_EN);
+		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOBEN);
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOC){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOC_EN);
+		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOCEN);
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOD){
-			RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOD_EN);
+		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIODEN);
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOE){
-				RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOE_EN);
+		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOEEN);
 	}
-	else if(pGPIOHandler -> pGPIOx == GPIOH){
-				RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOH_EN);
-	}
+//	else if(pGPIOHandler -> pGPIOx == GPIOH){
+//		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOHEN);
+//	}
 
 	//Despues de activado podemos comenzar a configurar.
 	// 2) Configurar el registro GPIOx_MODER

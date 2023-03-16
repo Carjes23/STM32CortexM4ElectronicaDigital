@@ -273,7 +273,6 @@ int main(void){
 	}
 }
 
-//Las funciones delay
 
 
 
