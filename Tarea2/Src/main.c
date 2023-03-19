@@ -39,13 +39,21 @@
 /*Se exportan las librerías creadas por nosotros
  * Se exporta el hal a pesar de que ya se utiliza en
  * el GPIOxDriver.h, también se debe tener en cuenta
- * que se agregaron dos funciones adicionales con su header en
- *  GPIOxDriver.h y su respectivo codigo en GPIOxDriver.c, que serían
- *  la funcion GPIOxTooglePin y la función delay
+ * que se agregaron una funcion adicional con su header en
+ *  GPIOxDriver.h y su respectivo codigo en GPIOxDriver.c la cual seria
+ *  la funcion "toogle" ya que es una funcion que seguiremos
+ *  usando de ahora en adelante, y otra funcion "delay" la cual
+ *  no se volvera a utilizar por lo que solo se coloca su header
+ *  al comienzo de este main y su programación al final.
  */
 
 #include "stm32f411xx_hal.h"
 #include "GPIOxDriver.h"
+
+// La funcion delay es una función que "pausa" o "duerme"
+//el codigo aproximadamente a los segundos que se le coloque
+void delay(int secs);
+
 
 /*
  * En la función main se agrega el codigo relacionado con
@@ -74,7 +82,8 @@ int main(void){
 	/*
 	 * Ahora agregamos la configuración para el el pin de usuario
 	 * led, que al mirar las referencias se puede notar que, que
-	 * pertenece al GPIOA, su pin es el numero, lo vamos a utilizar
+	 * pertenece al GPIOA, su pin_number es el numero el cual lo podemos
+	 * encontrar en el manual de referencia, lo vamos a utilizar
 	 * como salida en su forma de push-pull, no agregaremos ninguna
 	 * resistencia pull-up o pull-down utilizaremos una velocidad media
 	 * y no se usara ninguna función especial.
@@ -93,9 +102,9 @@ int main(void){
 	handlerUserButton.pGPIOx = GPIOC; //Se encuentra en el el GPIOC
 	handlerUserButton.GPIO_PinConfig_t.GPIO_PinNumber		= PIN_13; //El registro que este modifica es el numero 13
 	handlerUserButton.GPIO_PinConfig_t.GPIO_PinMode			= GPIO_MODE_IN;//En este caso el pin se usara como entrada de datos
-	handlerUserButton.GPIO_PinConfig_t.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL; //todo averiguar si se tiene que poner
+	handlerUserButton.GPIO_PinConfig_t.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL; //todo averiguar si se tiene que poner(no es necesario ponerlo pero no afecta en nada)
 	handlerUserButton.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING; //No se usara ninguna resistencia pull-up o pull-down
-	handlerUserButton.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM; //todo averiguar si se tiene que poner
+	handlerUserButton.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM; //todo averiguar si se tiene que poner(no es necesario ponerlo pero no afecta en nada)
 	handlerUserButton.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion alternativa
 
 	//Carga de la configuración.
@@ -144,7 +153,7 @@ int main(void){
 	handlerPB8.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING; //No se le agregan resistencia adicionales
 	handlerPB8.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM; //se usara en velocidad media
 	handlerPB8.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion.
-	GPIO_Config(&handlerPB8);
+	GPIO_Config(&handlerPB8);//Se le carga la configuración al pin PB8
 
 	GPIO_Handler_t handlerPA6= {0}; // Se define el Handler y se le da valor de 0 en todas sus componentes
 	handlerPA6.pGPIOx = GPIOA; //El pin pertenece al GPIOA
@@ -154,7 +163,7 @@ int main(void){
 	handlerPA6.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;//No se le agregan resistencia adicionales
 	handlerPA6.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM; //se usara en velocidad media
 	handlerPA6.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion.
-	GPIO_Config(&handlerPA6);
+	GPIO_Config(&handlerPA6);//Se le carga la configuración al pin PA6
 
 	GPIO_Handler_t handlerPC7= {0}; // Se define el Handler y se le da valor de 0 en todas sus componentes
 	handlerPC7.pGPIOx = GPIOC; //El pin pertenece al GPIOC
@@ -164,7 +173,7 @@ int main(void){
 	handlerPC7.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;//No se le agregan resistencia adicionales
 	handlerPC7.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM;//se usara en velocidad media
 	handlerPC7.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion.
-	GPIO_Config(&handlerPC7);
+	GPIO_Config(&handlerPC7);//Se le carga la configuración al pin PC7
 
 	GPIO_Handler_t handlerPC8= {0}; // Se define el Handler y se le da valor de 0 en todas sus componentes
 	handlerPC8.pGPIOx = GPIOC;//El pin pertenece al GPIOC
@@ -174,7 +183,7 @@ int main(void){
 	handlerPC8.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;//No se le agregan resistencia adicionales
 	handlerPC8.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM;//se usara en velocidad media
 	handlerPC8.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion.
-	GPIO_Config(&handlerPC8);
+	GPIO_Config(&handlerPC8);//Se le carga la configuración al pin PC8
 
 	GPIO_Handler_t handlerPA7= {0};// Se define el Handler y se le da valor de 0 en todas sus componentes
 	handlerPA7.pGPIOx = GPIOA;//El pin pertenece al GPIOA
@@ -184,7 +193,7 @@ int main(void){
 	handlerPA7.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING;//No se le agregan resistencia adicionales
 	handlerPA7.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_MEDIUM;//se usara en velocidad media
 	handlerPA7.GPIO_PinConfig_t.GPIO_PinAltFunMode	= AF0; //Ninguna funcion.
-	GPIO_Config(&handlerPA7);
+	GPIO_Config(&handlerPA7);//Se le carga la configuración al pin PA7
 
 	/*
 	 * 1)
@@ -195,7 +204,7 @@ int main(void){
 	 * un and sobre el registro junto con una mascara con 0 en todas las posiciones
 	 * excepto en la poisicion objetivo en el metodo GPIO_ReadPin en el archivo GPIOxDrive.c
 	 * se pueden ver los cambios que se realizaron(luego mientras se hacia la tarea se descubrio
-	 * que bastaba solo con un agragarle un and con SET para  consevar solo el primer valor, de todos modos se deja
+	 * que bastaba solo con un agragarle un and con SET(1) para  consevar solo el primer valor, de todos modos se deja
 	 * con la implementacion anterior en el GPIOxDriver.c)
 	 * 2)
 	 * Para el segundo punto siguiendo la pista, se implementa de forma sencilla
@@ -211,13 +220,17 @@ int main(void){
 	while(1){
 //		CODIGO PARA LOS 2 PRIMEROS PUNTOS
 
-		GPIOxTooglePin(&handlerUserLedPin);
 		/*
-		 * En la parte anterior se prueba que se puede leer un pin ya que
-		 * esto es necesario para poder cambiarle el valor al pin además
-		 * a continuación se le agrega a una variable el valor de un pin
-		 *
-		 * */
+		 * Con la linea de codigo siguiente se puede verificar que se puede leer un pin
+		 * ya que se utiliza para la funcion TooglePin y el funcionamiento del Toogle pin
+		 * al realizar un blinking en el led de usuario que va cambiando su valor cada vez que se
+		 * corre de nuevo el codigo el cuál viene determinado por la funcion delay que "duerme" el
+		 * codigo por un tiempo determinado.
+		 */
+
+
+		GPIOxTooglePin(&handlerUserLedPin);
+
 
 
 		//CODIGO PARA EL punto 3
@@ -258,20 +271,40 @@ int main(void){
 		GPIO_WritePin(&handlerPC7,PC7); //Cambiar el valor del bit 2
 		GPIO_WritePin(&handlerPC8,PC8); //Cambiar el valor del bit 1
 		GPIO_WritePin(&handlerPA7,PA7); //Cambiar el valor del bit 0
-		delay(1); //Se le da un delay de 1 segundo para que se pueda ver el cambio está funcion se encuentra en el driver.c
+		delay(1); //Se le da un delay de 1 segundo para que se pueda ver el cambio está funcion se encuentra en la parte inferior
 		if (variable == SET){ //Ya que el boton de usuario tiene un valor de 1 como default, cuando este se encuentre en 1
-			//vamos a sumar de 1 en 1 y teniendo en cuenta que si el contador se encuentra en el valor de 0 este se reinciia a 1 y si no
+			//vamos a sumar de 1 en 1 y teniendo en cuenta que si el contador se encuentra en el valor de 60 este se reinicia a 1 tenemos
 			if(contador == 60){ //Verificar si se tiene 60
-				contador = 1; //reinciiar en 1
+				contador = 1; //reiniciar en 1
 			} else {contador++;}// Si no se tiene 60 seguir aumentando de 1 en 1
 		} else{ //Si el boton se encunetra en otro estado diferente a 1 vamos a restar de 1 en 1 verificando que si el valor es 1
-			//este se pase a el valor de 60
+			//este se pase al valor de 60
 			if(contador == 1){ //verificar si el valor es 1
 				contador = 60; //reiniciar el contador en 60
 			} else{contador--;} //Disminuir el valor de 1 en 1
 		}
 	}
 }
+
+
+/*
+ * La funcion delay es una función que "pausa" o "duerme"
+ * el codigo aproximadamente a los segundos que se le coloque
+ * el valor del step per second es completamente arbitrario
+ * intentando lograr un segundo
+ */
+
+void delay(int secs) {
+  #define STEPS_PER_SEC 800000
+  unsigned int i,s;
+  for (s=0; s < secs; s++) {
+    for (i=0; i < STEPS_PER_SEC; i++) {
+       NOP();
+    }
+  }
+}
+
+
 
 
 

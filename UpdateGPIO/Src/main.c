@@ -31,7 +31,6 @@
 #include <stdint.h>
 #include <stm32f4xx.h>
 
-#include "GPIOxDriver.h"
 /*
  * Funcion principal del programa
  * Esta funcion es el corazon del programa!!

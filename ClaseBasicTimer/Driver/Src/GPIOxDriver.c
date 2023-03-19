@@ -37,6 +37,7 @@
  * se tienen que seguir en un orden. Lo primero sería activar la señal
  * de reloj
  */
+
 void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 	//Variable para hacer  paso a paso.
 	uint32_t auxConfig = 	0;
@@ -44,23 +45,23 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 	// 1) activar el periferico.
 	//Verificar que pin.
 	if(pGPIOHandler -> pGPIOx == GPIOA){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOAEN);
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOB){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOBEN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIOBEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOC){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOCEN);
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOD){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIODEN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIODEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOE){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOEEN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIOEEN;
 	}
-//	else if(pGPIOHandler -> pGPIOx == GPIOH){
-//		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOHEN);
-//	}
+	else if(pGPIOHandler -> pGPIOx == GPIOH){
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
+	}
 
 	//Despues de activado podemos comenzar a configurar.
 	// 2) Configurar el registro GPIOx_MODER
@@ -99,19 +100,19 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 			auxPosition = 4 * pGPIOHandler->GPIO_PinConfig_t.GPIO_PinNumber;
 
 			//limpiamos
-			pGPIOHandler->pGPIOx->AFRL &= ~(0b111<<auxPosition);
+			pGPIOHandler->pGPIOx->AFR[1] &= ~(0b111<<auxPosition);
 
 			// Y escribimos el valor configurado en la posicion seleccionada
-			pGPIOHandler->pGPIOx->AFRL |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
+			pGPIOHandler->pGPIOx->AFR[0] |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
 		} else {
 			//Estamos en el registro AFRH, que controla los pines del 8 al 15
 			auxPosition = 4 * (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinNumber - 8);
 
 			//Limpiamos
-			pGPIOHandler->pGPIOx->AFRH &= ~(0b111<<auxPosition);
+			pGPIOHandler->pGPIOx->AFR[1] &= ~(0b111<<auxPosition);
 
 			// Y escribimos el valor configurado en la posicion seleccionada
-						pGPIOHandler->pGPIOx->AFRH |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
+						pGPIOHandler->pGPIOx->AFR[1] |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
 		}
 	}
 } //Fin del GPIO_config
@@ -149,24 +150,7 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 
 //Funciones adicionales, para el funcionamiento de la tarea
 
-/*
- * La funcion delay es una función que "pausa" o "duerme"
- * el codigo aproximadamente a los segundos que se le coloque
- * el valor del step per second es completamente arbitrario
- * intentando lograr un segundo
- */
 
-void delay(int secs) {
-  #define STEPS_PER_SEC 800000
-  unsigned int i,s;
-  for (s=0; s < secs; s++) {
-    for (i=0; i < STEPS_PER_SEC; i++) {
-       // skip CPU cycle or any other statement(s) for making loop
-       // untouched by C compiler code optimizations
-       NOP();
-    }
-  }
-}
 
 /*
  * La función GPIOxTooglePin nos cambia de estada un pin, lo que quiere decir

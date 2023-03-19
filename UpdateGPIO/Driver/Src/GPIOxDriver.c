@@ -44,22 +44,22 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 	// 1) activar el periferico.
 	//Verificar que pin.
 	if(pGPIOHandler -> pGPIOx == GPIOA){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOA_EN);
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOB){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOB_EN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIOBEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOC){
-		RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOC_EN);
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOD){
-			RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOD_EN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIODEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOE){
-				RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOE_EN);
+		RCC -> AHB1ENR |=  RCC_AHB1ENR_GPIOEEN;
 	}
 	else if(pGPIOHandler -> pGPIOx == GPIOH){
-				RCC -> AHB1ENR |= (SET << RCC_AHB1ENR_GPIOH_EN);
+		RCC -> AHB1ENR |= RCC_AHB1ENR_GPIOHEN;
 	}
 
 	//Despues de activado podemos comenzar a configurar.
@@ -99,19 +99,19 @@ void GPIO_Config (GPIO_Handler_t *pGPIOHandler){
 			auxPosition = 4 * pGPIOHandler->GPIO_PinConfig_t.GPIO_PinNumber;
 
 			//limpiamos
-			pGPIOHandler->pGPIOx->AFRL &= ~(0b111<<auxPosition);
+			pGPIOHandler->pGPIOx->AFR[1] &= ~(0b111<<auxPosition);
 
 			// Y escribimos el valor configurado en la posicion seleccionada
-			pGPIOHandler->pGPIOx->AFRL |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
+			pGPIOHandler->pGPIOx->AFR[0] |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
 		} else {
 			//Estamos en el registro AFRH, que controla los pines del 8 al 15
 			auxPosition = 4 * (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinNumber - 8);
 
 			//Limpiamos
-			pGPIOHandler->pGPIOx->AFRH &= ~(0b111<<auxPosition);
+			pGPIOHandler->pGPIOx->AFR[1] &= ~(0b111<<auxPosition);
 
 			// Y escribimos el valor configurado en la posicion seleccionada
-						pGPIOHandler->pGPIOx->AFRH |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
+						pGPIOHandler->pGPIOx->AFR[1] |= (pGPIOHandler->GPIO_PinConfig_t.GPIO_PinAltFunMode << auxPosition);
 		}
 	}
 } //Fin del GPIO_config
@@ -148,6 +148,7 @@ uint32_t GPIO_ReadPin(GPIO_Handler_t *pPinHandler){
 }
 
 //Funciones adicionales, para el funcionamiento de la tarea
+
 
 
 /*
