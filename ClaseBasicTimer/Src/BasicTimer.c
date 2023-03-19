@@ -9,6 +9,9 @@
 
 #include "BasicTimer.h"
 
+void BasicTimer_Callback(void);
+void TIM2_IRQHandler(void);
+
 /* Variable que guarda la referencia del periférico que se esta utilizando*/
 TIM_TypeDef	*ptrTimerUsed;
 
@@ -39,9 +42,12 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	/* 1. Activar la señal de reloj del periférico requerido */
 	if(ptrBTimerHandler->ptrTIMx == TIM2){
 		//APB1 primero limpiamos
+		// Registro del RCC que nos activa la señal de reloj para el TIM2
+		//limpia
 		RCC -> APB1ENR |= RCC_APB1ENR_TIM2EN;
 	}
 	else if(ptrBTimerHandler->ptrTIMx == TIM3){
+		// Registro del RCC que nos activa la señal de reloj para el TIM3
 		RCC -> APB1ENR |= RCC_APB1ENR_TIM3EN;
 	}
 	else{
@@ -54,85 +60,51 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	 * periodo_incremento * veces_incremento_counter = periodo_update
 	 * Modificar el valor del registro PSC en el TIM utilizado
 	 */
-	if(ptrBTimerHandler->ptrTIMx == TIM2){
-		if(ptrBTimerHandler->TIMx_Config->TIMx_period!=0){
-			uint32t Calculo = ~0;
-			uint16_t PSCVal = 0;
-			PSCVal = HSI_CLOCK_SPEED*(TIMx_Config->TIMx_period)/calculo;
-			ptrBTimerHandler->ptrTIMx->PSC = PSCVal;
-		}
-		else if(ptrBTimerHandler->TIMx_Config->TIMx_speed!=0){
-			ptrBTimerHandler->ptrTIMx->PSC = TIMx_Config->TIMx_speed;
-		}
-	else if(ptrBTimerHandler->ptrTIMx == TIM3){
-		if(ptrBTimerHandler->TIMx_Config->TIMx_period!=0){
-			uint16_t Calculo = ~0;
-			uint16_t PSCVal = 0;
-			PSCVal = HSI_CLOCK_SPEED*(TIMx_Config->TIMx_period)/calculo;
-			ptrBTimerHandler->ptrTIMx->PSC = PSCVal;
-		}
-		else if(ptrBTimerHandler->TIMx_Config->TIMx_speed!=0){
-			ptrBTimerHandler->ptrTIMx->PSC = TIMx_Config->TIMx_speed;
-		}
-	}
-	else{
-		__NOP();
-	}
+
+	/* Escriba codigo aca */
+
+	ptrBTimerHandler->ptrTIMx->PSC = ptrBTimerHandler->TIMx_Config.TIMx_speed-1;
+
 
 	/* 3. Configuramos la dirección del counter (up/down)*/
 	if(ptrBTimerHandler->TIMx_Config.TIMx_mode == BTIMER_MODE_UP){
 
 		/* 3a. Estamos en UP_Mode, el limite se carga en ARR y se comienza en 0 */
 		// Configurar el registro que nos controla el modo up or down
-		if(ptrBTimerHandler->ptrTIMx == TIM2){
-			if(ptrBTimerHandler->TIMx_Config->TIMx_mode==BTIMER_MODE_UP){
-				ptrBTimerHandler->ptrTIMx->CR1 = TIM2
-			}
-			else if(ptrBTimerHandler->TIMx_Config->TIMx_speed!=0){
-				ptrBTimerHandler->ptrTIMx->PSC = TIMx_Config->TIMx_speed;
-			}
-		}
-		else if(ptrBTimerHandler->ptrTIMx == TIM3){
-			if(ptrBTimerHandler->TIMx_Config->TIMx_period!=0){
-				uint16_t Calculo = ~0;
-				uint16_t PSCVal = 0;
-				PSCVal = HSI_CLOCK_SPEED*(TIMx_Config->TIMx_period)/calculo;
-				ptrBTimerHandler->ptrTIMx->PSC = PSCVal;
-			}
-			else if(ptrBTimerHandler->TIMx_Config->TIMx_speed!=0){
-				ptrBTimerHandler->ptrTIMx->PSC = TIMx_Config->TIMx_speed;
-			}
-		}
-		else{
-			__NOP();
-		}
+		/* Escriba codigo aca */
+		ptrBTimerHandler->ptrTIMx->CR1 &= (RESET << TIM_CR1_DIR_Pos);
 
 		/* 3b. Configuramos el Auto-reload. Este es el "limite" hasta donde el CNT va a contar */
 		ptrBTimerHandler->ptrTIMx->ARR = ptrBTimerHandler->TIMx_Config.TIMx_period - 1;
 
 		/* 3c. Reiniciamos el registro counter*/
 		/* Escriba codigo aca */
+		ptrBTimerHandler->ptrTIMx->CNT = RESET;
+
 
 	}else{
 		/* 3a. Estamos en DOWN_Mode, el limite se carga en ARR (0) y se comienza en un valor alto
 		 * Trabaja contando en direccion descendente*/
 		/* Escriba codigo aca */
+		ptrBTimerHandler->ptrTIMx->CR1 |=  TIM_CR1_DIR;
 
 		/* 3b. Configuramos el Auto-reload. Este es el "limite" hasta donde el CNT va a contar
 		 * En modo descendente, con numero positivos, cual es el minimi valor al que ARR puede llegar*/
 		/* Escriba codigo aca */
-
+		ptrBTimerHandler->ptrTIMx->ARR = 0;
 		/* 3c. Reiniciamos el registro counter
 		 * Este es el valor con el que el counter comienza */
 		ptrBTimerHandler->ptrTIMx->CNT = ptrBTimerHandler->TIMx_Config.TIMx_period - 1;
 	}
 
 	/* 4. Activamos el Timer (el CNT debe comenzar a contar*/
-	ptrBTimerHandler->ptrTIMx->CR1 |= TIM_CR1_CEN;
+	//limpiamos
+	ptrBTimerHandler->ptrTIMx->CR1 &= ~(TIM_CR1_CEN);
+	ptrBTimerHandler->ptrTIMx->CR1 |= ptrBTimerHandler->TIMx_Config.TIMx_interruptEnable;
 
 	/* 5. Activamos la interrupción debida al Timerx Utilizado
 	 * Modificar el registro encargado de activar la interrupcion generada por el TIMx*/
-	/* Escriba codigo aca */
+	ptrBTimerHandler->ptrTIMx->DIER |= TIM_DIER_UIE;
 
 	/* 6. Activamos el canal del sistema NVIC para que lea la interrupción*/
 	if(ptrBTimerHandler->ptrTIMx == TIM2){
@@ -141,7 +113,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	}
 	else if(ptrBTimerHandler->ptrTIMx == TIM3){
 		// Activando en NVIC para la interrupción del TIM3
-		/* Escriba codigo aca */
+		NVIC_EnableIRQ(TIM3_IRQn);
 	}
 	else{
 		__NOP();
@@ -151,7 +123,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	__enable_irq();
 }
 
-__attribute__((weak)) void BasicTimerX_Callback(void){
+__attribute__((weak)) void BasicTimer2_Callback(void){
 	  /* NOTE : This function should not be modified, when the callback is needed,
 	            the BasicTimerX_Callback could be implemented in the main file
 	   */
@@ -168,6 +140,6 @@ void TIM2_IRQHandler(void){
 	ptrTimerUsed->SR &= ~TIM_SR_UIF;
 
 	/* LLamamos a la función que se debe encargar de hacer algo con esta interrupción*/
-	BasicTimer_Callback();
+	BasicTimer2_Callback();
 
 }

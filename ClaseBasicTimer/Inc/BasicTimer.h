@@ -25,7 +25,7 @@
 /* Estructura que contiene la configuración mínima necesaria para el manejo del Timer.*/
 typedef struct
 {
-	uint8_t		TIMx_mode; 		// Up or down
+	uint8_t		TIMx_mode; 		// Up or dowm
 	uint32_t	TIMx_speed;		// A qué velocidad se incrementa el Timer
 	uint32_t	TIMx_period;	// Valor en ms del periodo del Timer
 	uint8_t		TIMx_interruptEnable;	// Activa o desactiva el modo interrupción del timer.
@@ -34,8 +34,8 @@ typedef struct
 /* Handler para el Timer*/
 typedef struct
 {
-	TIM_TypeDef				*ptrTIMx;
-	BasicTimer_Config_t		TIMx_Config;
+	TIM_TypeDef			*ptrTIMx;
+	BasicTimer_Config_t	TIMx_Config;
 }	BasicTimer_Handler_t;
 
 void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler);
