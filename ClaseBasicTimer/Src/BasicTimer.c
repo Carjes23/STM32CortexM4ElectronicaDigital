@@ -63,7 +63,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 
 	/* Escriba codigo aca */
 
-	ptrBTimerHandler->ptrTIMx->PSC = ptrBTimerHandler->TIMx_Config.TIMx_speed-1;
+	ptrBTimerHandler->ptrTIMx->PSC = ptrBTimerHandler->TIMx_Config.TIMx_speed -1;
 
 
 	/* 3. Configuramos la dirección del counter (up/down)*/
@@ -75,7 +75,7 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 		ptrBTimerHandler->ptrTIMx->CR1 &= (RESET << TIM_CR1_DIR_Pos);
 
 		/* 3b. Configuramos el Auto-reload. Este es el "limite" hasta donde el CNT va a contar */
-		ptrBTimerHandler->ptrTIMx->ARR = ptrBTimerHandler->TIMx_Config.TIMx_period - 1;
+		ptrBTimerHandler->ptrTIMx->ARR = ptrBTimerHandler->TIMx_Config.TIMx_period -1;
 
 		/* 3c. Reiniciamos el registro counter*/
 		/* Escriba codigo aca */
@@ -86,25 +86,26 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 		/* 3a. Estamos en DOWN_Mode, el limite se carga en ARR (0) y se comienza en un valor alto
 		 * Trabaja contando en direccion descendente*/
 		/* Escriba codigo aca */
-		ptrBTimerHandler->ptrTIMx->CR1 |=  TIM_CR1_DIR;
+		ptrBTimerHandler->ptrTIMx->CR1 &= 		(RESET << TIM_CR1_DIR_Pos);
+		ptrBTimerHandler->ptrTIMx->CR1 |= 		(SET << TIM_CR1_DIR_Pos);
 
 		/* 3b. Configuramos el Auto-reload. Este es el "limite" hasta donde el CNT va a contar
 		 * En modo descendente, con numero positivos, cual es el minimi valor al que ARR puede llegar*/
 		/* Escriba codigo aca */
-		ptrBTimerHandler->ptrTIMx->ARR = 0;
+		ptrBTimerHandler->ptrTIMx->ARR = ptrBTimerHandler->TIMx_Config.TIMx_period - 1;
 		/* 3c. Reiniciamos el registro counter
 		 * Este es el valor con el que el counter comienza */
-		ptrBTimerHandler->ptrTIMx->CNT = ptrBTimerHandler->TIMx_Config.TIMx_period - 1;
+		ptrBTimerHandler->ptrTIMx->CNT = 0;
 	}
 
 	/* 4. Activamos el Timer (el CNT debe comenzar a contar*/
 	//limpiamos
 	ptrBTimerHandler->ptrTIMx->CR1 &= ~(TIM_CR1_CEN);
-	ptrBTimerHandler->ptrTIMx->CR1 |= ptrBTimerHandler->TIMx_Config.TIMx_interruptEnable;
+	ptrBTimerHandler->ptrTIMx->CR1 |= TIM_CR1_CEN;
 
 	/* 5. Activamos la interrupción debida al Timerx Utilizado
 	 * Modificar el registro encargado de activar la interrupcion generada por el TIMx*/
-	ptrBTimerHandler->ptrTIMx->DIER |= TIM_DIER_UIE;
+	ptrBTimerHandler->ptrTIMx->DIER |= ptrBTimerHandler->TIMx_Config.TIMx_interruptEnable;
 
 	/* 6. Activamos el canal del sistema NVIC para que lea la interrupción*/
 	if(ptrBTimerHandler->ptrTIMx == TIM2){
