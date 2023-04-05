@@ -111,6 +111,13 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	ptrBTimerHandler->ptrTIMx->CR1 &= ~(TIM_CR1_CEN);
 	ptrBTimerHandler->ptrTIMx->CR1 |= TIM_CR1_CEN;
 
+	/*
+	 * x. Activamos la funcion one pulse mode
+	 */
+	if(ptrBTimerHandler->TIMx_Config.TIMx_OPM == ENABLE){
+		ptrBTimerHandler->ptrTIMx->CR1 |= TIM_CR1_OPM;
+	}
+
 	/* 5. Activamos la interrupción debida al Timerx Utilizado
 	 * Modificar el registro encargado de activar la interrupcion generada por el TIMx*/
 	ptrBTimerHandler->ptrTIMx->DIER |= ptrBTimerHandler->TIMx_Config.TIMx_interruptEnable;

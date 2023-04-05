@@ -136,6 +136,10 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 		__NOP();
 	}
 
+
+	else{__NOP();}
+
+
 	/* 7. Volvemos a activar las interrupciones del sistema */
 	__enable_irq();
 }

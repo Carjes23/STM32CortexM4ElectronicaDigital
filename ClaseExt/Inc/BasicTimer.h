@@ -29,6 +29,7 @@ typedef struct
 	uint32_t	TIMx_speed;		// A qué velocidad se incrementa el Timer
 	uint32_t	TIMx_period;	// Valor en ms del periodo del Timer
 	uint8_t		TIMx_interruptEnable;	// Activa o desactiva el modo interrupción del timer.
+	uint8_t		TIMx_OPM; //One pulse mode enable
 }	BasicTimer_Config_t;
 
 /* Handler para el Timer*/

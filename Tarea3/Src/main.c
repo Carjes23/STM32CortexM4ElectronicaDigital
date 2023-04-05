@@ -19,6 +19,7 @@
 GPIO_Handler_t handlerUserLedPin = {0};
 BasicTimer_Handler_t handlerTim2 = {0};
 BasicTimer_Handler_t handlerTim3 = {0};
+BasicTimer_Handler_t handlerTim4 = {0};
 
 //Configuracion necesaria tarea
 
@@ -35,19 +36,22 @@ GPIO_Handler_t handlerLedD = {0}; //Led D
 GPIO_Handler_t handlerLedG = {0}; //Led G
 
 //Pines transistores.
-GPIO_Handler_t handlerTransistor1 = {0}; //Transistor 1
-GPIO_Handler_t handlerTransistor2= {0}; //Transistor 2
+GPIO_Handler_t handlerTransistor = {0}; //Transistor 1
 
 
 uint8_t unidades = 0;
 uint8_t decenas = 0;
 uint8_t contador = 0;
+uint8_t contadorc = 0;
+uint8_t contadortim3 = 0;
 
 bool banderaContador = 0;
 bool banderaBoton = 0;
 bool banderaLedUsuario = 0;
-bool banderaTimerLed = 0;
+bool banderaTimerLed1 = 0;
+bool banderaTimerLed2 = 0;
 bool estado = 0;
+bool banderaFiltro = 0;
 
 //Leds valores.
 
@@ -66,6 +70,7 @@ void initSystem(void);
 void funcionContadora(void);
 void funcionInfinito(void);
 void funcionLeds(uint8_t numero);
+void funcionLedsC(void);
 
 void BasicTimer2_Callback(void);
 void BasicTimer3_Callback(void);
@@ -76,35 +81,49 @@ int main(void){
 
 	while(1){
 
+		if(banderaBoton == 1 && banderaFiltro ==1){
+			banderaBoton = 0;
+			banderaFiltro = 0;
+			estado ^= 1;
+			TIM4->CR1 |= TIM_CR1_CEN;
+		}
+
+		else if(banderaBoton == 1){
+			banderaBoton = 0;
+		}
+
 		if(banderaLedUsuario == 1){
 			banderaLedUsuario = 0;
 			GPIOxTooglePin(&handlerUserLedPin);
-			unidades++;
-//			GPIOxTooglePin(&handlerLedG); PRUEBA
 		}
+
+		decenas = contador / 10;
+		unidades = contador % 10;
 
 		if(estado == CONTADOR){
 			funcionContadora();
-		} else { funcionInfinito();}
-
-		if(banderaBoton == 1){
-			banderaBoton = 0;
-			estado ^= 1;
-		}
-
-		if(banderaTimerLed==1){
-			funcionLeds(unidades);
-			GPIOxTooglePin(&handlerTransistor1);
-			GPIOxTooglePin(&handlerTransistor2);
-		} else{funcionLeds(decenas);}
-
-
+			if(banderaTimerLed1==1){
+				GPIO_WritePin(&handlerTransistor, 1);
+				banderaTimerLed1 = 0;
+				funcionLeds(unidades);
+			}
+			else if(banderaTimerLed2==1){
+				GPIO_WritePin(&handlerTransistor, 0); //Cambiar si es al contrario
+				banderaTimerLed2 =0;
+				funcionLeds(decenas);
+			}
+			else{
+				__NOP();
+				}
+			}
+		else { funcionInfinito();}
 
 	}
 
 }
 
 void initSystem(void){
+
 	//Led de usuario
 
 	handlerUserLedPin.pGPIOx = GPIOA; // Aquí se coloca a que GPIO pertenece el pin en este caso es el A
@@ -131,51 +150,50 @@ void initSystem(void){
 
 	//Timer 3 transistores.
 
-	handlerTim3.ptrTIMx = TIM2;
+	handlerTim3.ptrTIMx = TIM3;
 	handlerTim3.TIMx_Config.TIMx_interruptEnable = 1;
 	handlerTim3.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;
-	handlerTim3.TIMx_Config.TIMx_period = 15;
+	handlerTim3.TIMx_Config.TIMx_period = 10;
 	handlerTim3.TIMx_Config.TIMx_speed = BTIMER_SPEED_1ms;
 
-	BasicTimer_Config(&handlerTim2);
+	BasicTimer_Config(&handlerTim3);
 
-	handlerStateLed.pGPIOx = GPIOA;
-	handlerStateLed.GPIO_PinConfig_t.GPIO_PinNumber = PIN_5;
-	handlerStateLed.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_OUT;
-	handlerStateLed.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_PUSHPULL;
-	handlerStateLed.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	handlerTim4.ptrTIMx = TIM4;
+	handlerTim4.TIMx_Config.TIMx_interruptEnable = 1;
+	handlerTim4.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;
+	handlerTim4.TIMx_Config.TIMx_period = 250;
+	handlerTim4.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us;
+	handlerTim4.TIMx_Config.TIMx_OPM = ENABLE;
 
-	GPIO_Config(&handlerStateLed);
+	BasicTimer_Config(&handlerTim4);
+
 
 	handlerEncoderA.pGPIOx = GPIOA;
 	handlerEncoderA.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0;
 	handlerEncoderA.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN;
 	handlerEncoderA.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLDOWN;
-	handlerEncoderA.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
 
 
-	handlerExtiA.edgeType = EXTERNAL_INTERRUPT_RISING_EDGE;
+	handlerExtiA.edgeType = EXTERNAL_INTERRUPT_FALLING_EDGE;
 	handlerExtiA.pGPIOHandler = &handlerEncoderA;
 
 	extInt_Config(&handlerExtiA);
 
-	handlerEncoderB.pGPIOx = GPIOH;
-	handlerEncoderB.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0;
+	handlerEncoderB.pGPIOx = GPIOC;
+	handlerEncoderB.GPIO_PinConfig_t.GPIO_PinNumber = PIN_12;
 	handlerEncoderB.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN;
 	handlerEncoderB.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLDOWN;
-	handlerEncoderB.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
 
 	GPIO_Config(&handlerEncoderB);
 
-	handlerBotEncoder.pGPIOx = GPIOH;
-	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinNumber = PIN_1;
+	handlerBotEncoder.pGPIOx = GPIOD;
+	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinNumber = PIN_2;
 	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN;
-	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLDOWN; //revisar
-	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	handlerBotEncoder.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP; //revisar
 
 
 	handlerExtiBot.edgeType = EXTERNAL_INTERRUPT_RISING_EDGE;
-	handlerExtiBot.pGPIOHandler = &handlerEncoderA;
+	handlerExtiBot.pGPIOHandler = &handlerBotEncoder;
 
 	extInt_Config(&handlerExtiBot);
 
@@ -264,30 +282,16 @@ void initSystem(void){
 	GPIO_Config(&handlerLedG);
 //	GPIO_WritePin(&handlerLedE, 0); // Estado inicial
 
-	handlerTransistor1.pGPIOx = GPIOB;
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_3;
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL; //Sí se configura out, en que modo se va a usar, en este caso se usara como push-pull
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING; //Si se le va agregár una resistencia Pull-Up o Pull-down, no  le pondremos ninguna
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST; //A que velocidad se va utilizr la salida del
-	handlerTransistor1.GPIO_PinConfig_t.GPIO_PinAltFunMode	= 	AF0; //Ninguna funcion alternativa
+	handlerTransistor.pGPIOx = GPIOC;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_10;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL; //Sí se configura out, en que modo se va a usar, en este caso se usara como push-pull
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING; //Si se le va agregár una resistencia Pull-Up o Pull-down, no  le pondremos ninguna
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST; //A que velocidad se va utilizr la salida del
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinAltFunMode	= 	AF0; //Ninguna funcion alternativa
 
 
-	GPIO_Config(&handlerTransistor1);
-	GPIO_WritePin(&handlerTransistor1, 1); // Estado inicial contrario al 2
-
-	handlerTransistor2.pGPIOx = GPIOB;
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_3;
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL; //Sí se configura out, en que modo se va a usar, en este caso se usara como push-pull
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING; //Si se le va agregár una resistencia Pull-Up o Pull-down, no  le pondremos ninguna
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST; //A que velocidad se va utilizr la salida del
-	handlerTransistor2.GPIO_PinConfig_t.GPIO_PinAltFunMode	= 	AF0; //Ninguna funcion alternativa
-
-
-	GPIO_Config(&handlerTransistor2);
-	GPIO_WritePin(&handlerTransistor2, 0); // Estado inicial contrario al 1
-
+	GPIO_Config(&handlerTransistor);
 
 
 
@@ -302,14 +306,16 @@ void callback_extInt0(void){
 	banderaContador = 1;
 }
 
-void callback_extInt1(void){
+void callback_extInt2(void){
 	banderaBoton = 1;
 }
 
 void funcionContadora(void){
 	//Bandera que verifica cambios en el contador
-		if(banderaContador == 1){
+		if(banderaContador == 1 && banderaFiltro == 1){
 			banderaContador = 0;
+			banderaFiltro = 0;
+			TIM4->CR1 |= TIM_CR1_CEN;
 			if(GPIO_ReadPin(&handlerEncoderB) == 0){//cambiar a 1 si esta al reves.
 				if(contador != 99){
 					contador++;
@@ -323,6 +329,9 @@ void funcionContadora(void){
 
 			decenas = contador / 10;
 			unidades = contador % 10;
+		}
+		else if(banderaContador == 1){
+			banderaContador = 0;
 		}
 }
 
@@ -446,12 +455,173 @@ void funcionLeds(uint8_t numero){
 }
 
 void funcionInfinito(void){
-	__NOP();
+	if(banderaContador == 1 && banderaFiltro ==1){
+			banderaFiltro = 0;
+			banderaContador = 0;
+			TIM4->CR1 |= TIM_CR1_CEN;
+			if(GPIO_ReadPin(&handlerEncoderB) == 0){//cambiar a 1 si esta al reves.
+				if(contadorc != 11){
+					contadorc++;
+				}
+				else{contadorc = 0;}
+			} else{
+				if(contadorc != 0){
+					contadorc--;
+				} else{contadorc = 11;}
+			}
+		}
+	else if(banderaContador == 1){
+			banderaContador = 0;
+		}
+	funcionLedsC();
 }
 
 void BasicTimer3_Callback(void){
-	banderaTimerLed = 1;
+	contadortim3++;
+	if(contadortim3 == 1){
+		banderaTimerLed1 = 1;
+	}
+	else if(contadortim3 == 2){
+		banderaTimerLed2 = 1;
+		contadortim3 = 0;
+	}
 }
 
+void funcionLedsC(void){
+	switch(contadorc){
+		case 0:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 0;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 1:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 0;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 2:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 0;
+			ledG = 1;
+			break;
+		case 3:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 0;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 4:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 0;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 5:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 0;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 6:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 0;
+			ledG = 1;
+			break;
+		case 7:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 1;
+			ledB = 0;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 8:
+			GPIO_WritePin(&handlerTransistor, 0);
+			ledA = 1;
+			ledB = 1;
+			ledC = 0;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 9:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 1;
+			ledB = 1;
+			ledC = 1;
+			ledD = 0;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 10:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 1;
+			ledB = 1;
+			ledC = 0;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		case 11:
+			GPIO_WritePin(&handlerTransistor, 1);
+			ledA = 1;
+			ledB = 0;
+			ledC = 1;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+		default:
+			break;
+	}
+	GPIO_WritePin(&handlerLedA, ledA);
+	GPIO_WritePin(&handlerLedB, ledB);
+	GPIO_WritePin(&handlerLedC, ledC);
+	GPIO_WritePin(&handlerLedD, ledD);
+	GPIO_WritePin(&handlerLedE, ledE);
+	GPIO_WritePin(&handlerLedF, ledF);
+	GPIO_WritePin(&handlerLedG, ledG);
+}
 
+void BasicTimer4_Callback(void){
+	banderaFiltro = 1;
+}
 
