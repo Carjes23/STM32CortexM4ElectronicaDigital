@@ -99,7 +99,7 @@ GPIO_Handler_t handlerLedG = {0}; 			//Segmento G en el 7 Segmentos
 //Definicion GPIO que controlan el led RGB que determina la frecuencia(periodo)
 //de refresco del contador.
 
-GPIO_Handler_t handlerLedFrecA = {0}; //Led indicador de frecuencia A -> 11 ms -> Rojo
+GPIO_Handler_t handlerLedFrecA = {0}; //Led indicador de frecuencia A -> 10 ms -> Rojo
 GPIO_Handler_t handlerLedFrecB = {0}; //Led indicador de frecuencia B -> 50 ms -> Verde
 GPIO_Handler_t handlerLedFrecC = {0}; //Led indicador de frecuencia C -> 100 ms -> Azul
 
@@ -178,7 +178,7 @@ bool ledE = 0; 			//Estado segmento E
 bool ledF = 0; 			//Estado segmento F
 bool ledG = 0; 			//Estado segmento G
 		//Valores para el led rbg que representa la velocidad de refresco del display.
-bool ledFrecA = 0; 		//Led indicador de frecuencia A -> 11 ms -> Rojo
+bool ledFrecA = 0; 		//Led indicador de frecuencia A -> 10 ms -> Rojo
 bool ledFrecB = 0; 		//Led indicador de frecuencia B -> 50 ms -> Verde
 bool ledFrecC = 0; 		//Led indicador de frecuencia C -> 100 ms -> Azul
 
@@ -196,6 +196,7 @@ void funcionCulebrita(void);		//Funcion que realiza el conteo de culebrita(0-11 
 void funcionLeds(uint8_t numero); 	//Funcion que controla los pines que se prenden para mostrar el numero que le ingrese.
 void funcionLedsC(void); 			//Funcion que controla los pines y el valor del transistor que se prenden para mostrar la posicion deseada.
 void funcionFrecuencia(void); 		//Funcion que controla el cambio en frecuencias
+void resetDisplay(void); 			//Funcion que borra los numeros en el 7 segmentos
 
 //Cabeceras de funciones callback se sabe que son redundantes pero no afectan nada al codigo y fueron
 //de ayuda en el desarrollo para recordar que faltaba por editar.
@@ -256,11 +257,13 @@ int main(void){
 		if(estado == CONTADOR){
 			funcionContadora();
 			if(banderaTimerLed1==1){
+				resetDisplay(); //se apagan los valores anteriores
 				GPIO_WritePin(&handlerTransistor, 1);
 				banderaTimerLed1 = 0;
 				funcionLeds(unidades);
 			}
 			else if(banderaTimerLed2==1){
+				resetDisplay();//se apagan los valores anteriores
 				GPIO_WritePin(&handlerTransistor, 0);
 				banderaTimerLed2 =0;
 				funcionLeds(decenas);
@@ -331,7 +334,7 @@ void initSystem(void){
 	handlerTim3.ptrTIMx = TIM3;//El timer que se va a usar
 	handlerTim3.TIMx_Config.TIMx_interruptEnable = 1;//Se habilitan las interrupciones
 	handlerTim3.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;//Se usara en modo ascendente
-	handlerTim3.TIMx_Config.TIMx_period = 110; //Se define el periodo en este caso el default es 11 ms.
+	handlerTim3.TIMx_Config.TIMx_period = 100; //Se define el periodo en este caso el default es 10 ms.
 	handlerTim3.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us;//Se define la "velocidad" que se usara
 
 	BasicTimer_Config(&handlerTim3);//Se carga la configuración.
@@ -342,8 +345,8 @@ void initSystem(void){
 	handlerTim4.ptrTIMx = TIM4;//El timer que se va a usar
 	handlerTim4.TIMx_Config.TIMx_interruptEnable = 1;//Se habilitan las interrupciones
 	handlerTim4.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;//Se usara en modo ascendente
-	handlerTim4.TIMx_Config.TIMx_period = 250;//Se define el periodo en este caso el default es 25 ms.
-	handlerTim4.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us;//Se define la "velocidad" que se usara
+	handlerTim4.TIMx_Config.TIMx_period = 50;//Se define el periodo en este caso el default es 50 ms.
+	handlerTim4.TIMx_Config.TIMx_speed = BTIMER_SPEED_1ms;//Se define la "velocidad" que se usara
 	handlerTim4.TIMx_Config.TIMx_OPM = ENABLE; //Funcion que nos permite que el timer cuente solo una vez y toque habilitarlo para volver a usarlo.
 
 	BasicTimer_Config(&handlerTim4);//Se carga la configuración.
@@ -481,7 +484,7 @@ void initSystem(void){
 	handlerLedFrecA.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
 
 	GPIO_Config(&handlerLedFrecA);
-	GPIO_WritePin(&handlerLedFrecA, SET); //Estado Inicial encendido a que estamos a 110 ms.
+	GPIO_WritePin(&handlerLedFrecA, SET); //Estado Inicial encendido a que estamos a 10 ms.
 
 	//Componente verde del RGB. PIN_B2
 
@@ -906,7 +909,7 @@ void funcionFrecuencia(void){
 	//O rojo o verde o azul.
 	switch(contadorFrec){
 		case 0:
-			handlerTim3.TIMx_Config.TIMx_period = 110;
+			handlerTim3.TIMx_Config.TIMx_period = 100;
 			ledFrecA = 1;
 			ledFrecB = 0;
 			ledFrecC = 0;
@@ -937,6 +940,27 @@ void funcionFrecuencia(void){
 	GPIO_WritePin(&handlerLedFrecA, ledFrecA);
 	GPIO_WritePin(&handlerLedFrecB, ledFrecB);
 	GPIO_WritePin(&handlerLedFrecC, ledFrecC);
+
+}
+
+//Funcion que borra los numeros en el 7 segmentos
+void resetDisplay(void){
+	//Se le asigna un valor de 1 a todos ya que asi se apagan.
+	ledA = 1;
+	ledB = 1;
+	ledC = 1;
+	ledD = 1;
+	ledE = 1;
+	ledF = 1;
+	ledG = 1;
+	//Se cargan los valores a los pines.
+	GPIO_WritePin(&handlerLedA, ledA);
+	GPIO_WritePin(&handlerLedB, ledB);
+	GPIO_WritePin(&handlerLedC, ledC);
+	GPIO_WritePin(&handlerLedD, ledD);
+	GPIO_WritePin(&handlerLedE, ledE);
+	GPIO_WritePin(&handlerLedF, ledF);
+	GPIO_WritePin(&handlerLedG, ledG);
 
 }
 
