@@ -27,7 +27,10 @@
  ******************************************************************************
  */
 
-
+/*
+ * Codigo que permite probar los drivers vistos en paro, y mandar imagenes a la pantalla
+ * a traves del USART2
+ */
 #include <stdint.h>
 #include <stm32f4xx.h>
 #include "GPIOxDriver.h"
@@ -42,15 +45,17 @@
 
 bool banderaLedUsuario = 0; //Bandera TIM2 el cual nos da el blinking del LD2
 
-uint8_t usart2DataReceived = 0;
+uint8_t usart2DataReceived = 0; //Dato recibido por el usart dos
 
-char string[] = "Hola ";
-char bufferMsg[64] = {0};
+char string[] = "Hola "; //String de prueba para el ussart
+char bufferMsg[64] = {0}; //Para guardar l configuracion a mandar por el usar
 
+//Variables para demostrar el funcionamiento del modulo de procesamiento matematico.
 float valueA = 123.4567f;
 float valueB = 987.7654f;
 float valueC = 0.0;
 
+//Funciones utilizadas para el DSP
 float32_t sineValue = 0.0;
 float32_t sineArgValue = 0.0;
 
@@ -58,65 +63,71 @@ float32_t srcNumber[4] = {-0.987, 32.26, -45.21, -987.321};
 float32_t destNumber[4] = {0};
 uint32_t dataSize = 4;
 
+//Handlers utilizados para manipular los perifericos
 BasicTimer_Handler_t handlerTim2 = {0}; //Timer para el blinking
-USART_Handler_t USART2Handler = {0};
-GPIO_Handler_t handlerUserLedPin = {0};
-GPIO_Handler_t tx2pin = {0};
-GPIO_Handler_t rx2pin = {0};
-PWM_Handler_t pwmtim3 = {0};
-GPIO_Handler_t pwmpin = {0};
-GPIO_Handler_t CSPrueba = {0};
-GPIO_Handler_t RSTPrueba = {0};
-GPIO_Handler_t DCPrueba = {0};
-SPI_Handler_t SPIPrueba = {0};
-GPIO_Handler_t MOSIPrueba = {0};
-GPIO_Handler_t SCKPrueba = {0};
-ILI9341_Handler_t ili = {0};
+USART_Handler_t USART2Handler = {0}; //Para manejar el USART2
+GPIO_Handler_t handlerUserLedPin = {0}; // Para manipular el led de usuario
+GPIO_Handler_t tx2pin = {0}; //Para manipular el pin de trasminsión de datos del USART
+GPIO_Handler_t rx2pin = {0}; //Para manipular el pin de recepcioón de datos del USART
+PWM_Handler_t pwmtim3 = {0}; //Para configurar el PWM enn el timer 3
+GPIO_Handler_t pwmpin = {0}; //Pin que nos entrega la señal PWM
+GPIO_Handler_t CSPrueba = {0}; // CS para la pantalla (chip select)
+GPIO_Handler_t RSTPrueba = {0}; // RST para la pantalla (Reset)
+GPIO_Handler_t DCPrueba = {0}; //DC para la pantalla (Data or command)
+SPI_Handler_t SPIPrueba = {0}; //Handler para usar el SPI 2.
+GPIO_Handler_t MOSIPrueba = {0}; //MOSI para la pantalla (Master Output Slave Input)
+GPIO_Handler_t SCKPrueba = {0}; //SCK para la pantalla (Clock del SPI)
+ILI9341_Handler_t ili = {0}; //Handler para manejar la pantalla
 
-uint16_t duttyValue = 2000;
+uint16_t duttyValue = 2000; //Valor del dutty inicial
+long contadorPan = 0; // COntador para saber cuando la pantalla se lleno
 
-void initSystem(void);
-void USART2Rx_Callback(void);
+void initSystem(void); // Función quue inicializa el sistema
+void USART2Rx_Callback(void); //Definir el callback
 
 int main(void){
 	//Activacion cooprocesador matematico
 	SCB->CPACR |= (0xF <<20);
 
+	//Iniciamos sistma
 	initSystem();
-
+	//Colocamos la rotacion 3 para el llenado de datos.
 	Ili_setRotation(&ili, 3);
 
-	// Set the background color to black
-    uint16_t backgroundColor = 0x001F; // 16-bit color value for black
+	// Vamos a rellenar la pantalla de negro.
 
-    // Fill the entire screen with the background color
+    uint16_t backgroundColor = 0x0000; // negro en 16-bit RGB565
+
+    // Rellenar la pantalla con el color de background
     ILI9341_FillRectangle(&ili, 0, 0, ILI9341_TFTHEIGHT - 1, ILI9341_TFTWIDTH - 1, backgroundColor);
 
-    //Imagen
-//    ILI9341_SendImage(&ili,0,0,ILI9341_TFTHEIGHT - 1, ILI9341_TFTWIDTH - 1, imagen);
-//
-    // Define coordinates for the rectangle
-    uint16_t x0 = 10, y0 = 10, x1 = 100, y1 = 100;
-
-    // Define the color for the rectangle (e.g., red)
-    uint16_t rectangleColor = 0xF800; // 16-bit color value for red
-
-    // Fill the rectangle with the specified color
-    ILI9341_FillRectangle(&ili, x0, y0, x1, y1, rectangleColor);
-
-    // Set the address window on the ILI9341 display
+    //Iniciamos la comuniación para la recepcion de la primera imagen
 	Ili_starCom(&ili);
+	//Definimos toda la pantalla para rellenarla por completo.
     ILI9341_SetAddressWindow(&ili, 0, 0, ILI9341_TFTHEIGHT - 1, ILI9341_TFTWIDTH - 1);
 
 
 	while(1){
 
 
-
+		//Utilizamos el led de usuario cada 250 ms
 		if(banderaLedUsuario == 1){
 			banderaLedUsuario = 0;
 			GPIOxTooglePin(&handlerUserLedPin);
 		}
+		//Volvemos a colocar la pantalla lista para la recepción de la siguiente imagen
+		if(contadorPan == 0x25800){
+			//Reiniciamos el contador
+			contadorPan = 0;
+			// cerramos la comunicación de la anterior imange
+			Ili_endCom(&ili);
+			//Abrimos la comunicación para la siguiente imagen
+			Ili_starCom(&ili);
+			//Definimos toda la pantalla
+			ILI9341_SetAddressWindow(&ili, 0, 0, ILI9341_TFTHEIGHT - 1, ILI9341_TFTWIDTH - 1);
+
+		}
+
 
 	}
 
@@ -124,51 +135,51 @@ int main(void){
 }
 
 void initSystem(void){
-
-	RCC -> PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC);
-
-	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLM); // Limpiamos
-	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLM_3); // Ponemos un 8 en el PLLM
-
-	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLN); // Limpiamos
-	/* Ponemos PLLN en 100 */
-	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_2);
-	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_5);
-	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_6);
-
-	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLP); // Limpiamos
-
-	/* Latencia del FLASH_ACR para que se demore y pueda hacer el registro */
-	// 3 Wait states
-	FLASH -> ACR &= ~(FLASH_ACR_LATENCY); // Limpiamos
-	FLASH -> ACR |= (FLASH_ACR_LATENCY_1WS);
-	FLASH -> ACR |= (FLASH_ACR_LATENCY_2WS);
-
-	/* Configuramos el MC01 (PIN A8 como funcion alternativa 00) */
-
-	// Seleccionamos la senal PLL
-	RCC -> CFGR |= RCC_CFGR_MCO1_0;
-	RCC -> CFGR |= RCC_CFGR_MCO1_1;
-
-	// Utilizamos un prescaler para poder ver la senal en el osciloscopio
-	RCC -> CFGR |= RCC_CFGR_MCO1PRE_0;
-	RCC -> CFGR |= RCC_CFGR_MCO1PRE_1;
-	RCC -> CFGR |= RCC_CFGR_MCO1PRE_2;
-
-	// Encender el PLL
-
-	RCC->CR |= RCC_CR_PLLON;
-
-	// Esperamos que el PLL se cierre (estabilizacion)
-	while (!(RCC->CR & RCC_CR_PLLRDY)){
-		__NOP();
-	}
-
-	// Cambiamos el CPU Clock source cambiando los SW bits (System Clock Switch)
-	/* System Clock Switch para PLL */
-	RCC -> CFGR &= ~(RCC_CFGR_SW); // Limpiamos
-	RCC -> CFGR |= (RCC_CFGR_SW_1);
-
+//Cambiar el micro a 10Mhz
+//	RCC -> PLLCFGR &= ~(RCC_PLLCFGR_PLLSRC);
+//
+//	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLM); // Limpiamos
+//	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLM_3); // Ponemos un 8 en el PLLM
+//
+//	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLN); // Limpiamos
+//	/* Ponemos PLLN en 100 */
+//	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_2);
+//	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_5);
+//	RCC->PLLCFGR |= (RCC_PLLCFGR_PLLN_6);
+//
+//	RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLP); // Limpiamos
+//
+//	/* Latencia del FLASH_ACR para que se demore y pueda hacer el registro */
+//	// 3 Wait states
+//	FLASH -> ACR &= ~(FLASH_ACR_LATENCY); // Limpiamos
+//	FLASH -> ACR |= (FLASH_ACR_LATENCY_1WS);
+//	FLASH -> ACR |= (FLASH_ACR_LATENCY_2WS);
+//
+//	/* Configuramos el MC01 (PIN A8 como funcion alternativa 00) */
+//
+//	// Seleccionamos la senal PLL
+//	RCC -> CFGR |= RCC_CFGR_MCO1_0;
+//	RCC -> CFGR |= RCC_CFGR_MCO1_1;
+//
+//	// Utilizamos un prescaler para poder ver la senal en el osciloscopio
+//	RCC -> CFGR |= RCC_CFGR_MCO1PRE_0;
+//	RCC -> CFGR |= RCC_CFGR_MCO1PRE_1;
+//	RCC -> CFGR |= RCC_CFGR_MCO1PRE_2;
+//
+//	// Encender el PLL
+//
+//	RCC->CR |= RCC_CR_PLLON;
+//
+//	// Esperamos que el PLL se cierre (estabilizacion)
+//	while (!(RCC->CR & RCC_CR_PLLRDY)){
+//		__NOP();
+//	}
+//
+//	// Cambiamos el CPU Clock source cambiando los SW bits (System Clock Switch)
+//	/* System Clock Switch para PLL */
+//	RCC -> CFGR &= ~(RCC_CFGR_SW); // Limpiamos
+//	RCC -> CFGR |= (RCC_CFGR_SW_1);
+	//Inicializamos el SysTick (importante para poder utilizar la pantalla)
 	config_SysTick_ms(HSI_CLOCK_CONFIGURED);
 
 	//Led de usuario usado para el blinking
@@ -323,8 +334,10 @@ void initSystem(void){
 void BasicTimer2_Callback(void){
 	banderaLedUsuario = 1;
 }
-
+//Recibimos los datos de la imagen y los mandamos a la pantalla, aumentamos el contador para poder
+//reiniciarla una vez se llene la imagen.
 void USART2Rx_Callback(void){
 	usart2DataReceived = getRxData();
 	ILI9341_WriteData(&ili, &usart2DataReceived, 1);
+	contadorPan++;
 }

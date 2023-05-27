@@ -77,10 +77,18 @@ void USART_Config(USART_Handler_t *ptrUsartHandler);
 void USART1Rx_Callback(void); /* Esta función debe ser sobre-escrita en el main para que el sistema funcione*/
 void USART2Rx_Callback(void);
 void USART6Rx_Callback(void);
+void USART1Tx_Char(void);
+void USART1Tx_String(void);
+void USART2Tx_Char(void);
+void USART2Tx_String(void);
+void USART6Tx_Char(void);
+void USART6Tx_String(void);
 
 int writeChar(USART_Handler_t *ptrUsartHandler, int dataToSend );
 int readChar(USART_Handler_t *ptrUsartHandler);
 void writeString(USART_Handler_t *ptrUsartHandler, char* string);
+int writeCharInt(USART_Handler_t *ptrUsartHandler, int dataToSendI );
+void writeStringInt(USART_Handler_t *ptrUsartHandler, char* string);
 
 uint8_t getRxData(void);
 

@@ -8,7 +8,7 @@
 #ifndef ILI9341_H_
 #define ILI9341_H_
 
-
+//Macros extraidas de los documentos de adafruit.
 
 #define ILI9341_TFTWIDTH 240  ///< ILI9341 max TFT width
 #define ILI9341_TFTHEIGHT 320 ///< ILI9341 max TFT height
@@ -95,29 +95,27 @@
 #include "SPIxDriver.h"
 #include "GPIOxDriver.h"
 
-// Add ILI9341 command definitions here
-// ...
 
-// ILI9341 driver structure
+// ILI9341 Sctruc.
 typedef struct
 {
-    SPI_Handler_t *spi_handler;
+    SPI_Handler_t *spi_handler;		//El spi utilizado
     GPIO_Handler_t *cs_pin; 		//Entregarlos configurados como salida, push-pull, pull_down o nada.
     GPIO_Handler_t *dc_pin;		//Entregarlos configurados como salida, push-pull, pull_down o nada.
     GPIO_Handler_t *reset_pin;	//Entregarlos configurados como salida, push-pull, pull_down o nada.
 } ILI9341_Handler_t;
 
-// Function prototypes
-void ILI9341_Init(ILI9341_Handler_t *ili9341_handler);
-void ILI9341_Reset(ILI9341_Handler_t *ili9341_handler);
-void ILI9341_WriteCommand(ILI9341_Handler_t *ili9341_handler, uint8_t cmd);
-void ILI9341_WriteData(ILI9341_Handler_t *ili9341_handler, uint8_t *data, uint16_t len);
-void ILI9341_SetAddressWindow(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
-void ILI9341_DrawPixel(ILI9341_Handler_t *ili9341_handler, uint16_t x, uint16_t y, uint16_t color);
-void ILI9341_FillRectangle(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void ILI9341_SendImage(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *imagen);
-void ILI9341_Init_com(ILI9341_Handler_t *ili9341_handler);
-void Ili_setRotation(ILI9341_Handler_t *ili9341_handler, uint8_t m);
-void Ili_starCom(ILI9341_Handler_t *ili9341_handler);
-void Ili_endCom(ILI9341_Handler_t *ili9341_handler);
+// Funciones
+void ILI9341_Init(ILI9341_Handler_t *ili9341_handler); //Para iniciar el funcionamiento
+void ILI9341_Reset(ILI9341_Handler_t *ili9341_handler); //Para resetear a pantalla
+void ILI9341_WriteCommand(ILI9341_Handler_t *ili9341_handler, uint8_t cmd); //Para mandar un comando
+void ILI9341_WriteData(ILI9341_Handler_t *ili9341_handler, uint8_t *data, uint16_t len); //Para mandar datos, recibe un puntero y la cantidad de tdatos
+void ILI9341_SetAddressWindow(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1); //Para ajustar a que región se mandaran los datos
+void ILI9341_DrawPixel(ILI9341_Handler_t *ili9341_handler, uint16_t x, uint16_t y, uint16_t color); //Para cambiar un solo pixel de la pantalla
+void ILI9341_FillRectangle(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color); //Para rellenar un cuadrado de un color en expecifico
+void ILI9341_SendImage(ILI9341_Handler_t *ili9341_handler, uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint8_t *imagen); //Para mandar una imagen.
+void ILI9341_Init_com(ILI9341_Handler_t *ili9341_handler);  //Funcion que manda los comandos necesarios para iniciar la pantalla.
+void Ili_setRotation(ILI9341_Handler_t *ili9341_handler, uint8_t m); //Funcion que define la direccion de llenado de la pantalla.
+void Ili_starCom(ILI9341_Handler_t *ili9341_handler); //Funcion que inicia la comunicación
+void Ili_endCom(ILI9341_Handler_t *ili9341_handler); //Funcion que finaliza la comunicacón
 #endif // ILI9341_H_

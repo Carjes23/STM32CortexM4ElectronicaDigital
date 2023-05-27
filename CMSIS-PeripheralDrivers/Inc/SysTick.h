@@ -42,7 +42,9 @@
 
 void config_SysTick_ms(uint8_t systemClock);
 uint64_t getTicks_ms(void);
+uint64_t getTicks_us(void);
 void delay_ms(uint32_t wait_time_ms);
+void delay_100us(uint32_t wait_time_ms);
 
 
 

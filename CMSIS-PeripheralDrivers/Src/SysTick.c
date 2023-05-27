@@ -33,36 +33,17 @@
 uint64_t ticks = 0;
 uint64_t ticks_start = 0;
 uint64_t ticks_counting = 0;
+uint64_t ticksms = 0;
+uint64_t ticks_startms = 0;
+uint64_t ticks_countingms = 0;
 
 void config_SysTick_ms(uint8_t systemClock){
 	// Reiniciamos la variable que cuenta el tiempo
 	ticks = 0;
 
 	// Cargamos el valor del limite de incrementos que representan 1ms.
-
-	switch(systemClock){
-		//Caso para el reloj HSI -> 16 MHz
-
-		case 0:
-			SysTick->LOAD = SYSTICK_LOAD_VALUE_16MHz_1ms;
-			break;
-		//Caso para el reloj HSE -> 16 MHz
-
-		case 1:
-			SysTick->LOAD = SYSTICK_LOAD_VALUE_16MHz_1ms;
-			break;
-
-		//Caso para el reloj HSI -> 16 MHz
-
-		case 2:
-			SysTick->LOAD = SYSTICK_LOAD_VALUE_100MHz_1ms;
-			break;
-		//En cualquier otro caso
-
-		default:
-			SysTick->LOAD = SYSTICK_LOAD_VALUE_16MHz_1ms;
-			break;
-	}
+	uint32_t us100 = (systemClock) * 100 - 1;
+	SysTick->LOAD = us100;
 
 	// Limpiamos el valor actual del SysTick
 	SysTick->VAL = 0;
@@ -87,6 +68,9 @@ void config_SysTick_ms(uint8_t systemClock){
 }
 
 uint64_t getTicks_ms(void){
+	return ticksms;
+}
+uint64_t getTicks_us(void){
 	return ticks;
 }
 
@@ -106,6 +90,22 @@ void delay_ms(uint32_t wait_time_ms){
 	}
 }
 
+void delay_100us(uint32_t wait_time_us){
+	//Captura el primer valor de tiempo para comparar.
+	ticks_start = getTicks_us();
+
+	//Captrua el segundo valor para compara comienzan en el mismo valor
+	ticks_counting = getTicks_us();
+
+	//Compara el valor counting con el delay + start.
+
+	while(ticks_counting < (ticks_start + (uint64_t) wait_time_us)){
+
+		//Actualizar el valor
+		ticks_counting = getTicks_us();
+	}
+}
+
 void SysTick_Handler(void){
 	//Verificamos que la interrupcion se lanzo
 	if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk){
@@ -115,6 +115,10 @@ void SysTick_Handler(void){
 
 		//incrementamos en 1 el contador
 		ticks++;
+
+		if(ticks % 10 == 0){
+			ticksms++;
+		}
 	}
 }
 

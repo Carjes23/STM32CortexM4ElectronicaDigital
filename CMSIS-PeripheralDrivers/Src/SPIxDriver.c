@@ -29,7 +29,7 @@
 
 #include <stm32f4xx.h>
 #include "SPIxDriver.h"
-
+#include "PLLDriver.h"
 /**
  * Configurando el SPI.
  * Recordar que siempre se debe comenzar con activar la señal de reloj
@@ -156,24 +156,33 @@ int SPI_WriteChar(SPI_Handler_t *ptrSPI_Handler, uint8_t dataToSend){
 	uint8_t auxData;
 	(void) auxData;
 
-    // Wait until the transmit buffer is empty (TXE bit in SPI_SR is set)
+    // Esperamos a que el buffer TXE este vacio
     while (!(ptrSPI_Handler->ptrSPIx->SR & SPI_SR_TXE)){
         __NOP();
     }
 
-    // Send the data to the SPI data register (SPI_DR)
+    // Enviamos el dato por el SPI DR
     ptrSPI_Handler->ptrSPIx->DR = dataToSend;
 
-    // Wait until the transmit buffer is empty (TXE bit in SPI_SR is set)
+    //Esperamos a que el buffer este vacio
     while (!(ptrSPI_Handler->ptrSPIx->SR & SPI_SR_TXE)){
         __NOP();
     }
 
 
-    // Wait until the data is completely transmitted (BSY bit in SPI_SR is reset)
+    // Esperamos hasta que deje de estar ocuapdo para que los datos no se sobrepongan
     while (ptrSPI_Handler->ptrSPIx->SR & SPI_SR_BSY){
         __NOP();
     }
+
+    //Con esto limpiamos los datos.
+//TODO
+    if(getFreqPLL() == 80){
+    	for(int i = 0; i < 15; i++){
+    	__NOP();
+    	}
+    }
+
 
     auxData = ptrSPI_Handler->ptrSPIx->DR;
 	auxData = ptrSPI_Handler->ptrSPIx->SR;
@@ -183,6 +192,7 @@ int SPI_WriteChar(SPI_Handler_t *ptrSPI_Handler, uint8_t dataToSend){
 
 
 void SPI_Transmit(SPI_Handler_t *ptrSPI_Handler, uint8_t *data, uint16_t size){
+	//Para transmitir mas de un dato nos apoyamos de la función antes creada.
     for (uint16_t i = 0; i < size; i++) {
         // Send the data
         SPI_WriteChar(ptrSPI_Handler,*(data+i));

@@ -8,6 +8,7 @@
 
 
 #include "BasicTimer.h"
+#include "PLLDriver.h"
 
 void BasicTimer_Callback(void);
 void TIM2_IRQHandler(void);
@@ -70,8 +71,8 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	 */
 
 	/* Escriba codigo aca */
-
-	ptrBTimerHandler->ptrTIMx->PSC = ptrBTimerHandler->TIMx_Config.TIMx_speed -1;
+	uint32_t auxData = ptrBTimerHandler->TIMx_Config.TIMx_speed*getFreqPLL();
+	ptrBTimerHandler->ptrTIMx->PSC = auxData -1;
 
 
 	/* 3. Configuramos la dirección del counter (up/down)*/
