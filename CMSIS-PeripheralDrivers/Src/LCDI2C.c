@@ -74,7 +74,7 @@ void lcdMoveCursorTo(LCDI2C_handler_t *ptrLcd, uint16_t posicion) {
 }
 
 void lcdCursorOnOff(LCDI2C_handler_t *ptrLcd, uint8_t onOff) {
-	if (onOff == 0) {
+	if (onOff == 0) { // OFF
 		lcd_send_cmd(0x0C);
 	} else {
 		lcd_send_cmd(0x0F);
@@ -92,9 +92,7 @@ void lcd_send_cmd (char cmd)
 	data_t[1] = data_u|0x08;  //en=0, rs=0
 	data_t[2] = data_l|0x0C;  //en=1, rs=0
 	data_t[3] = data_l|0x08;  //en=0, rs=0
-	for(int i = 0; i < 4; i++){
-		i2c_writeSingleRegister(ptr.ptrHandlerI2C, 0x00, data_t[i]);
-	}
+	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
 
 }
 
@@ -108,8 +106,14 @@ void lcd_send_data (char data)
 	data_t[1] = data_u|0x09;  //en=0, rs=1
 	data_t[2] = data_l|0x0D;  //en=1, rs=1
 	data_t[3] = data_l|0x09;  //en=0, rs=1
-	for(int i = 0; i < 4; i++){
-		i2c_writeSingleRegister(ptr.ptrHandlerI2C, 0x00, data_t[i]);
-	}
+	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
 
+}
+
+void lcdWriteMessage(const char * message){
+	int i = 0;
+	if(message[i] != 0){
+		lcd_send_data(message[i]);
+		i++;
+	}
 }

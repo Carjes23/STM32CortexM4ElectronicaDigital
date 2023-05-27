@@ -34,6 +34,9 @@
  *
  * Mi cable Negro tierra, Verde Tx pc -> Conectar en Rx-> PA12, Blando -> Rx pc -> Contectar en Tx PA11
  */
+
+//Se incluyen las librerias necesarias para el desarrollo del proyecto
+//TODO
 #include <stdint.h>
 #include <stm32f4xx.h>
 #include "GPIOxDriver.h"
@@ -49,105 +52,136 @@
 #include "I2CxDriver.h"
 #include "LCDI2C.h"
 
-#define ACCEL_ADDRESS 0x1D; //0xD -> Rireccion del Accel con Logic_1
-#define ACCEL_XOUT_L 50
-#define ACCEL_XOUT_H 51
-#define ACCEL_YOUT_L 52
-#define ACCEL_YOUT_H 53
-#define ACCEL_ZOUT_L 54
-#define ACCEL_ZOUT_H 55
-#define ACCEL_DATA_FORMAT 49
-#define ACCEL_BW_RATE 0x2C
+//Se definen algunos registros importantes del acelerrometro
+#define ACCEL_ADDRESS 0x1D		//0xD -> Rireccion del Accel con Logic_1
+#define ACCEL_XOUT_L 50	   		//Prmeros 4 bits de X
+#define ACCEL_XOUT_H 51   		//Ultimos 4 bits de X
+#define ACCEL_YOUT_L 52   		//Prmeros 4 bits de Y
+#define ACCEL_YOUT_H 53   		//Ultimos 4 bits de X
+#define ACCEL_ZOUT_L 54   		//Prmeros 4 bits de Z
+#define ACCEL_ZOUT_H 55   		//Ultimos 4 bits de X
+#define ACCEL_DATA_FORMAT 49	//REgistro del cormato
+#define ACCEL_BW_RATE 0x2C		//Registro para la frecuencia
 
-#define SENSORS_GRAVITY_EARTH 9.80665F
-#define ADXL345_MG2G_MULTIPLIER 0.004F
-#define FACTORESCALADO SENSORS_GRAVITY_EARTH * ADXL345_MG2G_MULTIPLIER
+#define SENSORS_GRAVITY_EARTH 9.80665F		//Gravedad
+#define ADXL345_MG2G_MULTIPLIER 0.004F		//Factor de multiplicacion a +-2G o a full resolution
+#define FACTORESCALADO SENSORS_GRAVITY_EARTH * ADXL345_MG2G_MULTIPLIER //Factor de conversión de LSB a m/s²
 
-#define POWER_CTL 0x2D
-#define WHO_AM_I 0
+#define POWER_CTL 0x2D			//Registro de power donde se activa el muestreo
+#define WHO_AM_I 0				//Registro que responde con el device ID 0xe0
 
 #define ADXL345_RANGE_16_G 0b11 ///< +/- 16g
 #define ADXL345_RANGE_8_G 0b10  ///< +/- 8g
 #define ADXL345_RANGE_4_G 0b01  ///< +/- 4g
 #define ADXL345_RANGE_2_G 0b00   ///< +/- 2g (default value)
 
+//Registr necesario para comunicarse con el modulo I2C de la LCD
+
 #define LCD_ADDRES 0x21 //O 0x21
 
+//Funciones definidas para la tarea
+/*
+ * Funcion encargada de hallarle el promedio a un arreglo
+ */
 float meanFunction(float *numbers, int cantidad);
+/*
+ * Funcion encargada de cambiar el color del led con respecto a la gravedad.
+ */
 void cambiarLed(void);
 
+/*
+ * Variables definidas para la tarea.
+ */
+
+//Variables para el tratamento de la aceleración en X
 uint8_t AccelX_low = 0;
 uint8_t AccelX_high = 0;
 int16_t AccelX = 0;
 float AccelXEsc = 0.0f;
 
+//Variables para el tratamento de la aceleración en y
 uint8_t AccelY_low = 0;
 uint8_t AccelY_high = 0;
 int16_t AccelY = 0;
 float AccelYEsc = 0.0f;
 
+//Variables para el tratamento de la aceleración en z
 uint8_t AccelZ_low = 0;
 uint8_t AccelZ_high = 0;
 int16_t AccelZ = 0;
 float AccelZEsc = 0.0f;
 
-bool banderaLedUsuario = 0; //Bandera TIM2 el cual nos da el blinking del LD2
-bool flagDatos = 0;
-bool flag2Segundos = 0;
-bool flag2SegundosTer = 0;
+//Banderas para marcar eventos
+bool banderaLedUsuario = 0; //Bandera TIM2 el cual nos da el blinking del LD2 periodo 250 ms
+bool flagDatos = 0; //Bandera que nos dice que se debe tomar dato periodo 1 ms
+bool flag2Segundos = 0;	//Bandera que nos dice si se activo la pregunta de 2Seg, lo que recoge
+//datos por 2 segudnos y luego lo imprime por la terminal USART
+bool flag2SegundosTer = 0; //BAndera que indica cuando se completaron los 2 segundos.
 
-uint8_t usart6DataReceived = 0; //Dato recibido por el usart dos
+uint8_t usart6DataReceived = 0; //Dato recibido por el usart 6
 
-char bufferMsg[256] = { 0 }; //Para guardar l configuracion a mandar por el usart
-uint8_t i2cBuffer = 0;
+char bufferMsg[256] = { 0 }; //Para guardar un formato de texto
+uint16_t i2cBuffer = 0;		 //Buffer para la recepción de datos en el I2C
 
 //Handlers utilizados para manipular los perifericos
 BasicTimer_Handler_t handlerTim2 = { 0 }; //Timer para el blinking
 GPIO_Handler_t handlerUserLedPin = { 0 }; // Para manipular el led de usuario
 
-PWM_Handler_t pwmtim3x = { 0 }; //Para configurar el PWM en el timer 3 para x
-GPIO_Handler_t pwm3xpin = { 0 }; //Pin que nos entrega la señal PWM para x pc6
+PWM_Handler_t pwmtim3x = { 0 }; //Para configurar el PWM en el timer 3 para X
+GPIO_Handler_t pwm3xpin = { 0 }; //Pin que nos entrega la señal PWM para X Pin C6
 
 USART_Handler_t USART6Handler = { 0 }; //Para manejar el USART6
 GPIO_Handler_t tx6pin = { 0 }; //Para manipular el pin de trasminsión de datos del USART6
 GPIO_Handler_t rx6pin = { 0 }; //Para manipular el pin de recepcioón de datos del USART6
 
 PWM_Handler_t pwmtim3y = { 0 }; //Para configurar el PWM enn el timer 3 para y
-GPIO_Handler_t pwm3ypin = { 0 }; //Pin que nos entrega la señal PWM para t pc7
+GPIO_Handler_t pwm3ypin = { 0 }; //Pin que nos entrega la señal PWM para Y Pin c7
 
 PWM_Handler_t pwmtim3z = { 0 }; //Para configurar el PWM enn el timer 3 para z
-GPIO_Handler_t pwm3zpin = { 0 }; //Pin que nos entrega la señal PWM para z pc8
+GPIO_Handler_t pwm3zpin = { 0 }; //Pin que nos entrega la señal PWM para Z Pin c8
 
 uint16_t duttyValuex = 2000; //Valor del dutty inicial
 uint16_t duttyValuey = 1000; //Valor del dutty inicial
 uint16_t duttyValuez = 20000; //Valor del dutty inicial
 
 //Handler I2Cs
-I2C_Handler_t i2cAcelerometro = { 0 };
-I2C_Handler_t i2cLCD = { 0 };
+I2C_Handler_t i2cAcelerometro = { 0 }; //I2C encargado de comunicarse con el acelerometro
+I2C_Handler_t i2cLCD = { 0 };		   //I2C encargado de comunicarse con la LCD
 
-LCDI2C_handler_t lcdHandler = { 0 };
+LCDI2C_handler_t lcdHandler = { 0 };   //Handler para manipular la LCD
 
-GPIO_Handler_t I2cSDA = { 0 };
-GPIO_Handler_t I2cSCL = { 0 };
+GPIO_Handler_t I2cSDA = { 0 };// Handler que manipula el envio/recepcón de datos del Acelerometro
+GPIO_Handler_t I2cSCL = { 0 };// Handler que manipula la frecuencia de comunicación del Acelerometro
 
-GPIO_Handler_t I2cSDA2 = { 0 }; //para la LCD
-GPIO_Handler_t I2cSCL2 = { 0 };
+GPIO_Handler_t I2cSDA2 = { 0 }; // Handler que manipula el envio/recepcón de datos de la LCD
+GPIO_Handler_t I2cSCL2 = { 0 };	// Handler que manipula la frecuencia de comunicación de la LCD
 
-BasicTimer_Handler_t handlerTim4 = { 0 }; //Timer para el blinking
+BasicTimer_Handler_t handlerTim4 = { 0 }; //Timer encargado del muestro del acelerometro.
 
-uint8_t contador10 = 0;
-uint16_t contador2000 = 0;
-
+uint8_t contador10 = 0;			//Contador para guardar datos cada 10 muestreos
+uint16_t contador2000 = 0;//Contador para guardar datos cuando se activa la funcion de los 2 segundos
+/*
+ * Arreglos para guardar datos cada 10 muestreos
+ */
 float DatoX10[10] = { 0 };
 float DatoY10[10] = { 0 };
 float DatoZ10[10] = { 0 };
 
+/*
+ * Arreglos para guardar datos cuando se activa la función de los dos segundos
+ */
 float DatoX2000[2000] = { 0 };
 float DatoY2000[2000] = { 0 };
 float DatoZ2000[2000] = { 0 };
+
+/*
+ * Registros necesario para leer los ejes
+ */
 uint8_t regDatos[6] = { ACCEL_XOUT_L, ACCEL_XOUT_H, ACCEL_YOUT_L, ACCEL_YOUT_H,
-		ACCEL_ZOUT_L, ACCEL_ZOUT_H };
+ACCEL_ZOUT_L, ACCEL_ZOUT_H };
+/*
+ * Respuesta del acelerometro al solicitarle datos.
+ */
 uint8_t resDatos[6] = { 0 };
 
 void initSystem(void); // Función quue inicializa el sistema
@@ -161,11 +195,13 @@ int main(void) {
 	initSystem();
 
 	while (1) {
-
+		//Se activa cada vez que el timer 2 se llena cada 250 ms y cambiamos el estado del led de usuario
+		//Tambien se aprovecha para cambiar los pwm de los leds, logrando el cambio de color
+		//Al cambiar los ejes.
 		if (banderaLedUsuario == 1) {
-			banderaLedUsuario = 0;
-			cambiarLed();
-			GPIOxTooglePin(&handlerUserLedPin);
+			banderaLedUsuario = 0; //Se reinicia en 0
+			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
+			cambiarLed(); //Cambiamos los PWM para que se vea en los leds
 		}
 
 		if (flag2SegundosTer == 1) {
@@ -173,7 +209,6 @@ int main(void) {
 				if (i == 0) {
 					writeStringInt(&USART6Handler, "x , y , z \n");
 				}
-//				delay_ms(4);
 				sprintf(bufferMsg, " %.3f m/s², %.3f m/s², %.3f m/s² \n",
 						DatoX2000[i], DatoY2000[i], DatoZ2000[i]);
 				writeStringInt(&USART6Handler, bufferMsg);
@@ -183,24 +218,24 @@ int main(void) {
 
 		if (flagDatos == 1) {
 
-			if (contador10 < 10) {
+			i2c_readMulRegister(&i2cAcelerometro, regDatos, 6, resDatos);
 
-				i2c_readMulRegister(&i2cAcelerometro, regDatos, 6, resDatos);
+			AccelX_low = resDatos[0];
+			AccelX_high = resDatos[1];
+			AccelX = AccelX_high << 8 | AccelX_low;
+			AccelXEsc = AccelX * FACTORESCALADO;
 
-				AccelX_low = resDatos[0];
-				AccelX_high = resDatos[1];
-				AccelX = AccelX_high << 8 | AccelX_low;
-				AccelXEsc = AccelX * FACTORESCALADO;
+			AccelY_low = resDatos[2];
+			AccelY_high = resDatos[3];
+			AccelY = AccelY_high << 8 | AccelY_low;
+			AccelYEsc = AccelY * FACTORESCALADO;
 
-				AccelY_low = resDatos[2];
-				AccelY_high = resDatos[3];
-				AccelY = AccelY_high << 8 | AccelY_low;
-				AccelYEsc = AccelY * FACTORESCALADO;
+			AccelZ_low = resDatos[4];
+			AccelZ_high = resDatos[5];
+			AccelZ = AccelZ_high << 8 | AccelZ_low;
+			AccelZEsc = AccelZ * FACTORESCALADO;
 
-				AccelZ_low = resDatos[4];
-				AccelZ_high = resDatos[5];
-				AccelZ = AccelZ_high << 8 | AccelZ_low;
-				AccelZEsc = AccelZ * FACTORESCALADO;
+			if (contador10 < 9) {
 
 				DatoX10[contador10] = AccelXEsc;
 				DatoY10[contador10] = AccelYEsc;
@@ -210,6 +245,9 @@ int main(void) {
 			}
 
 			else {
+				DatoX10[9] = AccelXEsc;
+				DatoY10[9] = AccelYEsc;
+				DatoZ10[9] = AccelZEsc;
 				contador10 = 0;
 			}
 
@@ -263,7 +301,7 @@ int main(void) {
 
 				//Verificamos
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_DATA_FORMAT);
+				ACCEL_DATA_FORMAT);
 
 				sprintf(bufferMsg, "dataFormat = 0x%x \n",
 						(unsigned int) i2cBuffer);
@@ -281,7 +319,7 @@ int main(void) {
 
 				//Verificamos
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_BW_RATE);
+				ACCEL_BW_RATE);
 
 				sprintf(bufferMsg, "registro frecuentia = 0x%x \n",
 						(unsigned int) i2cBuffer);
@@ -294,7 +332,7 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_DATA_FORMAT);
+				ACCEL_DATA_FORMAT);
 				//Limpiamos el valor del rango actual
 				i2cBuffer &= ~0x0F;
 				i2cBuffer |= ADXL345_RANGE_4_G;
@@ -307,7 +345,7 @@ int main(void) {
 
 				//Verificamos
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_DATA_FORMAT);
+				ACCEL_DATA_FORMAT);
 
 				sprintf(bufferMsg, "dataFormat = 0x%x \n",
 						(unsigned int) i2cBuffer);
@@ -326,9 +364,9 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelX_low = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_XOUT_L);
+				ACCEL_XOUT_L);
 				AccelX_high = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_XOUT_H);
+				ACCEL_XOUT_H);
 				AccelX = AccelX_high << 8 | AccelX_low;
 				AccelXEsc = AccelX * FACTORESCALADO;
 
@@ -341,9 +379,9 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelY_low = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_YOUT_L);
+				ACCEL_YOUT_L);
 				AccelY_high = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_YOUT_H);
+				ACCEL_YOUT_H);
 				AccelY = AccelY_high << 8 | AccelY_low;
 				AccelYEsc = AccelY * FACTORESCALADO;
 
@@ -355,9 +393,9 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelZ_low = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_ZOUT_L);
+				ACCEL_ZOUT_L);
 				AccelZ_high = i2c_readSingleRegister(&i2cAcelerometro,
-						ACCEL_ZOUT_H);
+				ACCEL_ZOUT_H);
 				AccelZ = AccelZ_high << 8 | AccelZ_low;
 				AccelZEsc = AccelZ * FACTORESCALADO;
 

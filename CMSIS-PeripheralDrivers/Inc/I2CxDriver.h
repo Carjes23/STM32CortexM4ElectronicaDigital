@@ -56,7 +56,7 @@ uint8_t i2c_readSingleRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t regToRead);
 void i2c_writeSingleRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t regToRead, uint8_t newValue);
 
 void i2c_readMulRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t * regsToRead, uint8_t cantidad, uint8_t * ress);
-
+void i2c_writeMultTimeSameRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t regToRead,  uint8_t * dataWrite, uint8_t cantidad);
 
 
 
