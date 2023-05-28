@@ -318,14 +318,15 @@ void USART6Tx_Char(void){
 
 
 void USART6Tx_String(void){
-	if(stringToSend6[posicionActual6] != 0){
-		USART6->DR = stringToSend6[posicionActual6];
+	char auxData = stringToSend6[posicionActual6];
+	if(auxData != 0){
+		USART6->DR = auxData;
 		posicionActual6++;
 	}
 	else{
+		USART6->CR1 &= ~(USART_CR1_TXEIE);
 		posicionActual6 = 0;
 		flagNewData = 0;
-		USART6->CR1 &= ~(USART_CR1_TXEIE);
 	}
 
 }

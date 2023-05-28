@@ -313,18 +313,18 @@ void i2c_writeMultTimeSameRegister(I2C_Handler_t *ptrHandlerI2C,
 	//generamos la condicion start
 	i2c_startTransaction(ptrHandlerI2C);
 
-	//2. Enviamos la direccion del esclavo y la indicación de escribir
-	i2c_sendSlaveAddresRW(ptrHandlerI2C, ptrHandlerI2C->slaveAddress,
-			I2C_WRITE_DATA);
 
-	//3. Enviamos la direccion de memoria que deseamos escribir
-	i2c_sendMemoryAddress(ptrHandlerI2C, regToRead);
+
 
 	for (int i = 0; i < cantidad; i++) {
 		if (i != 0) {
 			//4 Creamos la condicion de reStar
 			i2c_reStartTransaction(ptrHandlerI2C);
 		}
+		//2. Enviamos la direccion del esclavo y la indicación de escribir
+		i2c_sendSlaveAddresRW(ptrHandlerI2C, ptrHandlerI2C->slaveAddress,I2C_WRITE_DATA);
+		//3. Enviamos la direccion de memoria que deseamos escribir
+		i2c_sendMemoryAddress(ptrHandlerI2C, regToRead);
 
 		//4. enviamos el dato que deseamos escribir
 		i2c_sendDataByte(ptrHandlerI2C, dataWrite[i]);

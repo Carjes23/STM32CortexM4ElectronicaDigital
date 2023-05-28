@@ -62,6 +62,9 @@
 #define ACCEL_ZOUT_H 55   		//Ultimos 4 bits de X
 #define ACCEL_DATA_FORMAT 49	//REgistro del cormato
 #define ACCEL_BW_RATE 0x2C		//Registro para la frecuencia
+#define ACCEL_OFSX 30 //Offset en X
+#define ACCEL_OFSY 31 //Offset en X
+#define ACCEL_OFSZ 32 //Offset en X
 
 #define SENSORS_GRAVITY_EARTH 9.80665F		//Gravedad
 #define ADXL345_MG2G_MULTIPLIER 0.004F		//Factor de multiplicacion a +-2G o a full resolution
@@ -98,18 +101,24 @@ uint8_t AccelX_low = 0;
 uint8_t AccelX_high = 0;
 int16_t AccelX = 0;
 float AccelXEsc = 0.0f;
+float xmean = 0.f;
+uint8_t ofsX = 0;
 
 //Variables para el tratamento de la aceleración en y
 uint8_t AccelY_low = 0;
 uint8_t AccelY_high = 0;
 int16_t AccelY = 0;
 float AccelYEsc = 0.0f;
+float ymean = 0.f;
+uint8_t ofsY = 0;
 
 //Variables para el tratamento de la aceleración en z
 uint8_t AccelZ_low = 0;
 uint8_t AccelZ_high = 0;
 int16_t AccelZ = 0;
 float AccelZEsc = 0.0f;
+float zmean = 0.f;
+uint8_t ofsZ = 0;
 
 //Banderas para marcar eventos
 bool banderaLedUsuario = 0; //Bandera TIM2 el cual nos da el blinking del LD2 periodo 250 ms
@@ -150,8 +159,8 @@ I2C_Handler_t i2cLCD = { 0 };		   //I2C encargado de comunicarse con la LCD
 
 LCDI2C_handler_t lcdHandler = { 0 };   //Handler para manipular la LCD
 
-GPIO_Handler_t I2cSDA = { 0 };// Handler que manipula el envio/recepcón de datos del Acelerometro
-GPIO_Handler_t I2cSCL = { 0 };// Handler que manipula la frecuencia de comunicación del Acelerometro
+GPIO_Handler_t I2cSDA = { 0 }; // Handler que manipula el envio/recepcón de datos del Acelerometro
+GPIO_Handler_t I2cSCL = { 0 }; // Handler que manipula la frecuencia de comunicación del Acelerometro
 
 GPIO_Handler_t I2cSDA2 = { 0 }; // Handler que manipula el envio/recepcón de datos de la LCD
 GPIO_Handler_t I2cSCL2 = { 0 };	// Handler que manipula la frecuencia de comunicación de la LCD
@@ -160,6 +169,8 @@ BasicTimer_Handler_t handlerTim4 = { 0 }; //Timer encargado del muestro del acel
 
 uint8_t contador10 = 0;			//Contador para guardar datos cada 10 muestreos
 uint16_t contador2000 = 0;//Contador para guardar datos cuando se activa la funcion de los 2 segundos
+
+uint8_t contador1seg = 0;
 /*
  * Arreglos para guardar datos cada 10 muestreos
  */
@@ -184,8 +195,12 @@ ACCEL_ZOUT_L, ACCEL_ZOUT_H };
  */
 uint8_t resDatos[6] = { 0 };
 
+uint8_t datoPantalla = 0;
+uint16_t contadorImprimir2000 = 0;
+
 void initSystem(void); // Función quue inicializa el sistema
 void USART6Rx_Callback(void); //Definir el callback
+void LCDRefresh(void);
 
 int main(void) {
 	//Activacion cooprocesador matematico
@@ -202,18 +217,25 @@ int main(void) {
 			banderaLedUsuario = 0; //Se reinicia en 0
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
 			cambiarLed(); //Cambiamos los PWM para que se vea en los leds
+			LCDRefresh();
 		}
 
 		if (flag2SegundosTer == 1) {
-			for (int i = 0; i < 2000; i++) {
-				if (i == 0) {
-					writeStringInt(&USART6Handler, "x , y , z \n");
-				}
-				sprintf(bufferMsg, " %.3f m/s², %.3f m/s², %.3f m/s² \n",
-						DatoX2000[i], DatoY2000[i], DatoZ2000[i]);
-				writeStringInt(&USART6Handler, bufferMsg);
+			if (contadorImprimir2000 == 0) {
+				writeStringInt(&USART6Handler, "x , y , z \n");
 			}
-			flag2SegundosTer = 0;
+			if (contadorImprimir2000 < 2000) {
+				sprintf(bufferMsg, " %.2f m/s², %.2f m/s², %.2f m/s² \n",
+						DatoX2000[contadorImprimir2000],
+						DatoY2000[contadorImprimir2000],
+						DatoZ2000[contadorImprimir2000]);
+				writeStringInt(&USART6Handler, bufferMsg);
+				contadorImprimir2000++;
+			} else {
+
+				flag2SegundosTer = 0;
+				contadorImprimir2000 = 0;
+			}
 		}
 
 		if (flagDatos == 1) {
@@ -270,47 +292,17 @@ int main(void) {
 
 		//Hacemos un "eco" con el valor que nos llega por el serial
 		if (usart6DataReceived != '\0') {
-			writeChar(&USART6Handler, usart6DataReceived);
 
 			if (usart6DataReceived == 'w') {
-				sprintf(bufferMsg, "WHO_AM_I? (r)\n");
-				writeStringInt(&USART6Handler, bufferMsg);
-
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro, WHO_AM_I);
-				sprintf(bufferMsg, "dataRead = 0x%x \n",
-						(unsigned int) i2cBuffer);
-				writeStringInt(&USART6Handler, bufferMsg);
-				usart6DataReceived = '\0';
-			} else if (usart6DataReceived == 'p') {
-				sprintf(bufferMsg, "PWR_MGMT_1 state (r)\n");
-				writeStringInt(&USART6Handler, bufferMsg);
-
-				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro, POWER_CTL);
-				sprintf(bufferMsg, "dataRead = 0x%x \n",
-						(unsigned int) i2cBuffer);
-				writeStringInt(&USART6Handler, bufferMsg);
-				usart6DataReceived = '\0';
-			}
-
-			else if (usart6DataReceived == 't') {
-				sprintf(bufferMsg, "test(r)\n");
-				writeStringInt(&USART6Handler, bufferMsg);
-
-				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_DATA_FORMAT,
-						1 << 7);
-
-				//Verificamos
-				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-				ACCEL_DATA_FORMAT);
-
-				sprintf(bufferMsg, "dataFormat = 0x%x \n",
+				sprintf(bufferMsg, "Device ID = 0x%x \n",
 						(unsigned int) i2cBuffer);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			}
 
 			else if (usart6DataReceived == 'f') {
-				sprintf(bufferMsg, "frec \n");
+				sprintf(bufferMsg, "Cambiamos la frecuencia \n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0A);
@@ -321,9 +313,6 @@ int main(void) {
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_BW_RATE);
 
-				sprintf(bufferMsg, "registro frecuentia = 0x%x \n",
-						(unsigned int) i2cBuffer);
-				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			}
 
@@ -343,13 +332,6 @@ int main(void) {
 				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_DATA_FORMAT,
 						i2cBuffer);
 
-				//Verificamos
-				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-				ACCEL_DATA_FORMAT);
-
-				sprintf(bufferMsg, "dataFormat = 0x%x \n",
-						(unsigned int) i2cBuffer);
-				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			}
 
@@ -360,7 +342,7 @@ int main(void) {
 				i2c_writeSingleRegister(&i2cAcelerometro, POWER_CTL, 0x08);
 				usart6DataReceived = '\0';
 			} else if (usart6DataReceived == 'x') { //lecturas en x
-				sprintf(bufferMsg, "Axis X data (r)\n");
+				sprintf(bufferMsg, "Axis X \n"); //TODO pregunta profe
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelX_low = i2c_readSingleRegister(&i2cAcelerometro,
@@ -375,8 +357,6 @@ int main(void) {
 				usart6DataReceived = '\0';
 
 			} else if (usart6DataReceived == 'y') { //lecturas en y
-				sprintf(bufferMsg, "Axis Y data (r)\n");
-				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelY_low = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_YOUT_L);
@@ -389,8 +369,6 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			} else if (usart6DataReceived == 'z') { //lecturas en y
-				sprintf(bufferMsg, "Axis Z data (r)\n");
-				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelZ_low = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_ZOUT_L);
@@ -407,6 +385,28 @@ int main(void) {
 						"Se tomaran datos por 2 segundos y luego se imprimen por pantalla \n");
 				flag2Segundos = 1;
 				usart6DataReceived = '\0';
+
+			} else if (usart6DataReceived == 'a') {
+				writeStringInt(&USART6Handler, " Ajustar datos \n");
+				//Verificamos
+				float aux = 0;
+				aux = -AccelX / 4;
+				ofsX = (int) round(aux);
+				i2c_writeSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSX, ofsX);
+
+				aux = -AccelY / 4;
+				ofsY = (int) round(aux);
+				i2c_writeSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSY, ofsY);
+
+				aux = ((1 / ADXL345_MG2G_MULTIPLIER) - AccelZ) / 4;
+				ofsZ = (int) round(aux);
+				i2c_writeSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSZ, ofsZ);
+
+				usart6DataReceived = '\0';
+
 			} else {
 				usart6DataReceived = '\0';
 			}
@@ -424,6 +424,56 @@ void initSystem(void) {
 
 	//	Inicializamos el SysTick se le entraga el valor de la frecuencia actual del PLL
 	config_SysTick_ms(freq);
+
+	I2cSCL2.pGPIOx = GPIOA; //8 8 contando
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	I2cSCL2.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
+	GPIO_Config(&I2cSCL2);
+
+	I2cSDA2.pGPIOx = GPIOB;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinNumber = PIN_4;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	I2cSDA2.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF9;
+	GPIO_Config(&I2cSDA2);
+
+	i2cLCD.modeI2C = I2C_MODE_FM;
+	i2cLCD.slaveAddress = LCD_ADDRES;
+	i2cLCD.ptrI2Cx = I2C3;
+	i2c_config(&i2cLCD);
+
+	lcdHandler.ptrHandlerI2C = &i2cLCD;
+
+	lcdi2cconfig(&lcdHandler);
+
+	I2cSCL.pGPIOx = GPIOB;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
+	GPIO_Config(&I2cSCL);
+
+	I2cSDA.pGPIOx = GPIOB;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinNumber = PIN_9;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
+	GPIO_Config(&I2cSDA);
+
+	i2cAcelerometro.modeI2C = I2C_MODE_FM;
+	i2cAcelerometro.slaveAddress = ACCEL_ADDRESS;
+	i2cAcelerometro.ptrI2Cx = I2C1;
+	i2c_config(&i2cAcelerometro);
 
 	//Led de usuario usado para el blinking
 
@@ -538,57 +588,6 @@ void initSystem(void) {
 	enableOutput(&pwmtim3z);
 	startPwmSignal(&pwmtim3z);
 
-	I2cSCL.pGPIOx = GPIOB;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
-	I2cSCL.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
-	GPIO_Config(&I2cSCL);
-
-	I2cSDA.pGPIOx = GPIOB;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinNumber = PIN_9;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
-	I2cSDA.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
-	GPIO_Config(&I2cSDA);
-
-	i2cAcelerometro.modeI2C = I2C_MODE_FM;
-	i2cAcelerometro.slaveAddress = ACCEL_ADDRESS
-	;
-	i2cAcelerometro.ptrI2Cx = I2C1;
-	i2c_config(&i2cAcelerometro);
-
-	I2cSCL2.pGPIOx = GPIOA; //8 8 contando
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
-	I2cSCL2.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
-	GPIO_Config(&I2cSCL2);
-
-	I2cSDA2.pGPIOx = GPIOB;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinNumber = PIN_4;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
-	I2cSDA2.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF9;
-	GPIO_Config(&I2cSDA2);
-
-	i2cLCD.modeI2C = I2C_MODE_SM;
-	i2cLCD.slaveAddress = LCD_ADDRES;
-	i2cLCD.ptrI2Cx = I2C3;
-	i2c_config(&i2cLCD);
-
-	lcdHandler.ptrHandlerI2C = &i2cLCD;
-
-	lcdi2cconfig(&lcdHandler);
-
 	//Configuración Timer 4 que controlara el blinking
 
 	handlerTim4.ptrTIMx = TIM4; //El timer que se va a usar
@@ -621,12 +620,12 @@ void cambiarLed(void) {
 	 * Realizamos una regresión lineal en donde -2g es 0; 0 es 10000; 2g 2000
 	 * Por los que nos queda (10000*ValordeXpromedio)/(2g) + 10000 = 500/g * ValorXpromedio + 10000
 	 */
-	float xmeanConv = 8000 * meanFunction(DatoX10, 10) / SENSORS_GRAVITY_EARTH
-			+ 10000;
-	float ymeanConv = 8000 * meanFunction(DatoY10, 10) / SENSORS_GRAVITY_EARTH
-			+ 10000;
-	float zmeanConv = 8000 * meanFunction(DatoZ10, 10) / SENSORS_GRAVITY_EARTH
-			+ 10000;
+	xmean = meanFunction(DatoX10, 10);
+	ymean = meanFunction(DatoY10, 10);
+	zmean = meanFunction(DatoZ10, 10);
+	float xmeanConv = 8000 * xmean / SENSORS_GRAVITY_EARTH + 10000;
+	float ymeanConv = 8000 * ymean / SENSORS_GRAVITY_EARTH + 10000;
+	float zmeanConv = 8000 * zmean / SENSORS_GRAVITY_EARTH + 10000;
 
 	if (xmeanConv < 0) {
 		xmeanConv = 0.0f;
@@ -658,9 +657,77 @@ void cambiarLed(void) {
 
 }
 
+void LCDRefresh(void) {
+	if (contador1seg == 4) {
+		contador1seg = 0;
+		lcdClear();
+		lcdHome();
+		sprintf(bufferMsg, "x = %.2f m/s2", xmean);
+		lcdWriteMessage(bufferMsg);
+		lcdMoveCursorTo(0x40);
+		sprintf(bufferMsg, "y = %.2f m/s2", ymean);
+		lcdWriteMessage(bufferMsg);
+		lcdMoveCursorTo(0x14);
+		sprintf(bufferMsg, "z = %.2f m/s2", zmean);
+		lcdWriteMessage(bufferMsg);
+		lcdMoveCursorTo(0x54);
+		if (xmean == 0.0f && ymean == 0.0f && zmean == 0.0f) {
+			sprintf(bufferMsg, "AccNoActiveKey s");
+			lcdWriteMessage(bufferMsg);
+		} else {
+			float auxi = 0;
+			switch (datoPantalla) {
+
+			case 0:
+				datoPantalla++;
+				sprintf(bufferMsg, "AdjustOffsetKey a");
+				break;
+			case 1:
+				datoPantalla++;
+				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSX);
+				auxi = ((int8_t) i2cBuffer) * 15.6
+						/ 1000* SENSORS_GRAVITY_EARTH; //15.6mg es la minima cantidad de offset
+				sprintf(bufferMsg, "OffsetX = %.2f", auxi);
+				break;
+			case 2:
+				datoPantalla++;
+				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSY);
+				auxi = ((int8_t) i2cBuffer) * 15.6
+						/ 1000* SENSORS_GRAVITY_EARTH;
+				sprintf(bufferMsg, "OffsetY = %.2f", auxi);
+				break;
+			case 3:
+				datoPantalla++;
+				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
+				ACCEL_OFSZ);
+				auxi = ((int8_t) i2cBuffer) * 15.6
+						/ 1000* SENSORS_GRAVITY_EARTH;
+				sprintf(bufferMsg, "OffsetZ = %.2f", auxi);
+				break;
+			case 4:
+				datoPantalla++;
+				auxi = (4.0f / 1000.0f) * SENSORS_GRAVITY_EARTH;
+				sprintf(bufferMsg, "Sens = %.2f m/s2", auxi);
+				break;
+			case 5:
+				datoPantalla = 0;
+				sprintf(bufferMsg, "OtherKeys : x,y,z,2");
+				break;
+			default:
+				datoPantalla = 0;
+				break;
+			}
+			lcdWriteMessage(bufferMsg);
+
+		}
+	}
+}
 //Calback del timer2 para el blinking
 void BasicTimer2_Callback(void) {
 	banderaLedUsuario = 1;
+	contador1seg++;
 }
 
 //Calback del timer6 para el blinking
