@@ -347,10 +347,10 @@ int main(void) {
 			}
 			//Para ajustar la frecuencia
 			else if (usart6DataReceived == 'f') {
-				sprintf(bufferMsg, "Cambiamos la frecuencia a 100Hz(write)\n");
+				sprintf(bufferMsg, "Cambiamos la frecuencia a 3200Hz(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 				//0x0A -> 100 Hz
-				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0A);
+				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0F);
 				usart6DataReceived = '\0';
 			}
 			//Ajustamos el formato, colocandolo es Fulles -> Maxima resolución.
