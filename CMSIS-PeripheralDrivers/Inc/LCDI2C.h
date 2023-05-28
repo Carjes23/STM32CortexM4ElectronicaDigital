@@ -23,9 +23,8 @@ typedef struct
 void lcdi2cconfig(LCDI2C_handler_t *ptrLcd);
 void lcdHome(void);
 void lcdClear(void);
-void lcd_clear2(void);
 void lcdMoveCursorTo(uint16_t posicion);
-void lcdCursorOnOff(LCDI2C_handler_t *ptrLcd, uint8_t onOff);
+void lcdCursorOnOff(uint8_t onOff);
 void lcd_send_cmd (char cmd);
 void lcd_send_data (char data);
 void lcdWriteMessage(const char * message);

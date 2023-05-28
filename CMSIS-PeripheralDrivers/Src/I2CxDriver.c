@@ -44,7 +44,7 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C) {
 	 * Indicamos cual es la velocidad del reloj principal, que es la señal utilizada por el periférico
 	 * para generar la señal de reloj para el bus I2C
 	 * */
-	// PLCK1 FRECUENCY in MHz
+	// PLCK1 FRECUENCY in MHz se divide entre dos si es mayor a 50 mhz
 	uint16_t freq = getFreqPLL();
 	if (freq > 50) {
 		freq = freq / 2;
@@ -63,6 +63,9 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C) {
 	ptrHandlerI2C->ptrI2Cx->CCR = 0;
 	ptrHandlerI2C->ptrI2Cx->TRISE = 0;
 
+	/*
+	 * Se hacen todos los calculos a travez de formulas logrando que el I2C se ajuste al PLL
+	 */
 	float TPCLK1 = 1000 / freq;
 	(void) TPCLK1;
 

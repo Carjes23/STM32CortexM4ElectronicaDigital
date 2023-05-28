@@ -36,7 +36,7 @@
  */
 
 //Se incluyen las librerias necesarias para el desarrollo del proyecto
-//TODO
+
 #include <stdint.h>
 #include <stm32f4xx.h>
 #include "GPIOxDriver.h"
@@ -46,8 +46,6 @@
 #include "SysTick.h"
 #include <arm_math.h>
 #include "PwmDriver.h"
-#include "SPIxDriver.h"
-#include "ILI9341.h"
 #include "PLLDriver.h"
 #include "I2CxDriver.h"
 #include "LCDI2C.h"
@@ -81,16 +79,6 @@
 //Registr necesario para comunicarse con el modulo I2C de la LCD
 
 #define LCD_ADDRES 0x21 //O 0x21
-
-//Funciones definidas para la tarea
-/*
- * Funcion encargada de hallarle el promedio a un arreglo
- */
-float meanFunction(float *numbers, int cantidad);
-/*
- * Funcion encargada de cambiar el color del led con respecto a la gravedad.
- */
-void cambiarLed(void);
 
 /*
  * Variables definidas para la tarea.
@@ -167,10 +155,6 @@ GPIO_Handler_t I2cSCL2 = { 0 };	// Handler que manipula la frecuencia de comunic
 
 BasicTimer_Handler_t handlerTim4 = { 0 }; //Timer encargado del muestro del acelerometro.
 
-uint8_t contador10 = 0;			//Contador para guardar datos cada 10 muestreos
-uint16_t contador2000 = 0;//Contador para guardar datos cuando se activa la funcion de los 2 segundos
-
-uint8_t contador1seg = 0;
 /*
  * Arreglos para guardar datos cada 10 muestreos
  */
@@ -195,15 +179,35 @@ ACCEL_ZOUT_L, ACCEL_ZOUT_H };
  */
 uint8_t resDatos[6] = { 0 };
 
-uint8_t datoPantalla = 0;
-uint16_t contadorImprimir2000 = 0;
+/*
+ * Contadores que nos permiten cambiar de diferentes opcioens
+ */
+uint8_t datoPantalla = 0;			//Para cambiar el ultimo dato de pantalla
+uint16_t contadorImprimir2000 = 0;//Para imprimir los 2000 datos luego de recibirlos, se realizara un contador global para no
+//parar el sistema por tanto tiempo en un solo lugar.
+uint8_t contador2seg = 0;//Prra contar 2 segundos, y luego cambiar el ultimo dato por pantalla
+uint8_t contador10 = 0;			//Contador para guardar datos cada 10 muestreos
+uint16_t contador2000 = 0;//Contador para guardar datos cuando se activa la funcion de los 2 segundos
+uint8_t contador1seg = 0;	//Contador para contar 1 segundo usando el blinking.
 
-void initSystem(void); // Función quue inicializa el sistema
+//Funciones definidas para la tarea
+/*
+ * Funcion encargada de hallarle el promedio a un arreglo
+ */
+float meanFunction(float *numbers, int cantidad);
+/*
+ * Funcion encargada de cambiar el color del led con respecto a la gravedad.
+ */
+void cambiarLed(void);
+void initSystem(void); // Función que inicializa el sistema
 void USART6Rx_Callback(void); //Definir el callback
+/*
+ * Funcion que se encarga de refresacar la Led cada segundo.
+ */
 void LCDRefresh(void);
 
 int main(void) {
-	//Activacion cooprocesador matematico
+	//Activacion cooprocesador matematico(importante para esta tarea)
 	SCB->CPACR |= (0xF << 20);
 
 	//Iniciamos sistma
@@ -217,12 +221,19 @@ int main(void) {
 			banderaLedUsuario = 0; //Se reinicia en 0
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
 			cambiarLed(); //Cambiamos los PWM para que se vea en los leds
-			LCDRefresh();
+			LCDRefresh(); //Invocamos la función que nos permite refrescar la Led.
 		}
-
+		/*
+		 * Este if se activa siempre y cuando ya tengamos los 2000 datos para imprimir por
+		 * Usart
+		 */
 		if (flag2SegundosTer == 1) {
+			/*
+			 * Para el primer paso mandamos el formato como se entregando los datos, luego se empiezan
+			 * a recorrer los arreglos para que impriman todos los datos
+			 */
 			if (contadorImprimir2000 == 0) {
-				writeStringInt(&USART6Handler, "x , y , z \n");
+				writeStringInt(&USART6Handler, "x,	y,	z\n");
 			}
 			if (contadorImprimir2000 < 2000) {
 				sprintf(bufferMsg, " %.2f m/s², %.2f m/s², %.2f m/s² \n",
@@ -232,16 +243,33 @@ int main(void) {
 				writeStringInt(&USART6Handler, bufferMsg);
 				contadorImprimir2000++;
 			} else {
+				/*
+				 * Cuando se termina se renician las banderas de impimir2000 para una proxima solicitud de dats
+				 * y la funcion de 2 segundos terminados para que deje de entrar en este if.
+				 */
 
 				flag2SegundosTer = 0;
 				contadorImprimir2000 = 0;
 			}
 		}
 
-		if (flagDatos == 1) {
+		/*
+		 * Esta bandera se activa cada 1ms y le pide los datos al acelerometro
+		 * También guarda los ultimos 10 datos en un arreglo y si la función
+		 * de los 2 segundos se encuentra activada tambien se encarga de guardar
+		 * los datos en arreglos.
+		 */
 
+		if (flagDatos == 1) {
+			//Funcion que lee varios registros simultaneamente.
 			i2c_readMulRegister(&i2cAcelerometro, regDatos, 6, resDatos);
 
+			/*
+			 * En esta seccion se le hace un tratamiento a los diferentes ejes
+			 * para conseguir el valor en m/s², primero se adquieren los primeros
+			 * 8 bits de la medida, luego los otros 8 bits, los mezclamos y multiplicamos por
+			 * un factor de escalado = Gravedad*4mg
+			 */
 			AccelX_low = resDatos[0];
 			AccelX_high = resDatos[1];
 			AccelX = AccelX_high << 8 | AccelX_low;
@@ -257,6 +285,8 @@ int main(void) {
 			AccelZ = AccelZ_high << 8 | AccelZ_low;
 			AccelZEsc = AccelZ * FACTORESCALADO;
 
+			//Este if nos ayuda a guarar los primeros 9 datos en el arreglo de 10
+			//El else se encarga de guardar el dato 10
 			if (contador10 < 9) {
 
 				DatoX10[contador10] = AccelXEsc;
@@ -273,6 +303,14 @@ int main(void) {
 				contador10 = 0;
 			}
 
+			/*
+			 * Si la funcion de 2 segundos se encuentra activada
+			 * ese if se encarga de guardar los datos, y cuando culmine
+			 * reiniciamos las banderas y activaos la bandera
+			 * Flag2segundosTerminados, para que empiece el envio de datos
+			 * con la funcioón vista antes
+			 */
+
 			if (flag2Segundos == 1) {
 				if (contador2000 < 2000) {
 					DatoX2000[contador2000] = AccelXEsc;
@@ -286,45 +324,46 @@ int main(void) {
 					flag2SegundosTer = 1;
 				}
 			}
-
+			//Se cierra la bandera de toma de datos.
 			flagDatos = 0;
 		}
 
 		//Hacemos un "eco" con el valor que nos llega por el serial
+		/*
+		 * Todas las funciones tienen una estructura similar, las que leen tienen
+		 * la indicación al igual que las que escriben, se usan las funciones para
+		 * leer y escribir un solo registro, junto con el sprintf para mandar el formato
+		 * indicado por la terminal serial
+		 *
+		 */
 		if (usart6DataReceived != '\0') {
-
+			//Para preguntar con quien estamos hablando
 			if (usart6DataReceived == 'w') {
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro, WHO_AM_I);
-				sprintf(bufferMsg, "Device ID = 0x%x \n",
+				sprintf(bufferMsg, "Device ID = 0x%x (read)\n", //deberia responder un 0xe5
 						(unsigned int) i2cBuffer);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			}
-
+			//Para ajustar la frecuencia
 			else if (usart6DataReceived == 'f') {
-				sprintf(bufferMsg, "Cambiamos la frecuencia \n");
+				sprintf(bufferMsg, "Cambiamos la frecuencia a 100Hz(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
-
+				//0x0A -> 100 Hz
 				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0A);
-				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_DATA_FORMAT,
-						0 << 7);
-
-				//Verificamos
-				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
-				ACCEL_BW_RATE);
-
 				usart6DataReceived = '\0';
 			}
-
+			//Ajustamos el formato, colocandolo es Fulles -> Maxima resolución.
 			else if (usart6DataReceived == 'd') {
-				sprintf(bufferMsg, "Set and modify range(r)\n");
+				sprintf(bufferMsg,
+						"Colocamos el rango en +- 2g con maxima resolución(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_DATA_FORMAT);
 				//Limpiamos el valor del rango actual
 				i2cBuffer &= ~0x0F;
-				i2cBuffer |= ADXL345_RANGE_4_G;
+				i2cBuffer |= ADXL345_RANGE_2_G;
 
 				//Habilitamos el FullRes
 				i2cBuffer |= 0x08;
@@ -336,13 +375,18 @@ int main(void) {
 			}
 
 			else if (usart6DataReceived == 's') { //Para resetear al equipo
-				sprintf(bufferMsg, "Empezar Mediciones \n");
+				sprintf(bufferMsg, "Empezar Mediciones(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				i2c_writeSingleRegister(&i2cAcelerometro, POWER_CTL, 0x08);
 				usart6DataReceived = '\0';
-			} else if (usart6DataReceived == 'x') { //lecturas en x
-				sprintf(bufferMsg, "Axis X \n"); //TODO pregunta profe
+			}
+			/*
+			 * Esta sección nos da los valores actuales en los diferentes ejes.
+			 * Se hace un tratamiento de datos igual al mostrado arriba.
+			 */
+			else if (usart6DataReceived == 'x') { //lecturas en z
+				sprintf(bufferMsg, "Axis X(read)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelX_low = i2c_readSingleRegister(&i2cAcelerometro,
@@ -352,11 +396,14 @@ int main(void) {
 				AccelX = AccelX_high << 8 | AccelX_low;
 				AccelXEsc = AccelX * FACTORESCALADO;
 
-				sprintf(bufferMsg, "AccelX = %f \n", (float) AccelXEsc);
+				sprintf(bufferMsg, "AccelX = %.2f \n", (float) AccelXEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 
 			} else if (usart6DataReceived == 'y') { //lecturas en y
+
+				sprintf(bufferMsg, "Axis Y(read)\n");
+				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelY_low = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_YOUT_L);
@@ -365,10 +412,13 @@ int main(void) {
 				AccelY = AccelY_high << 8 | AccelY_low;
 				AccelYEsc = AccelY * FACTORESCALADO;
 
-				sprintf(bufferMsg, "AccelY = %f \n", (float) AccelYEsc);
+				sprintf(bufferMsg, "AccelY = %.2f \n", (float) AccelYEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
-			} else if (usart6DataReceived == 'z') { //lecturas en y
+			} else if (usart6DataReceived == 'z') { //lecturas en z
+
+				sprintf(bufferMsg, "Axis Z(read)\n");
+				writeStringInt(&USART6Handler, bufferMsg);
 
 				AccelZ_low = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_ZOUT_L);
@@ -377,17 +427,23 @@ int main(void) {
 				AccelZ = AccelZ_high << 8 | AccelZ_low;
 				AccelZEsc = AccelZ * FACTORESCALADO;
 
-				sprintf(bufferMsg, "AccelZ = %f \n", (float) AccelZEsc);
+				sprintf(bufferMsg, "AccelZ = %.2f \n", (float) AccelZEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
-			} else if (usart6DataReceived == '2') {
+			} else if (usart6DataReceived == '2') { //Indica que se debe iniciar la toma de 2 segundos de datos.
 				writeStringInt(&USART6Handler,
 						"Se tomaran datos por 2 segundos y luego se imprimen por pantalla \n");
 				flag2Segundos = 1;
 				usart6DataReceived = '\0';
 
-			} else if (usart6DataReceived == 'a') {
-				writeStringInt(&USART6Handler, " Ajustar datos \n");
+			}
+			/*
+			 * Ajuste para los offesets se basa en sumar lo necesario para que (x,y), en un primer momento sean los mas
+			 * cercano posible a 0, y que z sea los más cercano a 9.8 m/s²
+			 */
+			else if (usart6DataReceived == 'a') {
+				writeStringInt(&USART6Handler,
+						"Ajustar datos (se agrega offset)\n");
 				//Verificamos
 				float aux = 0;
 				aux = -AccelX / 4;
@@ -407,7 +463,7 @@ int main(void) {
 
 				usart6DataReceived = '\0';
 
-			} else {
+			} else { // caso default
 				usart6DataReceived = '\0';
 			}
 		}
@@ -418,14 +474,21 @@ int main(void) {
 void initSystem(void) {
 
 	//Configuramos el PLL a 80 MHz
+
 	configPLL(80);
+
+	//Se cobtiene la recuencia para darsela al Systick, los otros drivers llaman esta función
+	//Por si mismos auto-ajustandose a la frecuencia que se les asigne.
 
 	uint16_t freq = getFreqPLL();
 
 	//	Inicializamos el SysTick se le entraga el valor de la frecuencia actual del PLL
-	config_SysTick_ms(freq);
-
-	I2cSCL2.pGPIOx = GPIOA; //8 8 contando
+	config_SysTick(freq);
+	/*
+	 * Se configuran los pines para el uso de la LCD, tal y como se ha hecho anteriormete
+	 * Se utilizan en modo Pull Up la forma de usarse el I2C
+	 */
+	I2cSCL2.pGPIOx = GPIOA;
 	I2cSCL2.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
 	I2cSCL2.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
 	I2cSCL2.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
@@ -442,16 +505,21 @@ void initSystem(void) {
 	I2cSDA2.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
 	I2cSDA2.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF9;
 	GPIO_Config(&I2cSDA2);
-
+	/*
+	 * Se utiliza la pantalla en FM ya que se noto que se nota menos el cambio en esta configuración
+	 * Se le da el address del modulo de I2C, y en este caso usaremos el I2C3
+	 */
 	i2cLCD.modeI2C = I2C_MODE_FM;
 	i2cLCD.slaveAddress = LCD_ADDRES;
 	i2cLCD.ptrI2Cx = I2C3;
 	i2c_config(&i2cLCD);
 
+	//Se le pasa el puntero del I2C al handler de la LCD
 	lcdHandler.ptrHandlerI2C = &i2cLCD;
-
 	lcdi2cconfig(&lcdHandler);
-
+	/*
+	 * Se configuran los pines necesarios para la comunicación con el acelerometro.
+	 */
 	I2cSCL.pGPIOx = GPIOB;
 	I2cSCL.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
 	I2cSCL.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
@@ -470,6 +538,9 @@ void initSystem(void) {
 	I2cSDA.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
 	GPIO_Config(&I2cSDA);
 
+	/*
+	 * Se configura el I2C1 en fast mode y se le pasa la direccion del acelerometro
+	 */
 	i2cAcelerometro.modeI2C = I2C_MODE_FM;
 	i2cAcelerometro.slaveAddress = ACCEL_ADDRESS;
 	i2cAcelerometro.ptrI2Cx = I2C1;
@@ -488,6 +559,10 @@ void initSystem(void) {
 
 	//Configuración Timer 2 que controlara el blinking
 
+	/*
+	 * En este caso a diferencia de tareas pasadas es necesario usar el 100us, ya que
+	 * el otro valor superaria el valor maximo del pre-escaler.
+	 */
 	handlerTim2.ptrTIMx = TIM2; //El timer que se va a usar
 	handlerTim2.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
 	handlerTim2.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
@@ -496,6 +571,10 @@ void initSystem(void) {
 
 	BasicTimer_Config(&handlerTim2); //Se carga la configuración.
 
+	/*
+	 * Se configura los pines ncesarios para manipular el USART6 que me fue correspondido por
+	 * estar en la casilla 4 de la segunda columna
+	 */
 	//PA 11 -> 7 bajando -> Tx
 	tx6pin.pGPIOx = GPIOA;
 	tx6pin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_11;
@@ -515,6 +594,10 @@ void initSystem(void) {
 
 	GPIO_Config(&rx6pin);
 
+	/*
+	 * Se configura el USART6 con los requerimientos presentados
+	 */
+
 	USART6Handler.ptrUSARTx = USART6;
 	USART6Handler.USART_Config.USART_baudrate = USART_BAUDRATE_115200;
 	USART6Handler.USART_Config.USART_datasize = USART_DATASIZE_8BIT;
@@ -524,6 +607,11 @@ void initSystem(void) {
 	USART6Handler.USART_Config.USART_RX_Int_Ena = ENABLE;
 
 	USART_Config(&USART6Handler);
+
+	/*
+	 * Se configuran los pines y los pwm, se usara el TIM3, con sus primeros 3 canales para este
+	 * proposito, tal y como se muestra acontinuación
+	 */
 
 	pwm3xpin.pGPIOx = GPIOC;
 	pwm3xpin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_6;
@@ -588,7 +676,7 @@ void initSystem(void) {
 	enableOutput(&pwmtim3z);
 	startPwmSignal(&pwmtim3z);
 
-	//Configuración Timer 4 que controlara el blinking
+	//Configuración Timer 4 que la toma de datos cada 1ms
 
 	handlerTim4.ptrTIMx = TIM4; //El timer que se va a usar
 	handlerTim4.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
@@ -600,6 +688,9 @@ void initSystem(void) {
 
 }
 
+/*
+ * Función encargada de sacar promedios, usada para promediar los ultimos 10 datos.
+ */
 float meanFunction(float *numbers, int cantidad) {
 
 	float res;
@@ -614,11 +705,15 @@ float meanFunction(float *numbers, int cantidad) {
 	return res;
 }
 
+/*
+ * Funcion utilizada para cambiar los pwm, que a su vez cambia los colores del led RGB.
+ */
 void cambiarLed(void) {
 
 	/*
 	 * Realizamos una regresión lineal en donde -2g es 0; 0 es 10000; 2g 2000
-	 * Por los que nos queda (10000*ValordeXpromedio)/(2g) + 10000 = 500/g * ValorXpromedio + 10000
+	 * Por los que nos queda (16000*ValordeXpromedio)/(2g) + 10000 = 80000/g * ValorXpromedio + 10000
+	 * además de un ajuste para que no se pasen de los limites.
 	 */
 	xmean = meanFunction(DatoX10, 10);
 	ymean = meanFunction(DatoY10, 10);
@@ -648,7 +743,7 @@ void cambiarLed(void) {
 	}
 
 	duttyValuex = (int) xmeanConv;
-	duttyValuey = (int) ymeanConv;
+	duttyValuey = (int) ymeanConv; //TODO
 	duttyValuez = (int) zmeanConv;
 
 	updateDuttyCycle(&pwmtim3x, duttyValuex);
@@ -656,21 +751,50 @@ void cambiarLed(void) {
 	updateDuttyCycle(&pwmtim3z, duttyValuez);
 
 }
-
+/*
+ * Funcion que refresca el led, se aprovecha del blinking de 250 ms, por eso tenemos algo que nos
+ * iguala a 4, que nos daría un segundo, la parte de contador 2 segundos es para que la ultima linea
+ * de la lcd cambia cada 2 segundos.
+ */
 void LCDRefresh(void) {
 	if (contador1seg == 4) {
+		contador2seg++;
+		if (contador2seg == 2) {
+			contador2seg = 0;
+			if (datoPantalla < 6) {
+				datoPantalla++;
+			} else {
+				datoPantalla = 0;
+			}
+
+		}
 		contador1seg = 0;
-		lcdClear();
-		lcdHome();
+		/*
+		 * Enviar los datos a la lcd
+		 */
+		lcdClear();		//Primero limpiamos la lcd
+		lcdHome();		//Colocamos el puntero en la posición iniciall.
+		/*
+		 * Armamos el formato que necesitamos se dejan solo
+		 * dos decimales por cuestiones de incertidumbre ya que
+		 * la mimima cantidad que puede medir el acelerometro es 0.04 m/s²
+		 */
 		sprintf(bufferMsg, "x = %.2f m/s2", xmean);
 		lcdWriteMessage(bufferMsg);
-		lcdMoveCursorTo(0x40);
+		lcdMoveCursorTo(0x40); 	//Posición de memoria de la segunda linea
 		sprintf(bufferMsg, "y = %.2f m/s2", ymean);
 		lcdWriteMessage(bufferMsg);
 		lcdMoveCursorTo(0x14);
 		sprintf(bufferMsg, "z = %.2f m/s2", zmean);
 		lcdWriteMessage(bufferMsg);
-		lcdMoveCursorTo(0x54);
+		lcdMoveCursorTo(0x54);	//Posición de memoria tercera linea
+		/*
+		 * Lo siguiente se encarga de la administracción de la ultima fila, esta
+		 * primero nos indica si el acelerometro esta configurado para medir y nos
+		 * indica como inciarlo, luego va saltando entre varias opciones cada 2 segundos
+		 * donde se nos muestra el offset de cada eje la sensibildiad y otras opciones de
+		 * teclas para usar en la terminal
+		 */
 		if (xmean == 0.0f && ymean == 0.0f && zmean == 0.0f) {
 			sprintf(bufferMsg, "AccNoActiveKey s");
 			lcdWriteMessage(bufferMsg);
@@ -679,11 +803,9 @@ void LCDRefresh(void) {
 			switch (datoPantalla) {
 
 			case 0:
-				datoPantalla++;
 				sprintf(bufferMsg, "AdjustOffsetKey a");
 				break;
 			case 1:
-				datoPantalla++;
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSX);
 				auxi = ((int8_t) i2cBuffer) * 15.6
@@ -691,7 +813,6 @@ void LCDRefresh(void) {
 				sprintf(bufferMsg, "OffsetX = %.2f", auxi);
 				break;
 			case 2:
-				datoPantalla++;
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSY);
 				auxi = ((int8_t) i2cBuffer) * 15.6
@@ -699,7 +820,6 @@ void LCDRefresh(void) {
 				sprintf(bufferMsg, "OffsetY = %.2f", auxi);
 				break;
 			case 3:
-				datoPantalla++;
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSZ);
 				auxi = ((int8_t) i2cBuffer) * 15.6
@@ -707,16 +827,17 @@ void LCDRefresh(void) {
 				sprintf(bufferMsg, "OffsetZ = %.2f", auxi);
 				break;
 			case 4:
-				datoPantalla++;
 				auxi = (4.0f / 1000.0f) * SENSORS_GRAVITY_EARTH;
 				sprintf(bufferMsg, "Sens = %.2f m/s2", auxi);
 				break;
 			case 5:
-				datoPantalla = 0;
-				sprintf(bufferMsg, "OtherKeys : x,y,z,2");
+				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
+				break;
+			case 6:
+				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
 				break;
 			default:
-				datoPantalla = 0;
+				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
 				break;
 			}
 			lcdWriteMessage(bufferMsg);
@@ -730,12 +851,12 @@ void BasicTimer2_Callback(void) {
 	contador1seg++;
 }
 
-//Calback del timer6 para el blinking
+//Calback del timer4 para la toma de datos
 void BasicTimer4_Callback(void) {
 	flagDatos = 1;
 }
 
-//Callback para leer lo que se madna por el USART6
+//Callback para leer lo que se mandna por el USART6
 void USART6Rx_Callback(void) {
 	usart6DataReceived = getRxData();
 }

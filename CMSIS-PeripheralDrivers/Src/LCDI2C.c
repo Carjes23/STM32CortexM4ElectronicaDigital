@@ -13,49 +13,50 @@
 LCDI2C_handler_t ptr = { 0 };
 
 void lcdi2cconfig(LCDI2C_handler_t *ptrLcd) {
+	/*
+	 * Comandos necesarios para iniciar la LCD
+	 */
 	ptr = *ptrLcd;
-	delay_ms(20);  // wait for >4.1ms
+	delay_ms(20);  // Esperar más de 15 ms al iniciar
 	lcd_send_cmd(0x30);
-	delay_ms(5);  // wait for >4.1ms
+	delay_ms(5);  // esperar más de 5 ms
 	lcd_send_cmd(0x30);
-	delay_100us(3);  // wait for >100us
+	delay_100us(3);  //esperar más de 150 us
 	lcd_send_cmd(0x30);
-	delay_ms(5);
-	lcd_send_cmd(0x20);  // 4bit mode
+	delay_ms(5);		//Esperar más de 5 ms
+	lcd_send_cmd(0x20);  // modo de 4 bits
 	delay_100us(3);
-	lcd_send_cmd(0x20);  // 4bit mode
-	lcd_send_cmd(0x08); // Function set --> DL=0 (4 bit mode), N = 1 (2 line display) F = 0 (5x8 characters)
-	lcd_send_cmd(0x28); //Display on/off control --> D=0,C=0, B=0  ---> display off
-	lcd_send_cmd(0x06);  // clear display
-	lcd_send_cmd(0x0F); //Entry mode set --> I/D = 1 (increment cursor) & S = 0 (no shift)
+	lcd_send_cmd(0x20);  // modo de 4 bits
+	lcd_send_cmd(0x08); // Function set -> Colocamos lo necesario en cuestion de lineas y modo de uso
+	lcd_send_cmd(0x28); //Apagamos el display
+	lcd_send_cmd(0x06);  // Limpiamos el display
+	lcd_send_cmd(0x0F); //Coocamos el modo de entrada y que el cursor se mueva a la derecha con cada dato.
 	lcdClear();
 }
-
+/*
+ * Función para ir a la primera posición
+ */
 void lcdHome(void) {
 	lcd_send_cmd(0x02);
 	delay_ms(5);
 }
-
+/*
+ * Función para borrar lo de pantalla
+ */
 void lcdClear(void) {
 	lcd_send_cmd(0x01);
 	delay_ms(20);
 }
 
-void lcd_clear2 (void)
-{
-	lcdHome();
-	for (int i=0; i<100; i++)
-	{
-		lcd_send_data (' ');
-	}
-}
 
 void lcdMoveCursorTo(uint16_t posicion) {
 	lcd_send_cmd(0x80 + posicion);
 	delay_ms(5);
 }
-
-void lcdCursorOnOff(LCDI2C_handler_t *ptrLcd, uint8_t onOff) {
+/*
+ * Apagar el cursor
+ */
+void lcdCursorOnOff(uint8_t onOff) {
 	if (onOff == 0) { // OFF
 		lcd_send_cmd(0x0C);
 	} else {
@@ -63,39 +64,43 @@ void lcdCursorOnOff(LCDI2C_handler_t *ptrLcd, uint8_t onOff) {
 	}
 	delay_100us(5);
 }
-
-
-void lcd_send_cmd (char cmd)
-{
-  char data_u, data_l;
-	uint8_t data_t[4];
-	data_u = (cmd&0xf0);
-	data_l = ((cmd<<4)&0xf0);
-	data_t[0] = data_u|0x0C;  //en=1, rs=0
-	data_t[1] = data_u|0x08;  //en=0, rs=0
-	data_t[2] = data_l|0x0C;  //en=1, rs=0
-	data_t[3] = data_l|0x08;  //en=0, rs=0
-	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
-	delay_ms(1);
-}
-
-void lcd_send_data (char data)
-{
+/*
+ * Funciones para mandar datos, donde se parten los datos en dos
+ * estos se envian primero con el enable apagado y luego se envian
+ * los mismos datos con el enable encendido para que se escriban en la pantalla
+ * Esto funciona igual en enviar datos, solo que el RS se encuentra en alto.
+ */
+void lcd_send_cmd(char cmd) {
 	char data_u, data_l;
 	uint8_t data_t[4];
-	data_u = (data&0xf0);
-	data_l = ((data<<4)&0xf0);
-	data_t[0] = data_u|0x0D;  //en=1, rs=1
-	data_t[1] = data_u|0x09;  //en=0, rs=1
-	data_t[2] = data_l|0x0D;  //en=1, rs=1
-	data_t[3] = data_l|0x09;  //en=0, rs=1
+	data_u = (cmd & 0xf0);
+	data_l = ((cmd << 4) & 0xf0);
+	data_t[0] = data_u | 0x0C;
+	data_t[1] = data_u | 0x08;
+	data_t[2] = data_l | 0x0C;
+	data_t[3] = data_l | 0x08;
 	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
 	delay_ms(1);
 }
 
-void lcdWriteMessage(const char * message){
+void lcd_send_data(char data) {
+	char data_u, data_l;
+	uint8_t data_t[4];
+	data_u = (data & 0xf0);
+	data_l = ((data << 4) & 0xf0);
+	data_t[0] = data_u | 0x0D;
+	data_t[1] = data_u | 0x09;
+	data_t[2] = data_l | 0x0D;
+	data_t[3] = data_l | 0x09;
+	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
+	delay_ms(1);
+}
+/**
+ * Para enviar mensajes uso repetido de enviar data.
+ */
+void lcdWriteMessage(const char *message) {
 	int i = 0;
-	while(message[i]){
+	while (message[i]) {
 		lcd_send_data(message[i]);
 		i++;
 	}

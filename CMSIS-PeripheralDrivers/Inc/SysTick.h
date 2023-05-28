@@ -40,7 +40,7 @@
 #define PLL_CLOCK_CONFIGURED 	2
 
 
-void config_SysTick_ms(uint8_t systemClock);
+void config_SysTick(uint8_t systemClock);
 uint64_t getTicks_ms(void);
 uint64_t getTicks_us(void);
 void delay_ms(uint32_t wait_time_ms);

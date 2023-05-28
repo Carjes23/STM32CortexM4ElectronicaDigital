@@ -22,7 +22,7 @@
 #define HSE_CLOCK_CONFIGURED		1
 #define PLL_CLOCK_CONFIGURED		2
 
-#define PLL_STANDARD_FREQ	79
+#define PLL_STANDARD_FREQ	80
 
 void configPLL(uint16_t freqPLL);
 uint8_t getConfigPLL(void);

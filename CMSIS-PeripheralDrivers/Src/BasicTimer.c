@@ -71,6 +71,8 @@ void BasicTimer_Config(BasicTimer_Handler_t *ptrBTimerHandler){
 	 */
 
 	/* Escriba codigo aca */
+	//Se halla el valor requerido usando el PLL con esto ajustamos a cualquiera dato
+	//Tener cuidado con sobrepasar el maximo valor del PLL.
 	uint32_t auxData = ptrBTimerHandler->TIMx_Config.TIMx_speed*getFreqPLL();
 	ptrBTimerHandler->ptrTIMx->PSC = auxData -1;
 
