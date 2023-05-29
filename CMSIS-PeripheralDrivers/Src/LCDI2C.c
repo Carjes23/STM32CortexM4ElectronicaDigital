@@ -17,27 +17,25 @@ void lcdi2cconfig(LCDI2C_handler_t *ptrLcd) {
 	 * Comandos necesarios para iniciar la LCD
 	 */
 	ptr = *ptrLcd;
-	delay_ms(20);  // Esperar más de 15 ms al iniciar
+	delay_ms(50);  // Esperar más de 15 ms al iniciar
 	lcd_send_cmd(0x30);
 	delay_ms(5);  // esperar más de 5 ms
 	lcd_send_cmd(0x30);
-	delay_100us(3);  //esperar más de 150 us
+	delay_100us(5);  //esperar más de 150 us
 	lcd_send_cmd(0x30);
-	delay_ms(5);		//Esperar más de 5 ms
+	delay_ms(50);		//Esperar más de 5 ms
 	lcd_send_cmd(0x20);  // modo de 4 bits
-	delay_100us(3);
-	lcd_send_cmd(0x20);  // modo de 4 bits
-	delay_ms(1);		//Esperar más de 5 ms
-	lcd_send_cmd(0x08); // Function set -> Colocamos lo necesario en cuestion de lineas y modo de uso
-	delay_ms(1);		//Esperar más de 5 ms
+	delay_ms(50);			//Esperar más de 5 ms
 	lcd_send_cmd(0x28); //Apagamos el display
-	delay_ms(1);		//Esperar más de 5 ms
+	delay_ms(50);		//Esperar más de 5 ms
+	lcd_send_cmd(0x08); // Function set -> Colocamos lo necesario en cuestion de lineas y modo de uso
+	delay_ms(50);
+	lcd_send_cmd(0x01); //Coocamos el modo de entrada y que el cursor se mueva a la derecha con cada dato.
+	delay_ms(50);		//Esperar más de 5 ms
 	lcd_send_cmd(0x06);  // Limpiamos el display
-	delay_ms(1);		//Esperar más de 5 ms
-	lcd_send_cmd(0x0F); //Coocamos el modo de entrada y que el cursor se mueva a la derecha con cada dato.
-	delay_ms(1);		//Esperar más de 5 ms
-	lcdClear();
-	delay_ms(20);		//Esperar más de 5 ms
+	delay_ms(50);		//Esperar más de 5 ms
+	lcd_send_cmd(0x0C); //Coocamos el modo de entrada y que el cursor se mueva a la derecha con cada dato.
+
 }
 /*
  * Función para ir a la primera posición
@@ -54,10 +52,9 @@ void lcdClear(void) {
 	delay_ms(20);
 }
 
-
 void lcdMoveCursorTo(uint16_t posicion) {
 	lcd_send_cmd(0x80 + posicion);
-	delay_ms(5);
+//	delay_ms(5);
 }
 /*
  * Apagar el cursor
@@ -86,7 +83,6 @@ void lcd_send_cmd(char cmd) {
 	data_t[2] = data_l | 0x0C;
 	data_t[3] = data_l | 0x08;
 	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
-	delay_100us(2);
 }
 
 void lcd_send_data(char data) {
@@ -98,8 +94,9 @@ void lcd_send_data(char data) {
 	data_t[1] = data_u | 0x09;
 	data_t[2] = data_l | 0x0D;
 	data_t[3] = data_l | 0x09;
+
+
 	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
-	delay_100us(2);
 }
 /**
  * Para enviar mensajes uso repetido de enviar data.

@@ -216,13 +216,13 @@ int main(void) {
 
 	//Parametros que no cambian en el display
 	lcdMoveCursorTo(0x00); 	//Posición de memoria de la segunda linea
-	sprintf(bufferMsg2, "x = ");
+	sprintf(bufferMsg2, "AccX =          m/s2");
 	lcdWriteMessage(bufferMsg2);
 	lcdMoveCursorTo(0x40); 	//Posición de memoria de la segunda linea
-	sprintf(bufferMsg2, "y = ");
+	sprintf(bufferMsg2, "AccY =          m/s2");
 	lcdWriteMessage(bufferMsg2);
 	lcdMoveCursorTo(0x14);
-	sprintf(bufferMsg2, "z = ");
+	sprintf(bufferMsg2, "AccZ =          m/s2");
 	lcdWriteMessage(bufferMsg2);
 	lcdCursorOnOff(0);
 
@@ -803,14 +803,14 @@ void LCDRefresh(void) {
 		 * dos decimales por cuestiones de incertidumbre ya que
 		 * la mimima cantidad que puede medir el acelerometro es 0.04 m/s²
 		 */
-		lcdMoveCursorTo(0x00 + 4); 	//Posición de memoria de la segunda linea
-		sprintf(bufferMsg2, "%.2f m/s2 ", xmean);
+		lcdMoveCursorTo(0x00 + 9); 	//Posición de memoria de la segunda linea
+		sprintf(bufferMsg2, "%.2f ", xmean);
 		lcdWriteMessage(bufferMsg2);
-		lcdMoveCursorTo(0x40 + 4); 	//Posición de memoria de la segunda linea
-		sprintf(bufferMsg2, "%.2f m/s2 ", ymean);
+		lcdMoveCursorTo(0x40 + 9); 	//Posición de memoria de la segunda linea
+		sprintf(bufferMsg2, "%.2f ", ymean);
 		lcdWriteMessage(bufferMsg2);
-		lcdMoveCursorTo(0x14 + 4);
-		sprintf(bufferMsg2, "%.2f m/s2 ", zmean);
+		lcdMoveCursorTo(0x14 + 9);
+		sprintf(bufferMsg2, "%.2f ", zmean);
 		lcdWriteMessage(bufferMsg2);
 		lcdMoveCursorTo(0x54);	//Posición de memoria tercera linea
 		/*
