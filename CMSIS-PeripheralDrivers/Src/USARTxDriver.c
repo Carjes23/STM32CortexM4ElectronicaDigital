@@ -470,20 +470,21 @@ void writeStringInt(USART_Handler_t *ptrUsartHandler, char *string) {
 		__NOP();
 	}
 	if (ptrUsartHandler->ptrUSARTx == USART2) {
-		stringToSend2 = malloc(strlen(string) + 1); //Asignar un nuevo espacio de memoria de cierto tamaño relacionado a string
-		strcpy(stringToSend2, string); //Copiar ek vakir de string dentro de este espacio.
+		stringToSend2 = string;
 		tipo2 = 1;
 	} else if (ptrUsartHandler->ptrUSARTx == USART1) {
-		stringToSend1 = malloc(strlen(string) + 1);
-		strcpy(stringToSend1, string);
+		stringToSend1 = string;
 		tipo1 = 1;
 	} else if (ptrUsartHandler->ptrUSARTx == USART6) {
-		stringToSend6 = malloc(strlen(string) + 1);
-		strcpy(stringToSend6, string);
+		stringToSend6 = string;
 		tipo6 = 1;
 	}
 	flagNewData = 1;	//Para que no se envien un string mientras se envia uno anterior
 	ptrUsartHandler->ptrUSARTx->CR1 |= (USART_CR1_TXEIE);	//Se inicia la bandera para las interrupcioens de transmisión
 
+}
+
+bool getFlagNewData(void){
+	return flagNewData;
 }
 

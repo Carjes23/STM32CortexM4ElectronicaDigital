@@ -27,11 +27,17 @@ void lcdi2cconfig(LCDI2C_handler_t *ptrLcd) {
 	lcd_send_cmd(0x20);  // modo de 4 bits
 	delay_100us(3);
 	lcd_send_cmd(0x20);  // modo de 4 bits
+	delay_ms(1);		//Esperar más de 5 ms
 	lcd_send_cmd(0x08); // Function set -> Colocamos lo necesario en cuestion de lineas y modo de uso
+	delay_ms(1);		//Esperar más de 5 ms
 	lcd_send_cmd(0x28); //Apagamos el display
+	delay_ms(1);		//Esperar más de 5 ms
 	lcd_send_cmd(0x06);  // Limpiamos el display
+	delay_ms(1);		//Esperar más de 5 ms
 	lcd_send_cmd(0x0F); //Coocamos el modo de entrada y que el cursor se mueva a la derecha con cada dato.
+	delay_ms(1);		//Esperar más de 5 ms
 	lcdClear();
+	delay_ms(20);		//Esperar más de 5 ms
 }
 /*
  * Función para ir a la primera posición
@@ -80,7 +86,7 @@ void lcd_send_cmd(char cmd) {
 	data_t[2] = data_l | 0x0C;
 	data_t[3] = data_l | 0x08;
 	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
-	delay_ms(1);
+	delay_100us(2);
 }
 
 void lcd_send_data(char data) {
@@ -93,7 +99,7 @@ void lcd_send_data(char data) {
 	data_t[2] = data_l | 0x0D;
 	data_t[3] = data_l | 0x09;
 	i2c_writeMultTimeSameRegister(ptr.ptrHandlerI2C, 0x00, data_t, 4);
-	delay_ms(1);
+	delay_100us(2);
 }
 /**
  * Para enviar mensajes uso repetido de enviar data.

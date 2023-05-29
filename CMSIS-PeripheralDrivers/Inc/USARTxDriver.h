@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #ifndef USARTXDRIVER_H_
 #define USARTXDRIVER_H_
@@ -89,6 +90,7 @@ int readChar(USART_Handler_t *ptrUsartHandler);
 void writeString(USART_Handler_t *ptrUsartHandler, char* string);
 int writeCharInt(USART_Handler_t *ptrUsartHandler, int dataToSendI );
 void writeStringInt(USART_Handler_t *ptrUsartHandler, char* string);
+bool getFlagNewData(void);
 
 uint8_t getRxData(void);
 

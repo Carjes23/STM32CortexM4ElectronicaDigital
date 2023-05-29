@@ -36,7 +36,6 @@
  */
 
 //Se incluyen las librerias necesarias para el desarrollo del proyecto
-
 #include <stdint.h>
 #include <stm32f4xx.h>
 #include "GPIOxDriver.h"
@@ -118,6 +117,7 @@ bool flag2SegundosTer = 0; //BAndera que indica cuando se completaron los 2 segu
 uint8_t usart6DataReceived = 0; //Dato recibido por el usart 6
 
 char bufferMsg[256] = { 0 }; //Para guardar un formato de texto
+char bufferMsg2[30] = { 0 }; //Para guardar un formato de texto
 uint16_t i2cBuffer = 0;		 //Buffer para la recepción de datos en el I2C
 
 //Handlers utilizados para manipular los perifericos
@@ -201,6 +201,7 @@ float meanFunction(float *numbers, int cantidad);
 void cambiarLed(void);
 void initSystem(void); // Función que inicializa el sistema
 void USART6Rx_Callback(void); //Definir el callback
+void VerificarUsartOcupado(void);
 /*
  * Funcion que se encarga de refresacar la Led cada segundo.
  */
@@ -212,6 +213,18 @@ int main(void) {
 
 	//Iniciamos sistma
 	initSystem();
+
+	//Parametros que no cambian en el display
+	lcdMoveCursorTo(0x00); 	//Posición de memoria de la segunda linea
+	sprintf(bufferMsg2, "x = ");
+	lcdWriteMessage(bufferMsg2);
+	lcdMoveCursorTo(0x40); 	//Posición de memoria de la segunda linea
+	sprintf(bufferMsg2, "y = ");
+	lcdWriteMessage(bufferMsg2);
+	lcdMoveCursorTo(0x14);
+	sprintf(bufferMsg2, "z = ");
+	lcdWriteMessage(bufferMsg2);
+	lcdCursorOnOff(0);
 
 	while (1) {
 		//Se activa cada vez que el timer 2 se llena cada 250 ms y cambiamos el estado del led de usuario
@@ -233,13 +246,15 @@ int main(void) {
 			 * a recorrer los arreglos para que impriman todos los datos
 			 */
 			if (contadorImprimir2000 == 0) {
-				writeStringInt(&USART6Handler, "x,	y,	z\n");
+				writeStringInt(&USART6Handler, "x;  y;  z\n");
 			}
 			if (contadorImprimir2000 < 2000) {
-				sprintf(bufferMsg, " %.2f m/s², %.2f m/s², %.2f m/s² \n",
+				VerificarUsartOcupado();
+				sprintf(bufferMsg, " %.2f m/s²; %.2f m/s²; %.2f m/s²; # %u\n",
 						DatoX2000[contadorImprimir2000],
 						DatoY2000[contadorImprimir2000],
-						DatoZ2000[contadorImprimir2000]);
+						DatoZ2000[contadorImprimir2000],
+						contadorImprimir2000 + 1);
 				writeStringInt(&USART6Handler, bufferMsg);
 				contadorImprimir2000++;
 			} else {
@@ -340,6 +355,7 @@ int main(void) {
 			//Para preguntar con quien estamos hablando
 			if (usart6DataReceived == 'w') {
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro, WHO_AM_I);
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Device ID = 0x%x (read)\n", //deberia responder un 0xe5
 						(unsigned int) i2cBuffer);
 				writeStringInt(&USART6Handler, bufferMsg);
@@ -347,14 +363,16 @@ int main(void) {
 			}
 			//Para ajustar la frecuencia
 			else if (usart6DataReceived == 'f') {
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Cambiamos la frecuencia a 3200Hz(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 				//0x0A -> 100 Hz
 				i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0F);
 				usart6DataReceived = '\0';
 			}
-			//Ajustamos el formato, colocandolo es Fulles -> Maxima resolución.
+			//Ajustamos el formato, colocandolo es FullRes -> Maxima resolución.
 			else if (usart6DataReceived == 'd') {
+				VerificarUsartOcupado();
 				sprintf(bufferMsg,
 						"Colocamos el rango en +- 2g con maxima resolución(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
@@ -375,6 +393,7 @@ int main(void) {
 			}
 
 			else if (usart6DataReceived == 's') { //Para resetear al equipo
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Empezar Mediciones(write)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
@@ -386,6 +405,7 @@ int main(void) {
 			 * Se hace un tratamiento de datos igual al mostrado arriba.
 			 */
 			else if (usart6DataReceived == 'x') { //lecturas en z
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Axis X(read)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
@@ -396,12 +416,14 @@ int main(void) {
 				AccelX = AccelX_high << 8 | AccelX_low;
 				AccelXEsc = AccelX * FACTORESCALADO;
 
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "AccelX = %.2f \n", (float) AccelXEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 
 			} else if (usart6DataReceived == 'y') { //lecturas en y
 
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Axis Y(read)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
@@ -412,11 +434,13 @@ int main(void) {
 				AccelY = AccelY_high << 8 | AccelY_low;
 				AccelYEsc = AccelY * FACTORESCALADO;
 
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "AccelY = %.2f \n", (float) AccelYEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
 			} else if (usart6DataReceived == 'z') { //lecturas en z
 
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "Axis Z(read)\n");
 				writeStringInt(&USART6Handler, bufferMsg);
 
@@ -427,6 +451,7 @@ int main(void) {
 				AccelZ = AccelZ_high << 8 | AccelZ_low;
 				AccelZEsc = AccelZ * FACTORESCALADO;
 
+				VerificarUsartOcupado();
 				sprintf(bufferMsg, "AccelZ = %.2f \n", (float) AccelZEsc);
 				writeStringInt(&USART6Handler, bufferMsg);
 				usart6DataReceived = '\0';
@@ -772,21 +797,21 @@ void LCDRefresh(void) {
 		/*
 		 * Enviar los datos a la lcd
 		 */
-		lcdClear();		//Primero limpiamos la lcd
-		lcdHome();		//Colocamos el puntero en la posición iniciall.
+
 		/*
 		 * Armamos el formato que necesitamos se dejan solo
 		 * dos decimales por cuestiones de incertidumbre ya que
 		 * la mimima cantidad que puede medir el acelerometro es 0.04 m/s²
 		 */
-		sprintf(bufferMsg, "x = %.2f m/s2", xmean);
-		lcdWriteMessage(bufferMsg);
-		lcdMoveCursorTo(0x40); 	//Posición de memoria de la segunda linea
-		sprintf(bufferMsg, "y = %.2f m/s2", ymean);
-		lcdWriteMessage(bufferMsg);
-		lcdMoveCursorTo(0x14);
-		sprintf(bufferMsg, "z = %.2f m/s2", zmean);
-		lcdWriteMessage(bufferMsg);
+		lcdMoveCursorTo(0x00 + 4); 	//Posición de memoria de la segunda linea
+		sprintf(bufferMsg2, "%.2f m/s2 ", xmean);
+		lcdWriteMessage(bufferMsg2);
+		lcdMoveCursorTo(0x40 + 4); 	//Posición de memoria de la segunda linea
+		sprintf(bufferMsg2, "%.2f m/s2 ", ymean);
+		lcdWriteMessage(bufferMsg2);
+		lcdMoveCursorTo(0x14 + 4);
+		sprintf(bufferMsg2, "%.2f m/s2 ", zmean);
+		lcdWriteMessage(bufferMsg2);
 		lcdMoveCursorTo(0x54);	//Posición de memoria tercera linea
 		/*
 		 * Lo siguiente se encarga de la administracción de la ultima fila, esta
@@ -796,52 +821,57 @@ void LCDRefresh(void) {
 		 * teclas para usar en la terminal
 		 */
 		if (xmean == 0.0f && ymean == 0.0f && zmean == 0.0f) {
-			sprintf(bufferMsg, "AccNoActiveKey s");
-			lcdWriteMessage(bufferMsg);
+			sprintf(bufferMsg2, "AccNoActiveKey s");
+			lcdWriteMessage(bufferMsg2);
+			datoPantalla = 0;
 		} else {
 			float auxi = 0;
 			switch (datoPantalla) {
 
 			case 0:
-				sprintf(bufferMsg, "AdjustOffsetKey a");
+				sprintf(bufferMsg2, "AdjustOffsetKey a   ");
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 1:
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSX);
 				auxi = ((int8_t) i2cBuffer) * 15.6
 						/ 1000* SENSORS_GRAVITY_EARTH; //15.6mg es la minima cantidad de offset
-				sprintf(bufferMsg, "OffsetX = %.2f", auxi);
+				sprintf(bufferMsg2, "OffsetX = %.2f   ", auxi);
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 2:
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSY);
 				auxi = ((int8_t) i2cBuffer) * 15.6
 						/ 1000* SENSORS_GRAVITY_EARTH;
-				sprintf(bufferMsg, "OffsetY = %.2f", auxi);
+				sprintf(bufferMsg2, "OffsetY = %.2f ", auxi);
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 3:
 				i2cBuffer = i2c_readSingleRegister(&i2cAcelerometro,
 				ACCEL_OFSZ);
 				auxi = ((int8_t) i2cBuffer) * 15.6
 						/ 1000* SENSORS_GRAVITY_EARTH;
-				sprintf(bufferMsg, "OffsetZ = %.2f", auxi);
+				sprintf(bufferMsg2, "OffsetZ = %.2f ", auxi);
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 4:
 				auxi = (4.0f / 1000.0f) * SENSORS_GRAVITY_EARTH;
-				sprintf(bufferMsg, "Sens = %.2f m/s2", auxi);
+				sprintf(bufferMsg2, "Sens = %.2f m/s2 ", auxi);
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 5:
-				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
+				sprintf(bufferMsg2, "O.Keys:w,x,y,z,2,f,d");
+				lcdWriteMessage(bufferMsg2);
 				break;
 			case 6:
-				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
+				sprintf(bufferMsg2, "O.Keys:w,x,y,z,2,f,d");
 				break;
 			default:
-				sprintf(bufferMsg, "O.Keys:w,x,y,z,2,f,d");
+				sprintf(bufferMsg2, "O.Keys:w,x,y,z,2,f,d");
 				break;
 			}
-			lcdWriteMessage(bufferMsg);
-
 		}
 	}
 }
@@ -859,4 +889,12 @@ void BasicTimer4_Callback(void) {
 //Callback para leer lo que se mandna por el USART6
 void USART6Rx_Callback(void) {
 	usart6DataReceived = getRxData();
+}
+
+void VerificarUsartOcupado(void) {
+	bool flagNewData = getFlagNewData();
+	while (flagNewData != 0) { //No deja ingresar nuevos datos hasta que se envien por completo
+		__NOP();
+		flagNewData = getFlagNewData();
+	}
 }
