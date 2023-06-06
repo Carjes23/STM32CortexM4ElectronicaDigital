@@ -182,6 +182,21 @@ void USART_Config(USART_Handler_t *ptrUsartHandler) {
 		// Escriba acá su código y los comentarios que faltan
 	}
 
+	else if (ptrUsartHandler->USART_Config.USART_baudrate
+			== USART_BAUDRATE_1) {
+		float div = (freckClock * 1E6) / (16 * 1E6);
+		uint16_t mantissa = (int) div;
+		uint16_t fraction = (int) round((div - mantissa) * 16);
+		uint16_t result = mantissa << 4 | fraction;
+		ptrUsartHandler->ptrUSARTx->BRR = result;
+		//example for 16Mhz
+		// El valor a cargar es 8.6875 -> Mantiza = 8,fraction = 0.6875
+		// Mantiza = 8 = 0x8, fraction = 16 * 0.6875 = 11 = 0xB
+		// Valor a cargar 0x008B
+		// Escriba acá su código y los comentarios que faltan
+	}
+
+
 	// 2.6 Configuramos el modo: TX only, RX only, RXTX, disable
 	switch (ptrUsartHandler->USART_Config.USART_mode) {
 	case USART_MODE_TX: {
@@ -270,7 +285,7 @@ void USART1Tx_String(void) {
 		USART1->DR = auxData;
 		posicionActual1++;
 	} else {
-		USART6->CR1 &= ~(USART_CR1_TXEIE);
+		USART1->CR1 &= ~(USART_CR1_TXEIE);
 		posicionActual6 = 0;
 		flagNewData = 0;
 	}

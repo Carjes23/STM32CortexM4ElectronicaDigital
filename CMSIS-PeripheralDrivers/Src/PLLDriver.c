@@ -142,5 +142,26 @@ uint16_t getFreqPLL(void){
 	}
 }
 
+void configPresMCO1(uint8_t prescaler){
+	//limpiamos
+	RCC->CFGR &= ~(0b111<<RCC_CFGR_MCO1PRE_Pos);
+	//colocamos el valor
+	RCC->CFGR |= (prescaler<<RCC_CFGR_MCO1PRE_Pos);
+}
+
+void configChannelMCO1(uint8_t channel){
+	//limpiamos
+	RCC->CFGR &= ~(0b11<<RCC_CFGR_MCO1_Pos);
+	//colocamos el valor
+	RCC->CFGR |= (channel<<RCC_CFGR_MCO1_Pos);
+}
+
+void changeTrim(uint8_t newValue){
+	//limpiamos
+	RCC-> CR &= ~(0b11111<<RCC_CR_HSITRIM_Pos);
+	//colocamos el nuevo valor
+	RCC-> CR |= newValue<<RCC_CR_HSITRIM_Pos;
+}
+
 
 

@@ -160,10 +160,10 @@ int main(void){
 
 void initSystem(void){
 
-//	configPLL(80);
+	configPLL(80);
 
 
-	config_SysTick_ms(getFreqPLL());
+	config_SysTick(getFreqPLL());
 
 	//Led de usuario usado para el blinking
 
@@ -190,7 +190,7 @@ void initSystem(void){
 	handlerTim2.ptrTIMx = TIM2; //El timer que se va a usar
 	handlerTim2.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
 	handlerTim2.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
-	handlerTim2.TIMx_Config.TIMx_period = 1000; //Se define el periodo en este caso el led cambiara cada 250ms
+	handlerTim2.TIMx_Config.TIMx_period = 2500; //Se define el periodo en este caso el led cambiara cada 250ms
 	handlerTim2.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us; //Se define la "velocidad" que se usara
 
 	BasicTimer_Config(&handlerTim2); //Se carga la configuración.

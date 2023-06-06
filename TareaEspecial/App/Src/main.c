@@ -208,8 +208,7 @@ void VerificarUsartOcupado(void);
 void LCDRefresh(void);
 
 int main(void) {
-	//Activacion cooprocesador matematico(importante para esta tarea)
-	SCB->CPACR |= (0xF << 20);
+
 
 	//Iniciamos sistma
 	initSystem();

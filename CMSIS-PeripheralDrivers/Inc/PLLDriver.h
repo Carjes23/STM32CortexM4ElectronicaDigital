@@ -27,5 +27,8 @@
 void configPLL(uint16_t freqPLL);
 uint8_t getConfigPLL(void);
 uint16_t getFreqPLL(void);
+void configPresMCO1(uint8_t prescaler);
+void configChannelMCO1(uint8_t channel);
+void changeTrim(uint8_t newValue);
 
 #endif /* PLLDRIVER_H_ */
