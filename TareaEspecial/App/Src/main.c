@@ -229,7 +229,7 @@ int main(void) {
 		//Se activa cada vez que el timer 2 se llena cada 250 ms y cambiamos el estado del led de usuario
 		//Tambien se aprovecha para cambiar los pwm de los leds, logrando el cambio de color
 		//Al cambiar los ejes.
-		if (banderaLedUsuario == 1) {
+		if (banderaLedUsuario > 3) {
 			banderaLedUsuario = 0; //Se reinicia en 0
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
 			cambiarLed(); //Cambiamos los PWM para que se vea en los leds

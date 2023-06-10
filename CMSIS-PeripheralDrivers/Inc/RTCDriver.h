@@ -19,18 +19,8 @@
 #define RTC_WEEKDAY_SUNDAY		0b111
 
 
-typedef struct{
-	uint8_t seconds;
-	uint8_t minutes;
-	uint8_t hour;
-	uint8_t weekDay;
-	uint8_t date;
-	uint8_t month;
-	uint8_t year;
-}RTC_t;
-
 // Función de configuración del RTC
-void config_RTC(RTC_t *pRTC);
+void config_RTC();
 
 // Función para convertir de decimal a BCD
 uint8_t decToBCD(int val);
@@ -38,18 +28,28 @@ uint8_t decToBCD(int val);
 int BCDToDec(uint8_t val);
 
 void setSegundos(int val);
+uint8_t getSegundos(void) ;
 
 void setHour(int val) ;
+uint8_t getHour(void) ;
 
 void setMinutes(int val);
+uint8_t getMinutes(void) ;
 
 void setDia(int val);
+uint8_t getDia(void) ;
 
 void setMes(int val);
+uint8_t getMes(void) ;
 
 void setYear(int val);
+uint8_t getYear(void) ;
 
 void setDiaSemana(int val);
+uint8_t getDiaSemana(void) ;
+
+void enableRTCChange(void);
+void disableRTCChange(void);
 
 
 #endif /* RTCDRIVER_H_ */
