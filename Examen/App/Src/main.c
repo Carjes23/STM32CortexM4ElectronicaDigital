@@ -100,8 +100,8 @@ float AccelZEsc = 0.0f;
 
 uint16_t freqAdc = 20;
 
-float transformedSignal[256];
-float transformedAbs[256];
+float transformedSignal[256 * 2];
+float transformedAbs[256 * 2];
 
 float32_t stopTime = 1.0;
 uint32_t ifftFlag = 0;
@@ -134,12 +134,13 @@ char bufferReception[64] = { 0 };
 char cmd[64] = { 0 };
 unsigned int firstParameter = 256;
 unsigned int secondParameter = 256;
-char userMsg[64] = { 0 };
+unsigned int thirdParameter = 256;
 
 //Timers
 
 BasicTimer_Handler_t handlerTimer2 = { 0 }; // Timer para el blinking
 BasicTimer_Handler_t handlerTimer5 = { 0 }; //Timer para la toma de datos
+BasicTimer_Handler_t handlerTimer3 = { 0 };
 
 //Handler para el control de la terminal
 USART_Handler_t handlerTerminal = { 0 };
@@ -164,6 +165,7 @@ uint8_t trimValue = 13;
 //Ultimos datos de cada ADC
 uint16_t adcLastData1 = 0;
 uint16_t adcLastData2 = 0;
+uint8_t mcopres = 0;
 
 //Vanderas para manejar estados.
 bool banderaADC = 0;
@@ -222,7 +224,7 @@ int main(void) {
 	writeString(&handlerTerminal,
 			"El acelerometro se encuentra listo para su funcionamiento. \n");
 	writeString(&handlerTerminal,
-			"Para conocer todos los comandos disponibles usar help @ \n");
+			"Para conocer todos los comandos disponibles usar help, usar enter para mandar los comandos\n");
 	while (1) {
 		// Cada 500 ms se actualza
 		if (segundero > 2) {
@@ -245,7 +247,7 @@ int main(void) {
 				bufferReception[counterReception] = '\0';
 				counterReception = 0;
 			}
-			if(rxData == '\b'){
+			if (rxData == '\b') {
 				counterReception--;
 				counterReception--;
 			}
@@ -455,13 +457,13 @@ void initSystem(void) {
 
 //Timer para la toma de datos
 
-	handlerTimer2.ptrTIMx = TIM3; //El timer que se va a usar
-	handlerTimer2.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
-	handlerTimer2.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
-	handlerTimer2.TIMx_Config.TIMx_period = 50; //Se define el periodo en este caso el led cambiara cada 250ms
-	handlerTimer2.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us; //Se define la "velocidad" que se usara
+	handlerTimer3.ptrTIMx = TIM3; //El timer que se va a usar
+	handlerTimer3.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
+	handlerTimer3.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
+	handlerTimer3.TIMx_Config.TIMx_period = 50; //Se define el periodo en este caso el led cambiara cada 250ms
+	handlerTimer3.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us; //Se define la "velocidad" que se usara
 
-	BasicTimer_Config(&handlerTimer2); //Se carga la configuración.
+	BasicTimer_Config(&handlerTimer3); //Se carga la configuración.
 
 	handlerTerminal.ptrUSARTx = USART6;
 	handlerTerminal.USART_Config.USART_baudrate = USART_BAUDRATE_115200;
@@ -526,12 +528,12 @@ void initSystem(void) {
 	configChannelMCO1(MCO1_HSI_CHANNEL);
 	configPresMCO1(0);
 	config_RTC();
+	changeTrim(trimValue);
 
 }
 //Calback del timer2 para el blinking
 void BasicTimer2_Callback(void) {
 	GPIOxTooglePin(&handlerUserLedPin);
-	GPIOxTooglePin(&handlerUserLedPin2);
 	segundero++;
 }
 
@@ -551,14 +553,14 @@ void adcComplete_Callback(void) {
 		adcIsCompleteCount++;
 		if (banderaImprimirAct) {
 			adcData[0][count256] = adcLastData1;
-			adcData2[0][count256] = adcLastData1/4095.0f;
+			adcData2[0][count256] = adcLastData1 / 4095.0f;
 		}
 	} else {
 		adcLastData2 = getADC();
 		adcIsCompleteCount = 0;
 		if (banderaImprimirAct) {
 			adcData[1][count256] = adcLastData2;
-			adcData2[1][count256] = adcLastData2/4095.0f;
+			adcData2[1][count256] = adcLastData2 / 4095.0f;
 			count256++;
 		}
 	}
@@ -577,68 +579,79 @@ void parseCommands(char *ptrBufferReception) {
 	 * y dos integer llamados "firstParameter" y "secondParameter"
 	 * De esta forma podemos introducir informacion al micro desde el puerto
 	 */
-	sscanf(ptrBufferReception, "%s %u %u %s", cmd, &firstParameter,
-			&secondParameter, userMsg);
+	sscanf(ptrBufferReception, "%s %u %u %u", cmd, &firstParameter,
+			&secondParameter, &thirdParameter);
 	if (strcmp(cmd, "help") == 0) {
 		writeString(&handlerTerminal, "Help Menu CMDs: \n");
 		writeString(&handlerTerminal, "1)  Help -> Print this menu \n");
 		writeString(&handlerTerminal, "Default MCO -> HSI div0\n");
 		writeString(&handlerTerminal,
-				"2)  MCO_prescaler -> #div(0,2,3,4,5); warning PLL > 2\n");
+				"2)  mcopresc -> #div(0,2,3,4,5); warning PLL > 2\n");
 		writeString(&handlerTerminal,
-				"3)  MCO_channel #(LSE=0, PLL=1, HSI=2); warning PLL default prescaler 2\n");
+				"3)  mcochan #(LSE=0, PLL=1, HSI=2); warning PLL default prescaler 2\n");
 		writeString(&handlerTerminal,
-				"4) Changetrim #(0-> disminuir, 1-> aumentar) \n");
+				"4) trim #(0-> disminuir, 1-> aumentar) para 'sintonizar' el micro \n");
 
 		writeString(&handlerTerminal,
-				"5)  adc_frecuencia #(Valor de la frecuencia entre 10 y 20)khz\n");
+				"5)  adcfrec #(Valor de la frecuencia entre 10 y 50)khz \n");
 		writeString(&handlerTerminal,
-				"6)  adc_datos (imprime los siguientes 256 datos)\n");
+				"6)  adcdatos (imprime los siguientes 256 datos)\n");
 		writeString(&handlerTerminal,
 				"Comandos relacionados al RTC\n"
 						"Tener en cuenta que no acepta datos incorrectos, si un dato es valido y el otro no solo se conservara el dato valido\n");
+		writeString(&handlerTerminal, "7)  rtcdate #(día) #(mes) #(año) \n");
 		writeString(&handlerTerminal,
-				"7)  RTC_set_fecha1 #(minuto) #(segundo) \n");
-		writeString(&handlerTerminal, "8)  RTC_set_fecha2 #(año) #(hora) \n");
-		writeString(&handlerTerminal, "9)  RTC_set_fecha3 #(mes) #(dia) \n");
+				"8)  rtctime #(hora) #(minuto) #(segundo) \n");
 		writeString(&handlerTerminal,
-				"10) RTC_set_fecha4 #(diaSemana), Lunes 1 ... Domingo 7 \n");
-		writeString(&handlerTerminal, "11) RTC_get_fecha \n");
+				"9) rtcday #(diaSemana), Lunes 1 ... Domingo 7 \n");
+		writeString(&handlerTerminal, "11) getrtc obtener la hora y la fecha actual\n");
 		writeString(&handlerTerminal,
-				"12) Ac_datos: Captura de datos e impresión se dejan listos para Fourier\n");
+				"11) acdatos: Captura de datos e impresión se dejan listos para Fourier\n");
 		writeString(&handlerTerminal,
-				"13) Ac_FFT: FFT result (x = 0; y = 1,  z = 2) \n");
+				"12) acfft: FFT result (x = 0; y = 1,  z = 2) \n");
 		writeString(&handlerTerminal,
-				"14) FFT 1: FFT result (ADCdatos1 = 1 ADCdatos2 = 2) default ADCdatos1 \n");
+				"13) adcfft: FFT result (ADCdatos1 = 1 ADCdatos2 = 2) default ADCdatos1 \n");
+		writeString(&handlerTerminal,
+				"13) adcfft: FFT result (ADCdatos1 = 1 ADCdatos2 = 2) default ADCdatos1 \n");
+		writeString(&handlerTerminal, "Para la calificación de la tarea se tienen varios cables sueltos\n");
+		writeString(&handlerTerminal, "Los cables correspondientes al ADC_1 es el cable blanco que se encuentra en VCC\n");
+		writeString(&handlerTerminal, "el ADC_2 es el cable negro que se encuentra en GND, luego los otros tres cables blancos\n");
+		writeString(&handlerTerminal, "sueltos de izquierda a derecha serían, Timer que ejecuta el ADC, MCO1, Timer que lanza en\n");
+		writeString(&handlerTerminal, "cada cambio de flanco el acelerometro.\n");
 
 	}
 
-	else if (strcmp(cmd, "MCO_prescaler") == 0) {
+	else if (strcmp(cmd, "mcopresc") == 0) {
 		if (firstParameter == 0 && pllTrue == 0) {
 			writeString(&handlerTerminal,
 					"CMD: MCO_prescaler sin division no permitido en PLL \n");
 			configPresMCO1(0);
 		} else if (firstParameter == 0 && pllTrue == 1) {
+			mcopres = 0;
 			writeString(&handlerTerminal,
 					"CMD: MCO_prescaler sin division no permitido en PLL \n");
 		} else if (firstParameter == 2) {
-			writeString(&handlerTerminal, "CMD: MCO_prescaler divison 2 \n");
+			mcopres = MCO1_PRESCALER_DIV_2;
+			writeString(&handlerTerminal, "CMD: MCO_prescaler división 2 \n");
 			configPresMCO1(MCO1_PRESCALER_DIV_2);
 		} else if (firstParameter == 3) {
-			writeString(&handlerTerminal, "CMD: MCO_prescaler divison 3 \n");
+			mcopres = MCO1_PRESCALER_DIV_3;
+			writeString(&handlerTerminal, "CMD: MCO_prescaler división 3 \n");
 			configPresMCO1(MCO1_PRESCALER_DIV_3);
 		} else if (firstParameter == 4) {
-			writeString(&handlerTerminal, "CMD: MCO_prescaler divison 4 \n");
+			mcopres = MCO1_PRESCALER_DIV_4;
+			writeString(&handlerTerminal, "CMD: MCO_prescaler división 4 \n");
 			configPresMCO1(MCO1_PRESCALER_DIV_4);
 		} else if (firstParameter == 5) {
-			writeString(&handlerTerminal, "CMD: MCO_prescaler divison 5 \n");
+			mcopres = MCO1_PRESCALER_DIV_5;
+			writeString(&handlerTerminal, "CMD: MCO_prescaler división 5 \n");
 			configPresMCO1(MCO1_PRESCALER_DIV_5);
 		} else {
 			writeString(&handlerTerminal, "Wrong number \n");
 		}
 	}
 
-	else if (strcmp(cmd, "MCO_channel") == 0) {
+	else if (strcmp(cmd, "mcochan") == 0) {
 
 		if (firstParameter == 0) {
 			pllTrue = 0;
@@ -646,9 +659,12 @@ void parseCommands(char *ptrBufferReception) {
 			configChannelMCO1(MCO1_LSE_CHANNEL);
 		} else if (firstParameter == 1) {
 			pllTrue = 1;
-			writeString(&handlerTerminal,
-					"CMD: MCO_channel PLL se coloca como prescaler default 2 \n");
-			configPresMCO1(MCO1_PRESCALER_DIV_2);
+			if (mcopres == 0) {
+				writeString(&handlerTerminal,
+						"CMD: MCO_channel PLL si no se tiene division se coloca como defecto división por 2 \n");
+				configPresMCO1(MCO1_PRESCALER_DIV_2);
+			}
+			writeString(&handlerTerminal, "CMD: MCO_channel PLL \n");
 			configChannelMCO1(MCO1_PLL_CHANNEL);
 
 		} else if (firstParameter == 2) {
@@ -661,7 +677,7 @@ void parseCommands(char *ptrBufferReception) {
 		}
 	}
 
-	else if (strcmp(cmd, "Changetrim") == 0) {
+	else if (strcmp(cmd, "trim") == 0) {
 
 		if (firstParameter == 0) {
 			trimValue--;
@@ -671,7 +687,7 @@ void parseCommands(char *ptrBufferReception) {
 			changeTrim(trimValue);
 		} else if (firstParameter == 1) {
 			trimValue++;
-			sprintf(bufferData, "CMD: Disminuir trim, nuevo valor %d\n",
+			sprintf(bufferData, "CMD: Aumentar trim, nuevo valor %d\n",
 					trimValue);
 			writeString(&handlerTerminal, bufferData);
 			changeTrim(trimValue);
@@ -679,10 +695,10 @@ void parseCommands(char *ptrBufferReception) {
 		} else {
 			writeString(&handlerTerminal, "Wrong number \n");
 		}
-	} else if (strcmp(cmd, "adc_frecuencia") == 0) {
+	} else if (strcmp(cmd, "adcfrec") == 0) {
 
-		if (firstParameter <= 20 && firstParameter >= 10) {
-			sprintf(bufferData, "Se cambio la frecuencia de mustreo a %d \n",
+		if (firstParameter <= 50 && firstParameter >= 10) {
+			sprintf(bufferData, "Se cambio la frecuencia de mustreo a %d khz\n",
 					firstParameter);
 			writeString(&handlerTerminal, bufferData);
 			freqAdc = firstParameter;
@@ -695,13 +711,13 @@ void parseCommands(char *ptrBufferReception) {
 		}
 	}
 
-	else if (strcmp(cmd, "adc_datos") == 0) {
+	else if (strcmp(cmd, "adcdatos") == 0) {
 		writeString(&handlerTerminal,
 				"Se enviaran los siguientes datos de amboas canales \n");
 		banderaImprimirAct = 1;
 	}
 
-	else if (strcmp(cmd, "RTC_set_fecha1") == 0) {
+	else if (strcmp(cmd, "rtctime") == 0) {
 		enableRTCChange();
 		if (firstParameter < 60 && firstParameter >= 0) {
 			setMinutes(firstParameter);
@@ -715,62 +731,58 @@ void parseCommands(char *ptrBufferReception) {
 			writeString(&handlerTerminal,
 					"Se ha enviado un segundo invalida \n");
 		}
+		if (thirdParameter < 60 && thirdParameter >= 0) {
+			setHour(thirdParameter);
+		} else {
+			writeString(&handlerTerminal, "Se ha enviado una hora invalida \n");
+		}
 		disableRTCChange();
 		getFecha();
 	}
 
-	else if (strcmp(cmd, "RTC_set_fecha2") == 0) {
+	else if (strcmp(cmd, "rtcdate") == 0) {
 		enableRTCChange();
-		if (firstParameter <= 99 && firstParameter >= 0) {
-			setYear(firstParameter);
+		if (secondParameter <= 12 && secondParameter >= 1) {
+			setMes(secondParameter);
 		} else {
-			writeString(&handlerTerminal, "Se ha enviado un año invalido");
+			writeString(&handlerTerminal, "Se ha enviado un mes invalido por lo que no se puede ajustar el día\n");
 		}
-		if (secondParameter < 60 && secondParameter >= 0) {
-			setHour(secondParameter);
+		if (secondParameter == 1 || secondParameter == 3 || secondParameter == 5
+				|| secondParameter == 7 || secondParameter == 8
+				|| secondParameter == 10 || secondParameter == 12) {
+			if (firstParameter > 0 && firstParameter <= 31) {
+				setDia(firstParameter);
+			} else {
+				writeString(&handlerTerminal, "Días invalidos\n");
+			}
+		}
+		if (secondParameter == 2) {
+			if (firstParameter > 0 && firstParameter <= 28) {
+				setDia(firstParameter);
+			} else {
+				writeString(&handlerTerminal, "Días invalidos\n");
+			}
+		}
+		if (secondParameter == 4 || secondParameter == 6 || secondParameter == 9
+				|| secondParameter == 11) {
+			if (firstParameter > 0 && firstParameter <= 30) {
+				setDia(firstParameter);
+			} else {
+				writeString(&handlerTerminal, "Días invalidos\n");
+			}
+		}
+		if (thirdParameter <= 99 && thirdParameter >= 0) {
+			setYear(thirdParameter);
 		} else {
-			writeString(&handlerTerminal, "Se ha enviado un segundo invalida");
+			writeString(&handlerTerminal, "Se ha enviado un año invalido\n");
 		}
+
 		disableRTCChange();
 		getFecha();
 	}
 
-	else if (strcmp(cmd, "RTC_set_fecha3") == 0) {
-		enableRTCChange();
-		if (firstParameter <= 12 && firstParameter >= 1) {
-			setMes(firstParameter);
-		} else {
-			writeString(&handlerTerminal, "Se ha enviado un mes invalido");
-		}
-		if (firstParameter == 1 || firstParameter == 3 || firstParameter == 5
-				|| firstParameter == 7 || firstParameter == 8
-				|| firstParameter == 10 || firstParameter == 12) {
-			if (secondParameter > 0 && secondParameter <= 31) {
-				setDia(secondParameter);
-			} else {
-				writeString(&handlerTerminal, "Días invalidos");
-			}
-		}
-		if (firstParameter == 2) {
-			if (secondParameter > 0 && secondParameter <= 28) {
-				setDia(secondParameter);
-			} else {
-				writeString(&handlerTerminal, "Días invalidos");
-			}
-		}
-		if (firstParameter == 4 || firstParameter == 6 || firstParameter == 9
-				|| firstParameter == 11) {
-			if (secondParameter > 0 && secondParameter <= 30) {
-				setDia(secondParameter);
-			} else {
-				writeString(&handlerTerminal, "Días invalidos");
-			}
-		}
-		getFecha();
-		disableRTCChange();
-	}
 
-	else if (strcmp(cmd, "RTC_set_fecha4") == 0) {
+	else if (strcmp(cmd, "rtcday") == 0) {
 		enableRTCChange();
 		if (firstParameter <= 7 && firstParameter > 0) {
 			setDiaSemana(firstParameter);
@@ -781,20 +793,20 @@ void parseCommands(char *ptrBufferReception) {
 		disableRTCChange();
 	}
 
-	else if (strcmp(cmd, "RTC_get_fecha") == 0) {
+	else if (strcmp(cmd, "getrtc") == 0) {
 		sprintf(bufferData, "Hoy es ");
 		writeString(&handlerTerminal, bufferData);
 		writeString(&handlerTerminal, dia);
-		sprintf(bufferData, " Dia %d, Mes %d, Año %d \nSon las %d:%d:%d \n",
+		sprintf(bufferData, " Dia %.2d, Mes %.2d, Año %.2d \nSon las %.2d:%.2d:%.2d \n",
 				dias, meses, years, horas, minutos, segundos);
 		writeString(&handlerTerminal, bufferData);
-	} else if (strcmp(cmd, "Ac_datos") == 0) {
+	} else if (strcmp(cmd, "acdatos") == 0) {
 		flag256Listos = 1;
 
 	}
 
 	/*  Presentar los datos de la frecuencia leída por el acelerómetro (CMSIS-FFT) */
-	else if (strcmp(cmd, "Ac_FFT") == 0) {
+	else if (strcmp(cmd, "acfft") == 0) {
 		writeString(&handlerTerminal, bufferData);
 		stopTime = 0.0;
 
@@ -842,7 +854,7 @@ void parseCommands(char *ptrBufferReception) {
 	}
 
 	/*  Presentar los datos de la frecuencia leída por el acelerómetro (CMSIS-FFT) */
-	else if (strcmp(cmd, "FFT") == 0) {
+	else if (strcmp(cmd, "adcfft") == 0) {
 		writeString(&handlerTerminal, bufferData);
 		stopTime = 0.0;
 
@@ -868,7 +880,7 @@ void parseCommands(char *ptrBufferReception) {
 			uint32_t indexMax = 0;
 			float FTT_Max = transformedAbs[1];
 			for (int i = 1; i < fttSize; i++) {
-				if (i % 2) {
+				if (i % 2 == 0) {
 					if (transformedAbs[i] > FTT_Max) {
 						FTT_Max = transformedAbs[i];
 						indexMax = j;
@@ -880,7 +892,7 @@ void parseCommands(char *ptrBufferReception) {
 				}
 			}
 
-			float frec = (indexMax * freqAdc * 1000) / 256.0f;
+			float frec = ((indexMax) * freqAdc * 1000) / 128.0f;
 			sprintf(bufferData, "frecuency %.2f Hz \n", frec);
 			writeString(&handlerTerminal, bufferData);
 
@@ -893,6 +905,8 @@ void parseCommands(char *ptrBufferReception) {
 		// Se imprime el mensaje "Wrong CMD" si la escritura no corresponde a los CMD implementados
 		writeString(&handlerTerminal, "Wrong CMD \n");
 	}
+	firstParameter = 256;
+	secondParameter = 256;
 }
 
 void getFecha(void) {
