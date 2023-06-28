@@ -21,7 +21,7 @@ void lcdi2cconfig(LCDI2C_handler_t *ptrLcd) {
 	lcd_send_cmd(0x30);
 	delay_ms(5);  // esperar más de 5 ms
 	lcd_send_cmd(0x30);
-	delay_100us(5);  //esperar más de 150 us
+	delay_100us(50);  //esperar más de 150 us
 	lcd_send_cmd(0x30);
 	delay_ms(50);		//Esperar más de 5 ms
 	lcd_send_cmd(0x20);  // modo de 4 bits

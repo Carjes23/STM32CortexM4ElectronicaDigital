@@ -19,7 +19,6 @@
 #define USART_BAUDRATE_9600		0
 #define USART_BAUDRATE_19200	1
 #define USART_BAUDRATE_115200	2
-#define USART_BAUDRATE_1		3
 
 #define USART_DATASIZE_8BIT		0
 #define USART_DATASIZE_9BIT		1
@@ -44,7 +43,7 @@
 typedef struct
 {
 	uint8_t USART_mode;
-	uint8_t USART_baudrate;
+	uint32_t USART_baudrate;
 	uint8_t USART_datasize;
 	uint8_t USART_parity;
 	uint8_t USART_stopbits;

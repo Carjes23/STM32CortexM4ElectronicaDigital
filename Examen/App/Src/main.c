@@ -162,9 +162,7 @@ uint16_t adcData[2][256] = { 0 };
 float adcData2[2][256] = { 0 };
 //Variable para cambiar la sintonizacion del HSI
 uint8_t trimValue = 13;
-//Ultimos datos de cada ADC
-uint16_t adcLastData1 = 0;
-uint16_t adcLastData2 = 0;
+
 uint8_t mcopres = 0;
 
 //Vanderas para manejar estados.
@@ -181,7 +179,7 @@ bool flagDatosTer = 0;
 uint8_t regDatos[6] = { ACCEL_XOUT_L, ACCEL_XOUT_H, ACCEL_YOUT_L, ACCEL_YOUT_H,
 ACCEL_ZOUT_L, ACCEL_ZOUT_H };
 //Bandera que cuenta el adc
-uint8_t adcIsCompleteCount = 0;
+
 uint16_t counterReception = 0;
 uint16_t contador256 = 0;
 //Arreglos para guardar los datos
@@ -372,10 +370,10 @@ void initSystem(void) {
 //Se cobtiene la recuencia para darsela al Systick, los otros drivers llaman esta función
 //Por si mismos auto-ajustandose a la frecuencia que se les asigne.
 
-	uint16_t freq = getFreqPLL();
+//	uint16_t freq = getFreqPLL();
 
 //	Inicializamos el SysTick se le entraga el valor de la frecuencia actual del PLL
-	config_SysTick(freq);
+	config_SysTick();
 
 	/*
 	 * Se configuran los pines necesarios para la comunicación con el acelerometro.

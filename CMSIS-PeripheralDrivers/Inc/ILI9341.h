@@ -118,4 +118,6 @@ void ILI9341_Init_com(ILI9341_Handler_t *ili9341_handler);  //Funcion que manda 
 void Ili_setRotation(ILI9341_Handler_t *ili9341_handler, uint8_t m); //Funcion que define la direccion de llenado de la pantalla.
 void Ili_starCom(ILI9341_Handler_t *ili9341_handler); //Funcion que inicia la comunicación
 void Ili_endCom(ILI9341_Handler_t *ili9341_handler); //Funcion que finaliza la comunicacón
+void ILI9341_WriteCharacter(ILI9341_Handler_t *ili9341_handler, uint16_t x, uint16_t y, uint16_t color,uint16_t bg, char c, uint8_t size_x, uint8_t size_y);
+void ILI9341_WriteString(ILI9341_Handler_t *ili9341_handler, uint16_t x, uint16_t y, uint16_t color, uint16_t bg, char *str, uint8_t size_x, uint8_t size_y) ;
 #endif // ILI9341_H_

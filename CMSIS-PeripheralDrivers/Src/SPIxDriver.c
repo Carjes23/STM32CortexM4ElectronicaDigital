@@ -175,10 +175,10 @@ int SPI_WriteChar(SPI_Handler_t *ptrSPI_Handler, uint8_t dataToSend){
         __NOP();
     }
 
-    //Con esto limpiamos los datos.
-//TODO
-    if(getFreqPLL() == 80){
-    	for(int i = 0; i < 15; i++){
+//    //Con esto limpiamos los datos.
+////TODO
+    if(getFreqPLL() > 16){
+    	for(int i = 0; i < 30; i++){
     	__NOP();
     	}
     }

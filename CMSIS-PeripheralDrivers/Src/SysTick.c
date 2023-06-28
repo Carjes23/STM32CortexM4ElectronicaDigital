@@ -29,6 +29,7 @@
 
 #include <stm32f4xx.h>
 #include "SysTick.h"
+#include "PLLDriver.h"
 
 uint64_t ticks = 0;
 uint64_t ticks_start = 0;
@@ -37,10 +38,11 @@ uint64_t ticksms = 0;
 uint64_t ticks_startms = 0;
 uint64_t ticks_countingms = 0;
 
-void config_SysTick(uint8_t systemClock){
+void config_SysTick(void){
 	// Reiniciamos la variable que cuenta el tiempo
 	ticks = 0;
 
+	uint16_t systemClock = getFreqPLL();
 	// Cargamos el valor del limite de incrementos que representan 100us.
 	uint32_t us100 = (systemClock) * 100 - 1;
 	SysTick->LOAD = us100;
