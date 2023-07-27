@@ -45,6 +45,9 @@ void BasicTimer2_Callback(void); /* Esta función debe ser sobre-escrita en el m
 void BasicTimer3_Callback(void);
 void BasicTimer4_Callback(void);
 void BasicTimer5_Callback(void);
+void TurnOffTimer(BasicTimer_Handler_t *ptrBTimerHandler);
+void TurnOnTimer(BasicTimer_Handler_t *ptrBTimerHandler);
+void updateTimerPeriod(BasicTimer_Handler_t *ptrBTimerHandler, uint32_t newPeriod);
 
 
 

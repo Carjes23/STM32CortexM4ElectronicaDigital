@@ -568,7 +568,7 @@ void initSystem(void) {
 void BasicTimer2_Callback(void) {
 	GPIOxTooglePin(&handlerUserLedPin);
 	if (flagDeath) {
-		writeChar(&HandlerTerminal, '1');
+		writeChar(&HandlerTerminal, 1);
 	}
 	if (gameMode == 0) {
 		flagRefrescoMenu++;

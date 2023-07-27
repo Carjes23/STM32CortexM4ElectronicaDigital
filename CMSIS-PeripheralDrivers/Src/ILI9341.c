@@ -8,6 +8,7 @@
 #include "ILI9341.h"
 #include <stddef.h>
 #include "SysTick.h"
+#include "PLLDriver.h"
 
 #define MADCTL_MY 0x80  ///< Bottom to top
 #define MADCTL_MX 0x40  ///< Right to left
@@ -187,7 +188,14 @@ void ILI9341_WriteCommand(ILI9341_Handler_t *ili9341_handler, uint8_t cmd) {
 	GPIO_WritePin((ili9341_handler->dc_pin), RESET);
 
 	// Enviar los comandos con el SPI
+
 	SPI_WriteChar(ili9341_handler->spi_handler, cmd);
+	//TODO
+    if(getFreqPLL() > 16){
+    	for(int i = 0; i < 15; i++){
+    	__NOP();
+    	}
+    }
 
 }
 
@@ -198,6 +206,12 @@ void ILI9341_WriteData(ILI9341_Handler_t *ili9341_handler, uint8_t *data,
 
 	// Enviar los comandos con el SPI
 	SPI_Transmit(ili9341_handler->spi_handler, data, len);
+	//TODO
+    if(getFreqPLL() > 16){
+    	for(int i = 0; i < 15; i++){
+    	__NOP();
+    	}
+    }
 
 }
 

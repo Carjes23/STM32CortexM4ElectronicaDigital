@@ -88,45 +88,45 @@ void adc_Config(ADC_Config_t *adcConfig) {
 					<< (3 * (adcConfig->channels[i])));
 		} else {
 			ADC1->SMPR1 |= (adcConfig->samplingPeriod[i]
-					<< (3 * (adcConfig->channels[i]-10)));
+					<< (3 * (adcConfig->channels[i] - 10)));
 		}
 	}
 	/* 8. Configuramos la secuencia y cuantos elementos hay en la secuencia */
 // Al hacerlo todos 0, estamos seleccionando solo 1 elemento en el conteo de la secuencia
 
-
-	// Activamos cuantos elementos hay en la secuencia
-	ADC1 -> SQR1 |= ((adcConfig -> numberOfChannels-1) << ADC_SQR1_L_Pos);
+// Activamos cuantos elementos hay en la secuencia
+	ADC1->SQR1 |= ((adcConfig->numberOfChannels - 1) << ADC_SQR1_L_Pos);
 	if (adcConfig->numberOfChannels == 1) {
-		ADC1 -> CR2 &= ~ADC_CR2_EOCS;
+		ADC1->CR2 &= ~ADC_CR2_EOCS;
 		ADC1->SQR3 |= adcConfig->channels[0];
 	} else {
 		// Activamos la interrupción al final de cada conversión single.
-		ADC1 -> CR2 |= ADC_CR2_EOCS;
+		ADC1->CR2 |= ADC_CR2_EOCS;
 		for (int i = 0; i < adcConfig->numberOfChannels; i++) {
 			if (i < 6) {
-				ADC1->SQR3 |= adcConfig->channels[i]<<5*i;
-			}
-			else if(i < 12){
-				ADC1->SQR2 |= adcConfig->channels[i]<<5*(i-6);
-			}
-			else{
-				ADC1->SQR1 |= adcConfig->channels[i]<<5*(i-12);
+				ADC1->SQR3 |= adcConfig->channels[i] << 5 * i;
+			} else if (i < 12) {
+				ADC1->SQR2 |= adcConfig->channels[i] << 5 * (i - 6);
+			} else {
+				ADC1->SQR1 |= adcConfig->channels[i] << 5 * (i - 12);
 			}
 		}
 	}
-	switch(adcConfig->externType){
-	case(EXTEN_DISABLE):
+	switch (adcConfig->externType) {
+	case (EXTEN_DISABLE):
 		__NOP();
 		break;
-	case(EXTEN_RISING_TIMER5_CC1):
-		ADC1->CR2 |= 0b01<<ADC_CR2_EXTEN_Pos;
-		ADC1->CR2 |= 0b1010<<ADC_CR2_EXTSEL_Pos;
+	case (EXTEN_RISING_TIMER5_CC1):
+		ADC1->CR2 |= 0b01 << ADC_CR2_EXTEN_Pos;
+		ADC1->CR2 |= 0b1010 << ADC_CR2_EXTSEL_Pos;
 		break;
-	case(EXTEN_RISING_TIMER5_CC2):
-		ADC1->CR2 |= 0b01<<ADC_CR2_EXTEN_Pos;
-		ADC1->CR2 |= 0b1011<<ADC_CR2_EXTSEL_Pos;
+	case (EXTEN_RISING_TIMER5_CC2):
+		ADC1->CR2 |= 0b01 << ADC_CR2_EXTEN_Pos;
+		ADC1->CR2 |= 0b1011 << ADC_CR2_EXTSEL_Pos;
 		break;
+	case (EXTEN_RISING_TIMER4_CC4):
+		ADC1->CR2 |= 0b01 << ADC_CR2_EXTEN_Pos;
+		ADC1->CR2 |= 0b1001 << ADC_CR2_EXTSEL_Pos;
 	default:
 		__NOP();
 		break;
@@ -206,10 +206,10 @@ void multiChannelADC(ADC_Config_t *adcConfig) {
  * Esta es la ISR de la interrupción por conversión ADC 
  */
 /* Esta es la ISR de la interrupción por conversión ADC */
-void ADC_IRQHandler(void){
-	if(ADC1 -> SR & ADC_SR_EOC){
+void ADC_IRQHandler(void) {
+	if (ADC1->SR & ADC_SR_EOC) {
 		// Leemos el resultado de la conversión ADC y lo cargamos en un valor auxiliar
-		adcRawData = ADC1 -> DR;
+		adcRawData = ADC1->DR;
 
 		// Hacemos el llamado a la función que se ejecutará en el main
 		adcComplete_Callback();

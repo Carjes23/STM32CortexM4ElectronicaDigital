@@ -176,12 +176,7 @@ int SPI_WriteChar(SPI_Handler_t *ptrSPI_Handler, uint8_t dataToSend){
     }
 
 //    //Con esto limpiamos los datos.
-////TODO
-    if(getFreqPLL() > 16){
-    	for(int i = 0; i < 30; i++){
-    	__NOP();
-    	}
-    }
+
 
 
     auxData = ptrSPI_Handler->ptrSPIx->DR;
