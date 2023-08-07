@@ -368,7 +368,7 @@ void initSystem(void) {
 
 	//Boton de usuario para el cambio de tasa de resfresco.
 
-	handlerDown.pGPIOx = GPIOC; //Se encuentra en el el GPIOC
+	handlerDown.pGPIOx = GPIOC; //Se encuentra en el el GPIO
 	handlerDown.GPIO_PinConfig_t.GPIO_PinNumber = PIN_2; //Es el pin numero 2
 	handlerDown.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN; //En este caso el pin se usara como entrada de datos
 	handlerDown.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP; //No se usara ninguna resistencia pull-up o pull-down
