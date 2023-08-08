@@ -30,7 +30,7 @@
  *
  ******************************************************************************
  */
-/* Librerias que se van a utilizar a lo laro del proyecto. */
+/* Librerias que */
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
