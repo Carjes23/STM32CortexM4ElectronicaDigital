@@ -43,7 +43,12 @@
 
 #include "arm_math.h"
 
+//Se definen las constantes que se consideran importantes para el desarrollo de la tarea.
+
+#define CONTADOR		0
+#define INFINITO		1
 //Se definen algunos registros importantes del acelerrometro
+
 #define ACCEL_ADDRESS 0x1D		//0xD -> Rireccion del Accel con Logic_1
 #define ACCEL_XOUT_L 50	   		//Prmeros 4 bits de X
 #define ACCEL_XOUT_H 51   		//Ultimos 4 bits de X
@@ -123,7 +128,6 @@ I2C_Handler_t i2cLCD = { 0 };		   //I2C encargado de comunicarse con la LCD
 
 LCDI2C_handler_t lcdHandler = { 0 };   //Handler para manipular la LCD
 
-
 GPIO_Handler_t I2cSDA = { 0 }; // Handler que manipula el envio/recepcón de datos del Acelerometro
 GPIO_Handler_t I2cSCL = { 0 }; // Handler que manipula la frecuencia de comunicación del Acelerometro
 
@@ -144,7 +148,7 @@ GPIO_Handler_t handlerPinMCO = { 0 };
 
 char bufferReception[64] = { 0 };
 char cmd[64] = { 0 };
-char bufferMsg2[200] = {0};
+char bufferMsg2[200] = { 0 };
 unsigned int firstParameter = 256;
 unsigned int secondParameter = 256;
 unsigned int thirdParameter = 256;
@@ -154,6 +158,8 @@ unsigned int thirdParameter = 256;
 BasicTimer_Handler_t handlerTimer2 = { 0 }; // Timer para el blinking
 BasicTimer_Handler_t handlerTimer5 = { 0 }; //Timer para la toma de datos
 BasicTimer_Handler_t handlerTimer3 = { 0 };
+BasicTimer_Handler_t handlerTim4 = { 0 };
+
 
 //Handler para el control de la terminal
 USART_Handler_t handlerTerminal = { 0 };
@@ -170,7 +176,8 @@ void getFecha(void);
  * Funcion que se encarga de refresacar la Led cada segundo.
  */
 void LCDRefresh(void);
-
+void funcionContadora(void);
+void resetDisplay(void);
 
 //Funcion para cuadrar el ADC
 ADC_Config_t channnel_0 = { 0 };
@@ -196,6 +203,8 @@ bool flag256Listos = 0;
 bool pllTrue = 0;
 bool flagDatosTer = 0;
 bool banderaLedUsuario = 0;
+bool estado = 0;
+
 //Registros para la lecutra del acelerometro
 uint8_t regDatos[6] = { ACCEL_XOUT_L, ACCEL_XOUT_H, ACCEL_YOUT_L, ACCEL_YOUT_H,
 ACCEL_ZOUT_L, ACCEL_ZOUT_H };
@@ -231,6 +240,40 @@ uint8_t contador1seg = 0;	//Contador para contar 1 segundo usando el blinking.
 uint8_t contador2seg = 0;//Prra contar 2 segundos, y luego cambiar el ultimo dato por pantalla
 uint8_t datoPantalla = 0;			//Para cambiar el ultimo dato de pantalla
 
+//Definicion GPIO que controlan el 7 segmentos
+
+GPIO_Handler_t handlerLedA = { 0 };			//Segmento A en el 7 Segmentos
+GPIO_Handler_t handlerLedB = { 0 };			//Segmento B en el 7 Segmentos
+GPIO_Handler_t handlerLedF = { 0 };			//Segmento F en el 7 Segmentos
+GPIO_Handler_t handlerLedC = { 0 };			//Segmento C en el 7 Segmentos
+GPIO_Handler_t handlerLedE = { 0 };			//Segmento E en el 7 Segmentos
+GPIO_Handler_t handlerLedD = { 0 };			//Segmento D en el 7 Segmentos
+GPIO_Handler_t handlerLedG = { 0 }; 			//Segmento G en el 7 Segmentos
+
+//Valores de los diferentes leds, se considero que esta era la forma mas eficiente de trabajar.
+//Leds de los segmentos del 7 segmetos. El estado 0 es que el segmento esta encendido.
+bool ledA = 0; 			//Estado segmento A
+bool ledB = 0; 			//Estado segmento B
+bool ledC = 0; 			//Estado segmento C
+bool ledD = 0; 			//Estado segmento D
+bool ledE = 0; 			//Estado segmento E
+bool ledF = 0; 			//Estado segmento F
+bool ledG = 0; 			//Estado segmento G
+
+GPIO_Handler_t handlerTransistor = { 0 }; // Pin que controla el suicheo.
+
+//	Contadores relacionados a la función contadora que va de 0 a 99.
+
+uint8_t contador = 0; 		//Contador en general
+uint8_t unidades = 0; //Unidades del contador anterior, se consigue utilizando el modulo 10 del contador.
+uint8_t decenas = 0;//Decenas del contador anterior, se consigue utilizando la divición entre 10 del contador.
+//El anterior solo es posible ya que solo trabajamos con numeros enteros, las unidades se pierden.
+
+bool banderaTimerLed1 = 0;
+bool banderaTimerLed2 = 0;
+
+void funcionLeds(uint8_t numero); 	//Funcion que controla los pines que se prenden para mostrar el numero que le ingrese.
+
 int main(void) {
 	//Se inicia el sistema
 	initSystem();
@@ -249,7 +292,25 @@ int main(void) {
 	writeString(&handlerTerminal,
 			"Para conocer todos los comandos disponibles usar help, usar enter para mandar los comandos\n");
 	while (1) {
-		if(banderaLedUsuario){
+
+		if (estado == CONTADOR) {
+			funcionContadora();
+			if (banderaTimerLed1 == 1) {
+				resetDisplay(); //se apagan los valores anteriores
+				GPIO_WritePin(&handlerTransistor, 1);
+				banderaTimerLed1 = 0;
+				funcionLeds(unidades);
+			} else if (banderaTimerLed2 == 1) {
+				resetDisplay(); //se apagan los valores anteriores
+				GPIO_WritePin(&handlerTransistor, 0);
+				banderaTimerLed2 = 0;
+				funcionLeds(decenas);
+			} else {
+				__NOP();
+			}
+		}
+
+		if (banderaLedUsuario) {
 			banderaLedUsuario = 0; //Se reinicia en 0
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
 		}
@@ -458,9 +519,6 @@ void initSystem(void) {
 	I2cSDA.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
 	GPIO_Config(&I2cSDA);
 
-
-
-
 	/*
 	 * Se configura el I2C1 en fast mode y se le pasa la direccion del acelerometro
 	 */
@@ -549,6 +607,98 @@ void initSystem(void) {
 	enableOutput(&pwmadc);
 	startPwmSignal(&pwmadc);
 
+	/*
+	 * Definicion de los pines para el control del 7 segmentos.
+	 * Ya que todos tienen la misma configuracion solo se cometara el pin que se va a utilizar y se
+	 * comentara con más detalle el primero de estos
+	 */
+
+	//Segmento A Pin_C3
+
+	handlerLedA.pGPIOx = GPIOC; //GPIO al que pertenece
+	handlerLedA.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_3;//El pin a usar
+	handlerLedA.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT; //Modo de salida
+	handlerLedA.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL; //Modo PushPull
+	handlerLedA.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING; //No se usara resistencia adicional
+	handlerLedA.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST; //Se usara en velocidad rapida.
+
+	GPIO_Config(&handlerLedA); // Se carga la configuracion
+
+	//Segmento B Pin_C0
+
+	handlerLedB.pGPIOx = GPIOC;
+	handlerLedB.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_0;
+	handlerLedB.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedB.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedB.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedB.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedB);
+
+	//Segmento F Pin_C2
+
+	handlerLedF.pGPIOx = GPIOC;
+	handlerLedF.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_2;
+	handlerLedF.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedF.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedF.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedF.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedF);
+
+	//Segmento C Pin_C1
+
+	handlerLedC.pGPIOx = GPIOC;
+	handlerLedC.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_1;
+	handlerLedC.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedC.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedC.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedC.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedC);
+
+	//Segmento E Pin_A10
+
+	handlerLedE.pGPIOx = GPIOA;
+	handlerLedE.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_10;
+	handlerLedE.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedE.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedE.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedE.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedE);
+
+	//Segmento D Pin_C4
+
+	handlerLedD.pGPIOx = GPIOC;
+	handlerLedD.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_4;
+	handlerLedD.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedD.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedD.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedD.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedD);
+
+	//Segmento G Pin_B3
+
+	handlerLedG.pGPIOx = GPIOB;
+	handlerLedG.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_3;
+	handlerLedG.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerLedG.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerLedG.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerLedG.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerLedG);
+
+	handlerTransistor.pGPIOx = GPIOC;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinNumber = 		PIN_10;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinMode = 		GPIO_MODE_OUT;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinOPType		= 	GPIO_OTYPE_PUSHPULL;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinPuPdControl= 	GPIO_PUPDR_NOTHING;
+	handlerTransistor.GPIO_PinConfig_t.GPIO_PinSpeed		= 	GPIO_OSPEED_FAST;
+
+	GPIO_Config(&handlerTransistor);
+
 	//Salida para ver la velocidad de muestreo del ADC
 	pwprueba.pGPIOx = GPIOA;
 	pwprueba.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0;
@@ -560,7 +710,15 @@ void initSystem(void) {
 
 	GPIO_Config(&pwprueba);
 
+	//Configuración Timer 4 que controla el suicheo de los transistores.
 
+	handlerTim4.ptrTIMx = TIM3;//El timer que se va a usar
+	handlerTim4.TIMx_Config.TIMx_interruptEnable = 1;//Se habilitan las interrupciones
+	handlerTim4.TIMx_Config.TIMx_mode = BTIMER_MODE_UP;//Se usara en modo ascendente
+	handlerTim4.TIMx_Config.TIMx_period = 100; //Se define el periodo en este caso el default es 10 ms.
+	handlerTim4.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us;//Se define la "velocidad" que se usara
+
+	BasicTimer_Config(&handlerTim4);//Se carga la configuración.
 
 	//COnfiugracion ADC se pones un samplig period de 56 ya que ~= 100 mhz / 56 ~= 1.78 Mhz que es más que suficiente
 	uint8_t channels[2] = { ADC_CHANNEL_1, ADC_CHANNEL_4 };
@@ -669,7 +827,8 @@ void parseCommands(char *ptrBufferReception) {
 				"8)  rtctime #(hora) #(minuto) #(segundo) \n");
 		writeString(&handlerTerminal,
 				"9) rtcday #(diaSemana), Lunes 1 ... Domingo 7 \n");
-		writeString(&handlerTerminal, "11) getrtc obtener la hora y la fecha actual\n");
+		writeString(&handlerTerminal,
+				"11) getrtc obtener la hora y la fecha actual\n");
 		writeString(&handlerTerminal,
 				"11) acdatos: Captura de datos e impresión se dejan listos para Fourier\n");
 		writeString(&handlerTerminal,
@@ -678,11 +837,16 @@ void parseCommands(char *ptrBufferReception) {
 				"13) adcfft: FFT result (ADCdatos1 = 1 ADCdatos2 = 2) default ADCdatos1 \n");
 		writeString(&handlerTerminal,
 				"13) adcfft: FFT result (ADCdatos1 = 1 ADCdatos2 = 2) default ADCdatos1 \n");
-		writeString(&handlerTerminal, "Para la calificación de la tarea se tienen varios cables sueltos\n");
-		writeString(&handlerTerminal, "Los cables correspondientes al ADC_1 es el cable blanco que se encuentra en VCC\n");
-		writeString(&handlerTerminal, "el ADC_2 es el cable negro que se encuentra en GND, luego los otros tres cables blancos\n");
-		writeString(&handlerTerminal, "sueltos de izquierda a derecha serían, Timer que ejecuta el ADC, MCO1, Timer que lanza en\n");
-		writeString(&handlerTerminal, "cada cambio de flanco el acelerometro.\n");
+		writeString(&handlerTerminal,
+				"Para la calificación de la tarea se tienen varios cables sueltos\n");
+		writeString(&handlerTerminal,
+				"Los cables correspondientes al ADC_1 es el cable blanco que se encuentra en VCC\n");
+		writeString(&handlerTerminal,
+				"el ADC_2 es el cable negro que se encuentra en GND, luego los otros tres cables blancos\n");
+		writeString(&handlerTerminal,
+				"sueltos de izquierda a derecha serían, Timer que ejecuta el ADC, MCO1, Timer que lanza en\n");
+		writeString(&handlerTerminal,
+				"cada cambio de flanco el acelerometro.\n");
 
 	}
 
@@ -810,7 +974,8 @@ void parseCommands(char *ptrBufferReception) {
 		if (secondParameter <= 12 && secondParameter >= 1) {
 			setMes(secondParameter);
 		} else {
-			writeString(&handlerTerminal, "Se ha enviado un mes invalido por lo que no se puede ajustar el día\n");
+			writeString(&handlerTerminal,
+					"Se ha enviado un mes invalido por lo que no se puede ajustar el día\n");
 		}
 		if (secondParameter == 1 || secondParameter == 3 || secondParameter == 5
 				|| secondParameter == 7 || secondParameter == 8
@@ -846,7 +1011,6 @@ void parseCommands(char *ptrBufferReception) {
 		getFecha();
 	}
 
-
 	else if (strcmp(cmd, "rtcday") == 0) {
 		enableRTCChange();
 		if (firstParameter <= 7 && firstParameter > 0) {
@@ -862,7 +1026,8 @@ void parseCommands(char *ptrBufferReception) {
 		sprintf(bufferData, "Hoy es ");
 		writeString(&handlerTerminal, bufferData);
 		writeString(&handlerTerminal, dia);
-		sprintf(bufferData, " Dia %.2d, Mes %.2d, Año %.2d \nSon las %.2d:%.2d:%.2d \n",
+		sprintf(bufferData,
+				" Dia %.2d, Mes %.2d, Año %.2d \nSon las %.2d:%.2d:%.2d \n",
 				dias, meses, years, horas, minutos, segundos);
 		writeString(&handlerTerminal, bufferData);
 	} else if (strcmp(cmd, "acdatos") == 0) {
@@ -1092,4 +1257,164 @@ void LCDRefresh(void) {
 			}
 		}
 	}
+}
+
+void funcionContadora(void) {
+
+	if (estado == 0) { //cambiar a 1 si esta al reves.
+		if (contador != 99) { //sumar solo si no se encuentra en 99
+			contador++;
+		} else {
+			__NOP();
+		}
+	} else {
+		if (contador != 0) { //restar solo si no se encuentra en 00
+			contador--;
+		} else {
+			__NOP();
+		}
+	}
+
+	decenas = contador / 10;
+	unidades = contador % 10;
+
+}
+
+//Funcion que borra los numeros en el 7 segmentos
+void resetDisplay(void) {
+	//Se le asigna un valor de 1 a todos ya que asi se apagan.
+	ledA = 1;
+	ledB = 1;
+	ledC = 1;
+	ledD = 1;
+	ledE = 1;
+	ledF = 1;
+	ledG = 1;
+	//Se cargan los valores a los pines.
+	GPIO_WritePin(&handlerLedA, ledA);
+	GPIO_WritePin(&handlerLedB, ledB);
+	GPIO_WritePin(&handlerLedC, ledC);
+	GPIO_WritePin(&handlerLedD, ledD);
+	GPIO_WritePin(&handlerLedE, ledE);
+	GPIO_WritePin(&handlerLedF, ledF);
+	GPIO_WritePin(&handlerLedG, ledG);
+
+}
+
+void funcionLeds(uint8_t numero){
+	switch(numero){
+		case 0:
+			ledA = 0;
+			ledB = 0;
+			ledC = 0;
+			ledD = 0;
+			ledE = 0;
+			ledF = 0;
+			ledG = 1;
+			break;
+
+		case 1:
+			ledA = 1;
+			ledB = 0;
+			ledC = 0;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+
+		case 2:
+			ledA = 0;
+			ledB = 0;
+			ledC = 1;
+			ledD = 0;
+			ledE = 0;
+			ledF = 1;
+			ledG = 0;
+			break;
+
+		case 3:
+			ledA = 0;
+			ledB = 0;
+			ledC = 0;
+			ledD = 0;
+			ledE = 1;
+			ledF = 1;
+			ledG = 0;
+			break;
+
+		case 4:
+			ledA = 1;
+			ledB = 0;
+			ledC = 0;
+			ledD = 1;
+			ledE = 1;
+			ledF = 0;
+			ledG = 0;
+			break;
+
+		case 5:
+			ledA = 0;
+			ledB = 1;
+			ledC = 0;
+			ledD = 0;
+			ledE = 1;
+			ledF = 0;
+			ledG = 0;
+			break;
+
+		case 6:
+			ledA = 0;
+			ledB = 1;
+			ledC = 0;
+			ledD = 0;
+			ledE = 0;
+			ledF = 0;
+			ledG = 0;
+			break;
+
+		case 7:
+			ledA = 0;
+			ledB = 0;
+			ledC = 0;
+			ledD = 1;
+			ledE = 1;
+			ledF = 1;
+			ledG = 1;
+			break;
+
+		case 8:
+			ledA = 0;
+			ledB = 0;
+			ledC = 0;
+			ledD = 0;
+			ledE = 0;
+			ledF = 0;
+			ledG = 0;
+			break;
+
+		case 9:
+			ledA = 0;
+			ledB = 0;
+			ledC = 0;
+			ledD = 0;
+			ledE = 1;
+			ledF = 0;
+			ledG = 0;
+			break;
+
+		default:
+			break;
+		}
+
+	//Se cargan lso valores a los pines.
+
+	GPIO_WritePin(&handlerLedA, ledA);
+	GPIO_WritePin(&handlerLedB, ledB);
+	GPIO_WritePin(&handlerLedC, ledC);
+	GPIO_WritePin(&handlerLedD, ledD);
+	GPIO_WritePin(&handlerLedE, ledE);
+	GPIO_WritePin(&handlerLedF, ledF);
+	GPIO_WritePin(&handlerLedG, ledG);
+
 }
