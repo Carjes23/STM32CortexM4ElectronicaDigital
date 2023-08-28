@@ -229,9 +229,12 @@ int main(void) {
 		//Se activa cada vez que el timer 2 se llena cada 250 ms y cambiamos el estado del led de usuario
 		//Tambien se aprovecha para cambiar los pwm de los leds, logrando el cambio de color
 		//Al cambiar los ejes.
-		if (banderaLedUsuario > 3) {
+		if(banderaLedUsuario){
 			banderaLedUsuario = 0; //Se reinicia en 0
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
+		}
+		if (contador1seg > 3) {
+			contador1seg = 0;
 			cambiarLed(); //Cambiamos los PWM para que se vea en los leds
 			LCDRefresh(); //Invocamos la función que nos permite refrescar la Led.
 		}
@@ -507,7 +510,7 @@ void initSystem(void) {
 	uint16_t freq = getFreqPLL();
 
 	//	Inicializamos el SysTick se le entraga el valor de la frecuencia actual del PLL
-	config_SysTick(freq);
+	config_SysTick();
 	/*
 	 * Se configuran los pines para el uso de la LCD, tal y como se ha hecho anteriormete
 	 * Se utilizan en modo Pull Up la forma de usarse el I2C
