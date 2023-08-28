@@ -18,6 +18,8 @@
 
 
 int main(void){
+	int x = 5;
+	uint8_t y = 258;
 	/*Loop forever */
 	while(1){
 

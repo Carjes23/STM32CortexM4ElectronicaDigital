@@ -158,6 +158,7 @@ void getFecha(void);
 ADC_Config_t channnel_0 = { 0 };
 //Variables relacionadas al adc
 uint8_t ADCISCOMPLETE = 0;
+uint8_t adcIsCompleteCount = 0;
 uint16_t adcData[2][256] = { 0 };
 float adcData2[2][256] = { 0 };
 //Variable para cambiar la sintonizacion del HSI
