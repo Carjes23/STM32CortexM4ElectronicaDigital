@@ -278,6 +278,18 @@ int main(void) {
 	//Se inicia el sistema
 	initSystem();
 	//Los delays es para que no se solapen en el Acelerometro
+
+	//Parametros que no cambian en el display
+	lcdMoveCursorTo(0x00); 	//Posición de memoria de la segunda linea
+	sprintf(bufferMsg2, "AccX =          m/s2");
+	lcdWriteMessage(bufferMsg2);
+	lcdMoveCursorTo(0x40); 	//Posición de memoria de la segunda linea
+	sprintf(bufferMsg2, "AccY =          m/s2");
+	lcdWriteMessage(bufferMsg2);
+	lcdMoveCursorTo(0x14);
+	sprintf(bufferMsg2, "AccZ =          m/s2");
+	lcdWriteMessage(bufferMsg2);
+	lcdCursorOnOff(0);
 	delay_ms(15);
 	writeString(&handlerTerminal, "Solución Examen \n");
 	i2c_writeSingleRegister(&i2cAcelerometro, POWER_CTL, 0x08);
@@ -315,7 +327,6 @@ int main(void) {
 			GPIOxTooglePin(&handlerUserLedPin); //cambiamos el valor del led
 		}
 		if (contador1seg > 3) {
-			contador1seg = 0;
 			LCDRefresh(); //Invocamos la función que nos permite refrescar la Led.
 		}
 		// Cada 500 ms se actualza
@@ -529,13 +540,12 @@ void initSystem(void) {
 	/*
 	 * Leds de estado
 	 */
-	handlerUserLedPin.pGPIOx = GPIOH; //Se encuentra en el el GPIOH
-	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_1; // Es el pin 1
-	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_OUT; //Se utiliza como salida
-	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_PUSHPULL; //Salida PushPull
-	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING; //No se usa ninguna resistencia
-	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST; //Se usa en velocidad rapida
-
+	handlerUserLedPin.pGPIOx = GPIOA; //Se encuentra en el el GPIOA
+	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinNumber		= PIN_5; // Es el pin 5.
+	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinMode			= GPIO_MODE_OUT; //Se utiliza como salida
+	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinOPType		= GPIO_OTYPE_PUSHPULL; //Salida PushPull
+	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinPuPdControl	= GPIO_PUPDR_NOTHING; //No se usa ninguna resistencia
+	handlerUserLedPin.GPIO_PinConfig_t.GPIO_PinSpeed		= GPIO_OSPEED_FAST; //Se usa en velocidad rapida
 	GPIO_Config(&handlerUserLedPin); //Se carga la configuración para el Led.
 
 	handlerUserLedPin2.pGPIOx = GPIOA; //Se encuentra en el el GPIOA
@@ -736,20 +746,8 @@ void initSystem(void) {
 
 	adc_Config(&channnel_0);
 
-	/*Configuracion del Pin para ver la velocidad */
-	handlerPinMCO.pGPIOx = GPIOA;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_PUSHPULL;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
-	handlerPinMCO.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF0;
 
-	/* Cargamos la configuracion del Pin en los registros*/
-	GPIO_Config(&handlerPinMCO);
 
-	configChannelMCO1(MCO1_HSI_CHANNEL);
-	configPresMCO1(0);
 	config_RTC();
 	changeTrim(trimValue);
 
