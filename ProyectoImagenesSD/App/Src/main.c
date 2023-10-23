@@ -121,7 +121,7 @@ ILI9341_Handler_t ili = { 0 };
 //Variables para el cambio de imagen
 uint16_t timer5Count = 0;
 bool flagChange = 0;
-uint16_t currentImage = 1;
+uint16_t currentImage = 0;
 BasicTimer_Handler_t handlerTim5 = { 0 };
 uint8_t newDirVal = 0;
 bool enableChange = 0;
@@ -215,7 +215,7 @@ int main(void) {
 				TurnOffTimer(&handlerTim5);
 
 				timer5Count = 0;
-				if (currentImage == 1) {
+				if (currentImage == 0) {
 					currentImage = limitImage;
 				} else {
 					currentImage--;
