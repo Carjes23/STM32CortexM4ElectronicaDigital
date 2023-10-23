@@ -32,6 +32,7 @@
 #define INC_SYSTICK_H_
 
 #include <stm32f4xx.h>
+extern volatile uint32_t ticksDown;
 
 #define SYSTICK_LOAD_VALUE_16MHz_1ms	16000 	// Cada 1ms
 #define SYSTICK_LOAD_VALUE_100MHz_1ms	100000	// Cada 1ms
@@ -45,6 +46,10 @@ uint64_t getTicks_ms(void);
 uint64_t getTicks_us(void);
 void delay_ms(uint32_t wait_time_ms);
 void delay_100us(uint32_t wait_time_ms);
+
+#define SYSTICK_ticksDown()				(ticksDown)
+
+#define SYSTICK_setTicksDown(time)		(ticksDown = (time))
 
 
 

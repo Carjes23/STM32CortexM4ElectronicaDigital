@@ -34,6 +34,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 
 #include <stm32f4xx.h>
 
@@ -48,6 +49,8 @@
 #include "ExtiDriver.h"
 #include "ILI9341.h"
 #include "images.h"
+#include "I2CxDriver.h"
+#include "MPU6050.h"
 
 // Definiciones MACROS para la direccion.
 #define RIGHT 	1
@@ -58,17 +61,29 @@
 
 /************************* Configuracion de Perifericos *************************/
 
+/* Para los promedios de los sensores */
+int32_t sumaSensores[6] = { 0 };
+int16_t promedioSensores[6] = { 0 };
+
+bool manualChange = 0;
+
 BasicTimer_Handler_t handlerTim2 = { 0 }; // Timer para el blinking
 BasicTimer_Handler_t handlerTim3 = { 0 };
 BasicTimer_Handler_t handlerTim5 = { 0 };
+int16_t mpu6050_data[6] = { 0 };
 
 GPIO_Handler_t tx2pin = { 0 };	//Pin para configurar la trasmision del USART2
 GPIO_Handler_t rx2pin = { 0 };	//Pin para configurar la recepcion del USART2
 USART_Handler_t HandlerTerminal = { 0 }; 	//Handler para manejar el USART2
 
+GPIO_Handler_t handlerUserButtonPin = { 0 };
+
 uint8_t usart2image = 0; //Dato recibido por el usart 2:; Imagenes
 
 GPIO_Handler_t handlerUserLedPin = { 0 }; //Led de usuario para el blinking
+GPIO_Handler_t I2cSCL;
+GPIO_Handler_t I2cSDA;
+I2C_Handler_t i2c1_mpu6050;
 
 /*
  * Pines y handlers necesarios para manipular la pantalla
@@ -93,6 +108,10 @@ ILI9341_Handler_t ili = { 0 };
 
 // Variables: Sintonización del MCU
 uint8_t trimval = 13;
+uint8_t usart2_rxData = 0;
+//TImer 4
+bool calTim = 0;
+uint8_t accelSamp = 0;
 
 // Variables: Escenario de Juego
 uint16_t backgroundColor = ILI9341_BLACK;
@@ -106,7 +125,7 @@ char bufferData[128] = { 0 };
  */
 GPIO_Handler_t handlerLeft = { 0 };
 EXTI_Config_t handlerExtiLeft = { 0 };
-
+BasicTimer_Handler_t handlerTim4 = { 0 };
 GPIO_Handler_t handlerRight = { 0 };
 EXTI_Config_t handlerExtiRight = { 0 };
 
@@ -116,26 +135,54 @@ EXTI_Config_t handlerExtiUp = { 0 };
 GPIO_Handler_t handlerDown = { 0 };
 EXTI_Config_t handlerExtiDown = { 0 };
 
+EXTI_Config_t handlerUserButton = { 0 };
+
 uint8_t newDirVal = 0;
 
 uint16_t timer5Count = 0;
-uint16_t timChangeIm = 1; //Multipolso de 5 sg
+uint16_t timChangeIm = 2; //multiplo de 5 sg
 uint16_t currentImage = 1;
 bool flagChange = 0;
 uint16_t limitImage = 3;
 bool initialState = 1;
+volatile uint8_t mpuErr;
+volatile uint8_t counter = 0;
+volatile uint8_t measure = RESET;
+uint16_t color = ILI9341_PURPLE;
 
 // Cabeceras de funciones
 void initSystem(void);			//Funcion de inicio
 void USART2Rx_Callback(void);	//Funcion que se encarga del manejo del usart2
+void Calibrate(I2C_Handler_t *mpuHandler, int16_t *pProm);
 
 uint32_t contadorPan = 0;
 bool enableChange = 0;
+
+uint16_t umbral = 3276;
+
+/* Para rediccionar el printf() por USART2 */
+int __io_putchar(int ch) {
+
+	// Se envía el caracter por USART2
+	writeChar(&HandlerTerminal, (char) ch);
+	return ch;
+}
 
 int main(void) {
 
 	// Iniciamos el programa
 	initSystem();
+	delay_ms(10);
+	i2c_writeSingleRegister(&i2c1_mpu6050, PWR_MGMT_1, 0x00);
+	mpuErr = i2c_readSingleRegister(&i2c1_mpu6050, PWR_MGMT_1);
+	if (mpuErr) {
+		printf("Error al inicializar el MPU. Revisar la conexion\n\r");
+		while (1)
+			;
+	} else {
+		printf("MPU6050 Inicializado correctamente\n\r");
+	}
+	usart2_rxData = 'c';
 
 	// Definimos rotación & Fondo de pantalla
 	Ili_setRotation(&ili, 3);
@@ -152,12 +199,16 @@ int main(void) {
 	BasicTimer_Config(&handlerTim5); //Se carga la configuración.
 
 	while (1) {
+		//sprintf(fileName, "%d.txt", 1);
+	//printImage(fileName);
 		if (newDirVal && enableChange) {
 			enableChange = 0;
+			TurnOffTimer(&handlerTim4);
 			if (newDirVal == LEFT) {
 				TurnOffTimer(&handlerTim5);
+
 				timer5Count = 0;
-				if (currentImage <= 1) {
+				if (currentImage == 1) {
 					currentImage = limitImage;
 				} else {
 					currentImage--;
@@ -168,7 +219,7 @@ int main(void) {
 			} else if (newDirVal == RIGHT) {
 				TurnOffTimer(&handlerTim5);
 				timer5Count = 0;
-				if (currentImage <= limitImage) {
+				if (currentImage < limitImage) {
 					currentImage++;
 				} else {
 					currentImage = 1;
@@ -178,17 +229,76 @@ int main(void) {
 			}
 			if (newDirVal == UP) {
 				timChangeIm++;
+
+				sprintf(bufferData, "%d", timChangeIm);
+				ILI9341_WriteString(&ili, 0, 0, color, 0,
+						bufferData, 3, 3);
+
 			} else if (newDirVal == DOWN) {
-				if (timChangeIm != 1) {
+				if (timChangeIm != 2) {
 					timChangeIm--;
+					ILI9341_WriteString(&ili, 0, 0, color, 0,
+						bufferData, 3, 3);
 				}
 			}
 			newDirVal = 0;
 			TurnOnTimer(&handlerTim3);
+			TurnOnTimer(&handlerTim4);
 		}
 		if (flagChange) {
 			flagChange = 0;
 			newDirVal = RIGHT;
+		}
+		/* Para la lectura de todos los sensores */
+		if (usart2_rxData != 0) {
+			if (usart2_rxData == 'a') {
+
+				// Se leen los registros
+				mpu6050_readAll(&i2c1_mpu6050, mpu6050_data);
+
+				// Informar en pantalla la lectura del Accel Z
+				printf(
+						"AccX: %i, AccY: %i, AccZ: %i, GyrX: %i, GyrY: %i, GyrZ: %i\n\r",
+						mpu6050_data[0], mpu6050_data[1], mpu6050_data[2],
+						mpu6050_data[3], mpu6050_data[4], mpu6050_data[5]);
+
+				// Se limpia el caracter leído
+				usart2_rxData = '\0';
+			} else if (usart2_rxData == 'c') {
+
+				calTim = 1;
+				// Se toman 32 datos por cada sensor para realizar un promedio
+				while (counter < 32) {
+					if (measure) {
+						// Lectura de todos los acelerómetros y giroscopios
+						mpu6050_readAll(&i2c1_mpu6050, mpu6050_data);
+
+						sumaSensores[0] += mpu6050_data[0];	// AccX
+						sumaSensores[1] += mpu6050_data[1];	// AccY
+						sumaSensores[2] += mpu6050_data[2];	// AccZ
+						sumaSensores[3] += mpu6050_data[3];	// GyrX
+						sumaSensores[4] += mpu6050_data[4];	// GyrY
+						sumaSensores[5] += mpu6050_data[5];	// GyrZ
+
+						measure = RESET;
+					} else {
+						__NOP(); 			// Se espera al siguiente muestreo
+					}
+				}
+				counter = 0;
+
+				calTim = 0;
+
+				for (uint8_t i = 0; i < 6; i++) {
+					// Se realiza el promedio de los 32 datos por cada sensor
+					promedioSensores[i] = (sumaSensores[i] >> 5);
+
+					// Se reinicia el arreglo de la suma
+					sumaSensores[i] = 0;
+				}
+
+				Calibrate(&i2c1_mpu6050, promedioSensores);
+			}
 		}
 	}
 
@@ -199,9 +309,55 @@ void initSystem(void) {
 	//Activacion cooprocesador matematico
 	SCB->CPACR |= (0xF << 20);
 	//Se conifgura el PLL en 80
-	configPLL(80);
+	configPLL(100);
 	//Se configura el Systick automaticamente
 	config_SysTick();
+
+	/*
+	 * Se configuran los pines necesarios para la comunicación con el acelerometro.
+	 */
+
+	/* Configuración del pin para el botón de usuario */
+	handlerUserButtonPin.pGPIOx = GPIOA;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_PUSHPULL;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinPuPdControl =
+	GPIO_PUPDR_PULLUP;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_HIGH;
+	handlerUserButtonPin.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF0;
+
+	/* Configuración EXTI0 */
+	handlerUserButton.pGPIOHandler = &handlerUserButtonPin;
+	handlerUserButton.edgeType = EXTERNAL_INTERRUPT_RISING_EDGE;
+
+	extInt_Config(&handlerUserButton);
+
+	I2cSCL.pGPIOx = GPIOB;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinNumber = PIN_8;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST;
+	I2cSCL.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
+	GPIO_Config(&I2cSCL);
+
+	I2cSDA.pGPIOx = GPIOB;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinNumber = PIN_9;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_OPENDRAIN;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST;
+	I2cSDA.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF4;
+	GPIO_Config(&I2cSDA);
+
+	/*
+	 * Se configura el I2C1 en fast mode y se le pasa la direccion del acelerometro
+	 */
+	i2c1_mpu6050.modeI2C = I2C_MODE_FM;
+	i2c1_mpu6050.slaveAddress = 0b1101000; 	// Dirección del slave. AD0 --> GND
+	i2c1_mpu6050.ptrI2Cx = I2C1;
+	i2c_config(&i2c1_mpu6050);
 
 	//Led de usuario usado para el blinking
 
@@ -225,7 +381,7 @@ void initSystem(void) {
 
 	//Handeler para manejar el USAR2
 	HandlerTerminal.ptrUSARTx = USART2;
-	HandlerTerminal.USART_Config.USART_baudrate = 921600;
+	HandlerTerminal.USART_Config.USART_baudrate = 115200;
 	HandlerTerminal.USART_Config.USART_datasize = USART_DATASIZE_8BIT;
 	HandlerTerminal.USART_Config.USART_mode = USART_MODE_RXTX;
 	HandlerTerminal.USART_Config.USART_parity = USART_PARITY_NONE;
@@ -331,16 +487,16 @@ void initSystem(void) {
 
 	ILI9341_Init(&ili);
 
-	//Handlers y exti de los botones
-	handlerLeft.pGPIOx = GPIOC; //Se encuentra en el el GPIOC
-	handlerLeft.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0; //Es el pin numero 0
-	handlerLeft.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN; //En este caso el pin se usara como entrada de datos
-	handlerLeft.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP; //No se usara ninguna resistencia pull-up o pull-down
-
-	handlerExtiLeft.pGPIOHandler = &handlerLeft; // Se carga la config del pin al handler del EXTI
-	handlerExtiLeft.edgeType = EXTERNAL_INTERRUPT_FALLING_EDGE; //Se define que se van a detectar flancos de bajada.
-
-	extInt_Config(&handlerExtiLeft); //Se carga la configuracion usando la funcion de la libreria.
+//	//Handlers y exti de los botones
+//	handlerLeft.pGPIOx = GPIOC; //Se encuentra en el el GPIOC
+//	handlerLeft.GPIO_PinConfig_t.GPIO_PinNumber = PIN_0; //Es el pin numero 0
+//	handlerLeft.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_IN; //En este caso el pin se usara como entrada de datos
+//	handlerLeft.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP; //No se usara ninguna resistencia pull-up o pull-down
+//
+//	handlerExtiLeft.pGPIOHandler = &handlerLeft; // Se carga la config del pin al handler del EXTI
+//	handlerExtiLeft.edgeType = EXTERNAL_INTERRUPT_FALLING_EDGE; //Se define que se van a detectar flancos de bajada.
+//
+//	extInt_Config(&handlerExtiLeft); //Se carga la configuracion usando la funcion de la libreria.
 
 	//Boton de usuario para el cambio de tasa de resfresco.
 
@@ -378,6 +534,15 @@ void initSystem(void) {
 
 	extInt_Config(&handlerExtiDown); //Se carga la configuracion usando la funcion de la libreria.
 
+	handlerTim4.ptrTIMx = TIM4; //El timer que se va a usar
+	handlerTim4.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
+	handlerTim4.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usará en modo ascendente
+	handlerTim4.TIMx_Config.TIMx_period = 1000; // 10 ms considerando una base de tiempo de 10 µs
+	handlerTim4.TIMx_Config.TIMx_speed = BTIMER_SPEED_10us;
+
+	BasicTimer_Config(&handlerTim4);
+	TurnOnTimer(&handlerTim4);
+
 }
 
 //Calback del timer2 para el blinking
@@ -394,15 +559,15 @@ void BasicTimer3_Callback(void) {
 void BasicTimer5_Callback(void) {
 	timer5Count++;
 	if (timer5Count >= timChangeIm) {
-		flagChange = 1;
+//		flagChange = 1;
 	}
 }
 
-//Movimiento izquierda
-void callback_extInt0(void) {
-	newDirVal = LEFT;
-
-}
+////Movimiento izquierda
+//void callback_extInt0(void) {
+//	newDirVal = LEFT;
+//
+//}
 //Movimiento derecha
 void callback_extInt1(void) {
 	newDirVal = RIGHT;
@@ -416,3 +581,72 @@ void callback_extInt3(void) {
 	newDirVal = UP;
 }
 
+void USART2Rx_Callback(void) {
+	usart2_rxData = getRxData();
+}
+
+void BasicTimer4_Callback(void) {
+	if (manualChange) {
+		accelSamp++;
+	}
+	if (calTim) {
+		measure = SET;
+		counter++;
+	}
+	if (accelSamp > 7) {
+		accelSamp = 0;
+		mpu6050_readAccel(&i2c1_mpu6050, mpu6050_data);
+
+		int16_t AccX = mpu6050_data[0];
+		int16_t AccY = mpu6050_data[1];
+
+		if (AccY > umbral) {
+			newDirVal = RIGHT;
+		} else if (AccY < -umbral) {
+			newDirVal = LEFT;
+		} else if (AccX > umbral) {
+			newDirVal = UP;
+		} else if (AccX < -umbral) {
+			newDirVal = DOWN;
+		}
+	}
+
+}
+/* Para la calibración del MPU */
+void Calibrate(I2C_Handler_t *mpuHandler, int16_t *pProm) {
+
+	int16_t offsets[6];
+
+	mpu6050_getOffsets(mpuHandler, offsets);
+
+	offsets[0] -= *(pProm + 0) / 20;
+	offsets[1] -= *(pProm + 1) / 20;
+	offsets[2] -= *(pProm + 2) / 20;
+	offsets[3] -= *(pProm + 3) / 20;
+	offsets[4] -= *(pProm + 4) / 20;
+	offsets[5] -= *(pProm + 5) / 20;
+
+	mpu6050_setOffsets(mpuHandler, offsets);
+
+	if (fabs(*(pProm + 0)) > 20 || fabs(*(pProm + 1)) > 20
+			|| fabs(*(pProm + 2)) > 20 || fabs(*(pProm + 3)) > 20
+			|| fabs(*(pProm + 4)) > 20 || fabs(*(pProm + 5)) > 20) {
+
+		printf("\nCalibrando el MPU\n");
+
+		// Se indica que se debe repetir el ciclo de calibración
+		usart2_rxData = 'c';
+
+		calTim = 1;
+	} else {
+
+		// Se limpia el caracter leído
+		usart2_rxData = '\0';
+		printf("\n~ Calibracion completa MPU ~\n");
+	}
+}
+
+/* Función Callback para el EXTI0 (PA0) (User button) */
+void callback_extInt0(void) {
+	manualChange ^= 1;
+}

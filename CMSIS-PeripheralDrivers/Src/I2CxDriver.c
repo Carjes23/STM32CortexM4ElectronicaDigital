@@ -47,7 +47,7 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C) {
 	// PLCK1 FRECUENCY in MHz se divide entre dos si es mayor a 50 mhz
 	uint16_t freq = getFreqPLL();
 	if (freq > 50) {
-		freq = freq / 2;
+		freq = 16;
 	}
 
 	ptrHandlerI2C->ptrI2Cx->CR2 &= ~(0b111111 << I2C_CR2_FREQ_Pos);	// Borramos la configuración actual
@@ -66,7 +66,7 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C) {
 	/*
 	 * Se hacen todos los calculos a travez de formulas logrando que el I2C se ajuste al PLL
 	 */
-	float TPCLK1 = 1000 / freq;
+	float TPCLK1 = 1000.f / freq;
 	(void) TPCLK1;
 
 	if (ptrHandlerI2C->modeI2C == I2C_MODE_SM) {
@@ -89,12 +89,12 @@ void i2c_config(I2C_Handler_t *ptrHandlerI2C) {
 		// Seleccionamos el modo Fast
 		ptrHandlerI2C->ptrI2Cx->CCR |= I2C_CCR_FS;
 
-		uint16_t auxSpeed = round(2500 / (TPCLK1 * 3));
+		uint16_t auxSpeed = round(2500.f / (TPCLK1 * 3));
 
 		// COnfiguramos el registro que se encarga de generar la señal del reloj
 		ptrHandlerI2C->ptrI2Cx->CCR |= (auxSpeed << I2C_CCR_CCR_Pos);
 
-		uint16_t auxTrise = 300 / TPCLK1 + 1;
+		uint16_t auxTrise = round((300.f / TPCLK1) + 1);
 
 		// Configuramos el registro que controla el tiempo T - Rise máximo
 		ptrHandlerI2C->ptrI2Cx->TRISE |= auxTrise;
@@ -153,7 +153,7 @@ void i2c_sendAck(I2C_Handler_t *ptrHandlerI2C) {
 	/* Activamos la indicación para  ACK (indicación para el Slave continue)
 	 * (Debemos escribir 1 en la posición ACK del registro de control 1)
 	 */
-	ptrHandlerI2C->ptrI2Cx->CR1 &= I2C_CR1_ACK;
+	ptrHandlerI2C->ptrI2Cx->CR1 |= I2C_CR1_ACK;
 }
 
 void i2c_sendSlaveAddresRW(I2C_Handler_t *ptrHandlerI2C, uint8_t slaveAddress,
@@ -384,4 +384,38 @@ void i2c_readMulRegister2(I2C_Handler_t *ptrHandlerI2C, uint8_t *regsToRead,
 	//8. generamos la condicion de stop
 	i2c_stopTransaction(ptrHandlerI2C);
 
+}
+
+/* Función para leer registros sucesivos
+ * NOTA: No funciona si las direcciones no incrementan en 1 */
+void i2c_readMultipleRegisters(I2C_Handler_t *pHandlerI2C, uint8_t *rxData, uint8_t initialReg, uint8_t regsToRead){
+
+	/* 1. Generar un ACK */
+	i2c_sendAck(pHandlerI2C);
+
+	/* 2. Generamos la condición Start */
+	i2c_startTransaction(pHandlerI2C);
+
+	/* 3. Enviamos la dirección del esclavo y la indicación de ESCRIBIR */
+	i2c_sendSlaveAddresRW(pHandlerI2C, pHandlerI2C->slaveAddress, I2C_WRITE_DATA);
+
+	/* 4. Enviamos la dirección de memoria que deseamos leer */
+	i2c_sendMemoryAddress(pHandlerI2C, initialReg);
+
+	/* 5. Creamos una condición re reStart */
+	i2c_reStartTransaction(pHandlerI2C);
+
+	/* 6. Enviamos la dirección del esclavo y la indicación de LEER */
+	i2c_sendSlaveAddresRW(pHandlerI2C, pHandlerI2C->slaveAddress, I2C_READ_DATA);
+
+	/* 6. Almacenar la información en el arreglo ingresado */
+	for(uint8_t i = 0; i < (regsToRead); i++){
+		rxData[i] = i2c_readDataBye(pHandlerI2C);
+	}
+
+	/* 7. Generamos la condición de NoAck, para que el Master no responda y envíe el último byte*/
+	i2c_sendNoAck(pHandlerI2C);
+
+	/* 8. Generamos la condición Stop, para que el slave se detenga */
+	i2c_stopTransaction(pHandlerI2C);
 }

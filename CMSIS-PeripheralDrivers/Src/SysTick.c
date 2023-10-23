@@ -37,6 +37,7 @@ uint64_t ticks_counting = 0;
 uint64_t ticksms = 0;
 uint64_t ticks_startms = 0;
 uint64_t ticks_countingms = 0;
+volatile uint32_t ticksDown = 0;
 
 void config_SysTick(void){
 	// Reiniciamos la variable que cuenta el tiempo
@@ -121,7 +122,13 @@ void SysTick_Handler(void){
 		if(ticks % 10 == 0){
 			ticksms++;
 		}
+		// Decrementar el otro contador en 1
+		if (ticksDown != 0x00) {
+			ticksDown--;
+		}
 	}
 }
+
+
 
 

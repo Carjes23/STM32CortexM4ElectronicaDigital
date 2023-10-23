@@ -208,7 +208,7 @@ void ILI9341_WriteData(ILI9341_Handler_t *ili9341_handler, uint8_t *data,
 	SPI_Transmit(ili9341_handler->spi_handler, data, len);
 	//TODO
     if(getFreqPLL() > 16){
-    	for(int i = 0; i < 15; i++){
+    	for(int i = 0; i < 20; i++){
     	__NOP();
     	}
     }

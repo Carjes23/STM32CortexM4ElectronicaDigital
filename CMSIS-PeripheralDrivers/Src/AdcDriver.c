@@ -127,6 +127,7 @@ void adc_Config(ADC_Config_t *adcConfig) {
 	case (EXTEN_RISING_TIMER4_CC4):
 		ADC1->CR2 |= 0b01 << ADC_CR2_EXTEN_Pos;
 		ADC1->CR2 |= 0b1001 << ADC_CR2_EXTSEL_Pos;
+		break;
 	default:
 		__NOP();
 		break;

@@ -51,6 +51,7 @@ uint8_t i2c_readDataBye(I2C_Handler_t *ptrHandlerI2C);
 void i2c_stopTransaction(I2C_Handler_t *ptrHandlerI2C);
 void i2c_sendAck(I2C_Handler_t *ptrHandlerI2C);
 void i2c_sendNoAck(I2C_Handler_t *ptrHandlerI2C);
+void i2c_readMultipleRegisters(I2C_Handler_t *pHandlerI2C, uint8_t *rxData, uint8_t initialReg, uint8_t regsToRead);
 
 uint8_t i2c_readSingleRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t regToRead);
 void i2c_writeSingleRegister(I2C_Handler_t *ptrHandlerI2C, uint8_t regToRead, uint8_t newValue);
