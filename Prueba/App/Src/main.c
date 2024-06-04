@@ -206,7 +206,6 @@ int main(void) {
 			TurnOffTimer(&handlerTim4);
 			if (newDirVal == LEFT) {
 				TurnOffTimer(&handlerTim5);
-
 				timer5Count = 0;
 				if (currentImage == 1) {
 					currentImage = limitImage;

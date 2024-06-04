@@ -150,7 +150,7 @@ int main(void) {
 		printf("SD montada\n\r");
 	}
 
-	sprintf(fileName, "%d.txt", 1);
+	sprintf(fileName, "%d.txt", 10);
 	printImage(fileName);
 //	/* Revisión del espacio de la memoria */
 //	res = f_getfree("", &free_clusters, &getFreeFs);

@@ -40,7 +40,7 @@
 
 /*Cambiables*/
 
-uint16_t limitImage = 3; //Cambiar dependiendo la cantidad de iamgenes
+uint16_t limitImage = 14; //Cambiar dependiendo la cantidad de iamgenes
 uint16_t timChangeIm = 3; //multiplo de 5 sg cambiar dependiendo cuanto
 //quiere que se demore en default
 
@@ -180,18 +180,6 @@ int main(void) {
 	// Definimos rotación & Fondo de pantalla
 	Ili_setRotation(&ili, 3);
 
-	//Inicializamos tod0 en 0
-	timer5Count = 0;
-	flagChange = 0;
-	printImage(fileName, currentImage);
-	handlerTim5.ptrTIMx = TIM5; //El timer que se va a usar
-	handlerTim5.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
-	handlerTim5.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
-	handlerTim5.TIMx_Config.TIMx_period = 50000; //Se define el periodo en este caso el led cambiara cada 250ms
-	handlerTim5.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us; //Se define la "velocidad" que se usara
-
-	BasicTimer_Config(&handlerTim5); //Se carga la configuración.
-
 	// Se monta la microSD --> 1 para montarla inmediatamente
 	//					   --> 0 para montarla luego
 	res = f_mount(&FatFs, "", 1);
@@ -203,6 +191,18 @@ int main(void) {
 	} else {
 		printf("SD montada\n\r");
 	}
+
+	//Inicializamos tod0 en 0
+	timer5Count = 0;
+	flagChange = 0;
+	printImage(fileName, currentImage);
+	handlerTim5.ptrTIMx = TIM5; //El timer que se va a usar
+	handlerTim5.TIMx_Config.TIMx_interruptEnable = 1; //Se habilitan las interrupciones
+	handlerTim5.TIMx_Config.TIMx_mode = BTIMER_MODE_UP; //Se usara en modo ascendente
+	handlerTim5.TIMx_Config.TIMx_period = 50000; //Se define el periodo en este caso el led cambiara cada 250ms
+	handlerTim5.TIMx_Config.TIMx_speed = BTIMER_SPEED_100us; //Se define la "velocidad" que se usara
+
+	BasicTimer_Config(&handlerTim5); //Se carga la configuración.
 
 	/* Main loop */
 	while (1) {

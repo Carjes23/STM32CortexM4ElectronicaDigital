@@ -124,12 +124,14 @@ uint16_t i2cBuffer = 0;		 //Buffer para la recepción de datos en el I2C
 BasicTimer_Handler_t handlerTim2 = { 0 }; //Timer para el blinking
 GPIO_Handler_t handlerUserLedPin = { 0 }; // Para manipular el led de usuario
 
-PWM_Handler_t pwmtim3x = { 0 }; //Para configurar el PWM en el timer 3 para X
-GPIO_Handler_t pwm3xpin = { 0 }; //Pin que nos entrega la señal PWM para X Pin C6
+
 
 USART_Handler_t USART6Handler = { 0 }; //Para manejar el USART6
 GPIO_Handler_t tx6pin = { 0 }; //Para manipular el pin de trasminsión de datos del USART6
 GPIO_Handler_t rx6pin = { 0 }; //Para manipular el pin de recepcioón de datos del USART6
+
+PWM_Handler_t pwmtim3x = { 0 }; //Para configurar el PWM en el timer 3 para X
+GPIO_Handler_t pwm3xpin = { 0 }; //Pin que nos entrega la señal PWM para X Pin C6
 
 PWM_Handler_t pwmtim3y = { 0 }; //Para configurar el PWM enn el timer 3 para y
 GPIO_Handler_t pwm3ypin = { 0 }; //Pin que nos entrega la señal PWM para Y Pin c7

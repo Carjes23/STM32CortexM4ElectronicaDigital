@@ -113,7 +113,6 @@ arm_status statusInitFFT = ARM_MATH_ARGUMENT_ERROR;
 uint16_t fttSize = 256;
 
 //Handler I2Cs
-I2C_Handler_t i2cAcelerometro = { 0 }; //I2C encargado de comunicarse con el acelerometro
 
 GPIO_Handler_t I2cSDA = { 0 }; // Handler que manipula el envio/recepcón de datos del Acelerometro
 GPIO_Handler_t I2cSCL = { 0 }; // Handler que manipula la frecuencia de comunicación del Acelerometro
@@ -214,10 +213,8 @@ int main(void) {
 	//Los delays es para que no se solapen en el Acelerometro
 	delay_ms(15);
 	writeString(&handlerTerminal, "Solución Examen \n");
-	i2c_writeSingleRegister(&i2cAcelerometro, POWER_CTL, 0x08);
 	delay_ms(1);
 	//Colocamos la frecuencia de muestreo del accel a 3600 hz
-	i2c_writeSingleRegister(&i2cAcelerometro, ACCEL_BW_RATE, 0x0F);
 	/*
 	 * Se envian mensajes de inicio
 	 */
@@ -293,7 +290,6 @@ int main(void) {
 
 		if (flagDatos == 1) {
 			//Funcion que lee varios registros simultaneamente.
-			i2c_readMulRegister(&i2cAcelerometro, regDatos, 6, resDatos);
 
 			/*
 			 * En esta seccion se le hace un tratamiento a los diferentes ejes
@@ -398,12 +394,6 @@ void initSystem(void) {
 
 	/*
 	 * Se configura el I2C1 en fast mode y se le pasa la direccion del acelerometro
-	 */
-	i2cAcelerometro.modeI2C = I2C_MODE_FM;
-	i2cAcelerometro.slaveAddress = ACCEL_ADDRESS;
-	i2cAcelerometro.ptrI2Cx = I2C1;
-	i2c_config(&i2cAcelerometro);
-	/*
 	 * Leds de estado
 	 */
 	handlerUserLedPin.pGPIOx = GPIOH; //Se encuentra en el el GPIOH
@@ -428,20 +418,20 @@ void initSystem(void) {
 //PA2
 	//PA 11 -> 7 bajando -> Tx amarillo
 	tx6pin.pGPIOx = GPIOA;
-	tx6pin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_11;
+	tx6pin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_2;
 	tx6pin.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
 	tx6pin.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
 	tx6pin.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST; //Se usa en velocidad rapida
-	tx6pin.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF8;
+	tx6pin.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF7;
 
 	GPIO_Config(&tx6pin);
 	//PA 12 -> 6 bajando - Rx marron
 	rx6pin.pGPIOx = GPIOA;
-	rx6pin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_12;
+	rx6pin.GPIO_PinConfig_t.GPIO_PinNumber = PIN_3;
 	rx6pin.GPIO_PinConfig_t.GPIO_PinMode = GPIO_MODE_ALTFN;
 	rx6pin.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_PULLUP;
 	rx6pin.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST;
-	rx6pin.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF8;
+	rx6pin.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF7;
 
 	GPIO_Config(&rx6pin);
 
@@ -463,8 +453,8 @@ void initSystem(void) {
 
 	BasicTimer_Config(&handlerTimer3); //Se carga la configuración.
 
-	handlerTerminal.ptrUSARTx = USART6;
-	handlerTerminal.USART_Config.USART_baudrate = USART_BAUDRATE_115200;
+	handlerTerminal.ptrUSARTx = USART2;
+	handlerTerminal.USART_Config.USART_baudrate = 115200;
 	handlerTerminal.USART_Config.USART_datasize = USART_DATASIZE_8BIT;
 	handlerTerminal.USART_Config.USART_mode = USART_MODE_RXTX;
 	handlerTerminal.USART_Config.USART_parity = USART_PARITY_NONE;
@@ -491,7 +481,7 @@ void initSystem(void) {
 	pwprueba.GPIO_PinConfig_t.GPIO_PinOPType = GPIO_OTYPE_PUSHPULL;
 	pwprueba.GPIO_PinConfig_t.GPIO_PinPuPdControl = GPIO_PUPDR_NOTHING;
 	pwprueba.GPIO_PinConfig_t.GPIO_PinSpeed = GPIO_OSPEED_FAST;
-	pwprueba.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF;
+	pwprueba.GPIO_PinConfig_t.GPIO_PinAltFunMode = AF2;
 
 	GPIO_Config(&pwprueba);
 
@@ -541,7 +531,7 @@ void BasicTimer3_Callback(void) {
 	flagDatos = 1;
 }
 
-void USART6Rx_Callback(void) {
+void USART2Rx_Callback(void) {
 	rxData = getRxData();
 }
 
